@@ -3,16 +3,18 @@ It includes just a looper to run on CMS2 ntuples so far (in the "looper" subdir)
 
 To checkout this repository from github along with the others needed to run, follow these commands:
 
-git clone git@github.com:olivito/DilepTrigStudy.git
-cd DilepTrigStudy/
+git clone git@github.com:gzevi/ElectronLooperCMS2.git
+cd ElectronLooperCMS2/
 git clone git@github.com:cmstas/CORE.git
 git clone git@github.com:cmstas/Tools.git
-cmsrel CMSSW_5_3_2_patch4
-cd CMSSW_5_3_2_patch4/src
+cmsrel CMSSW_7_0_0_pre12
+cd CMSSW_7_0_0_pre12/src
 cmsenv
 cd ../../looper
 cp CMS2.cc CMS2.h ../CORE
 make
+
+## All taken from https://github.com/olivito/DilepTrigStudy
 
 And for more info on the snt github setup, see our twiki:
 http://www.t2.ucsd.edu/tastwiki/bin/view/CMS/GitHubInstructions
