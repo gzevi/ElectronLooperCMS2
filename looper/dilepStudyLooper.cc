@@ -556,7 +556,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         float pt = el_p4.pt();
         float eta = el_p4.eta();
         if (pt < 10) continue;
-	if (pt < 10 || pt > 20) continue;
+	//	if (pt < 10 || pt > 20) continue;
 	if (fabs(eta) > 2.5) continue;
         h_el_pt->Fill(pt,1);
         h_el_eta->Fill(eta,1);
@@ -683,14 +683,14 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 
       // Fill N-1 plots
       // LOOSE
-//      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet4, eleStruct, eleLcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet4f, eleStruct, eleLcuts) : fillElectronQuantitiesN1(hSet4np, eleStruct, eleLcuts) );
-//      else truthmatched ? fillElectronQuantitiesN1(hSet4E, eleStruct, eleLcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet4Ef, eleStruct, eleLcutsEE) : fillElectronQuantitiesN1(hSet4Enp, eleStruct, eleLcutsEE) );
-//      // MEDIUM
-//      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet5, eleStruct, eleMcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet5f, eleStruct, eleMcuts) : fillElectronQuantitiesN1(hSet5np, eleStruct, eleMcuts) );
-//      else truthmatched ? fillElectronQuantitiesN1(hSet5E, eleStruct, eleMcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet5Ef, eleStruct, eleMcutsEE) : fillElectronQuantitiesN1(hSet5Enp, eleStruct, eleMcutsEE) );
-//      // TIGHT
-//      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet6, eleStruct, eleMcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet6f, eleStruct, eleTcuts) : fillElectronQuantitiesN1(hSet6np, eleStruct, eleTcuts) );
-//      else truthmatched ? fillElectronQuantitiesN1(hSet6E, eleStruct, eleMcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet6Ef, eleStruct, eleTcutsEE) : fillElectronQuantitiesN1(hSet6Enp, eleStruct, eleTcutsEE) );
+      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet4, eleStruct, eleLcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet4f, eleStruct, eleLcuts) : fillElectronQuantitiesN1(hSet4np, eleStruct, eleLcuts) );
+      else truthmatched ? fillElectronQuantitiesN1(hSet4E, eleStruct, eleLcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet4Ef, eleStruct, eleLcutsEE) : fillElectronQuantitiesN1(hSet4Enp, eleStruct, eleLcutsEE) );
+      // MEDIUM
+      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet5, eleStruct, eleMcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet5f, eleStruct, eleMcuts) : fillElectronQuantitiesN1(hSet5np, eleStruct, eleMcuts) );
+      else truthmatched ? fillElectronQuantitiesN1(hSet5E, eleStruct, eleMcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet5Ef, eleStruct, eleMcutsEE) : fillElectronQuantitiesN1(hSet5Enp, eleStruct, eleMcutsEE) );
+      // TIGHT
+      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet6, eleStruct, eleTcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet6f, eleStruct, eleTcuts) : fillElectronQuantitiesN1(hSet6np, eleStruct, eleTcuts) );
+      else truthmatched ? fillElectronQuantitiesN1(hSet6E, eleStruct, eleTcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet6Ef, eleStruct, eleTcutsEE) : fillElectronQuantitiesN1(hSet6Enp, eleStruct, eleTcutsEE) );
         
       // Instead of MEDIUM, fill only if ncluster == 1
 //      if ( seedCode == 3 ) {
@@ -698,29 +698,30 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 //	else   truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
 //      }
 
-	if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) {
-	  if (truthmatched) nPromptEleL++;
-	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleL++;
-	  else nFakeEleL++;
-	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet4, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4f, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
-	  else truthmatched ? fillElectronQuantities(hSet4E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4Ef, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
-	}
-
-	if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) {
-	  if (truthmatched) nPromptEleM++;
-	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleM++;
-	  else nFakeEleM++;
-	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet5, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5f, eleStruct) : fillElectronQuantities(hSet5np, eleStruct) );
-	  else truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
-	}
-
-	if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) {
-	  if (truthmatched) nPromptEleT++;
-	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleT++;
-	  else nFakeEleT++;
-	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet6, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6f, eleStruct) : fillElectronQuantities(hSet6np, eleStruct) );
-	  else truthmatched ? fillElectronQuantities(hSet6E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6Ef, eleStruct) : fillElectronQuantities(hSet6Enp, eleStruct) );
-	}
+      // Fill Plots After Cuts (not N-1), and counters
+//	if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) {
+//	  if (truthmatched) nPromptEleL++;
+//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleL++;
+//	  else nFakeEleL++;
+//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet4, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4f, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
+//	  else truthmatched ? fillElectronQuantities(hSet4E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4Ef, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
+//	}
+//
+//	if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) {
+//	  if (truthmatched) nPromptEleM++;
+//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleM++;
+//	  else nFakeEleM++;
+//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet5, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5f, eleStruct) : fillElectronQuantities(hSet5np, eleStruct) );
+//	  else truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
+//	}
+//
+//	if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) {
+//	  if (truthmatched) nPromptEleT++;
+//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleT++;
+//	  else nFakeEleT++;
+//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet6, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6f, eleStruct) : fillElectronQuantities(hSet6np, eleStruct) );
+//	  else truthmatched ? fillElectronQuantities(hSet6E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6Ef, eleStruct) : fillElectronQuantities(hSet6Enp, eleStruct) );
+//	}
 
 	//Debug: plot after each cut, one cut at the time
 //	float isoCut = eleLcuts.iso_cor;
