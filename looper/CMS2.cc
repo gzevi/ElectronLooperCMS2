@@ -1235,6 +1235,7 @@ namespace tas {
 	vector<vector<int> > &els_convs_flag() { return cms2.els_convs_flag(); }
 	vector<vector<int> > &els_convs_gsftkidx() { return cms2.els_convs_gsftkidx(); }
 	vector<vector<int> > &els_convs_tkidx() { return cms2.els_convs_tkidx(); }
+	vector<vector<int> > &els_PFCand_idx() { return cms2.els_PFCand_idx(); }
 	vector<vector<int> > &genps_lepdaughter_id() { return cms2.genps_lepdaughter_id(); }
 	vector<vector<int> > &genps_lepdaughter_idx() { return cms2.genps_lepdaughter_idx(); }
 	vector<vector<int> > &hlt_trigObjs_id() { return cms2.hlt_trigObjs_id(); }

@@ -33,7 +33,7 @@ void pickSkimIfExists( TChain *ch, const std::string& base, const std::string& s
   return;
 }
 
-void processNtuple( TString outfileid = "me_test", TString infile = "/hadoop/cms/store/group/snt/papers2012/Data2012/CMSSW_5_3_2_patch4_V05-03-24/MuEG_Run2012D-PromptReco-v1_AOD/merged/merged_ntuple_6.root", int sign = 0, int em = 0 )
+void processNtuple( TString outfileid = "me_test", TString infile = "/tas/gzevi/files/babies/ttPlusZ536/ntuple*.roo", int sign = 0, int isocortype = 0 )
 {
 
   //---------------------------------------------------------------
@@ -53,7 +53,7 @@ void processNtuple( TString outfileid = "me_test", TString infile = "/hadoop/cms
   gSystem->Load("libEG.so");
   gSystem->Load("libMathCore.so");
 
-  gSystem->Load("libMiniFWLite.so");
+  gSystem->Load("../Tools/MiniFWLite/libMiniFWLite.so");
   gSystem->Load("libdilepStudyCORE.so");
   gSystem->Load("libdilepStudyLooper.so");
 
@@ -76,53 +76,54 @@ void processNtuple( TString outfileid = "me_test", TString infile = "/hadoop/cms
   //-------------------------------------
   char* sample;
   //MC
-  if (infile.Contains("TTJets_MassiveBinDECAY_TuneZ2star_8TeV"))     sample = Form("ttall_%s",  	 outfileid.Data());
-  else if (infile.Contains("TTbar_40PU")) sample = Form("ttall_40PU_%s",        outfileid.Data());
-  else if (infile.Contains("TTbar_60PU")) sample = Form("ttall_60PU_%s",        outfileid.Data());
-  else if (infile.Contains("GluGluToHToGG_M-125")) sample = Form("hgg_m125_%s",  	 outfileid.Data());
-  else if (infile.Contains("GluGluToHToWWTo2LAndTau2Nu_M-125")) sample = Form("hww_m125_%s",  	 outfileid.Data());
-  else if (infile.Contains("DYJetsToLL"))                            sample = Form("DYtot_%s",           outfileid.Data());
-  //Data
-  //single mu-had
-  else if (infile.Contains("MuHad_Run2012A-recover-06Aug2012-v1"))          sample =  Form("MuHad2012A_recover06Aug2012v1V532_%s",     outfileid.Data());
-  else if (infile.Contains("MuHad_Run2012A-13Jul2012-v1"))                  sample =  Form("MuHad2012A_13Jul2012v1V532_%s",            outfileid.Data());
-  //single muon
-  else if (infile.Contains("SingleMu_Run2012A-recover-06Aug2012-v1"))       sample =  Form("SingleMu2012A_recover06Aug2012v1V532_%s",     outfileid.Data());
-  else if (infile.Contains("SingleMu_Run2012A-13Jul2012-v1"))       	sample =  Form("SingleMu2012A_13Jul2012v1V532_%s",            outfileid.Data());
-  else if (infile.Contains("SingleMu_Run2012B-13Jul2012-v1"))       	sample =  Form("SingleMu2012B_13Jul2012v1V532_%s",            outfileid.Data());
-  else if (infile.Contains("SingleMu_Run2012C-24Aug2012-v1"))      		sample =  Form("SingleMu2012C_24Aug2012v1V532_%s",            outfileid.Data());
-  else if (infile.Contains("SingleMu_Run2012C-PromptReco-v2"))      	sample =  Form("SingleMu2012C_PromptRecov2V532_%s",           outfileid.Data());
-  else if (infile.Contains("SingleMu_Run2012D-PromptReco-v1"))      	sample =  Form("SingleMu2012D_PromptRecov1V532_%s",           outfileid.Data());
-  //single electron
-  else if (infile.Contains("SingleElectron_Run2012A-recover-06Aug2012-v1")) sample =  Form("SingleElectron2012A_recover06Aug2012V532_%s", outfileid.Data());
-  else if (infile.Contains("SingleElectron_Run2012A-13Jul2012-v1"))       	sample =  Form("SingleElectron2012A_13Jul2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("SingleElectron_Run2012B-13Jul2012-v1"))       	sample =  Form("SingleElectron2012B_13Jul2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("SingleElectron_Run2012C-24Aug2012-v1"))      	sample =  Form("SingleElectron2012C_24Aug2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("SingleElectron_Run2012C-PromptReco-v2"))      	sample =  Form("SingleElectron2012C_PromptRecov2V532_%s",     outfileid.Data());
-  else if (infile.Contains("SingleElectron_Run2012D-PromptReco-v1"))      	sample =  Form("SingleElectron2012D_PromptRecov1V532_%s",     outfileid.Data());
-  //dimuon 
-  else if (infile.Contains("DoubleMu_Run2012A-recover-06Aug2012-v1")) 	sample =  Form("DoubleMu2012A_recover06Aug2012V532_%s", outfileid.Data());
-  else if (infile.Contains("DoubleMu_Run2012A-13Jul2012-v1"))     		sample =  Form("DoubleMu2012A_13Jul2012v1V532_%s",            outfileid.Data());
-  else if (infile.Contains("DoubleMu_Run2012B-13Jul2012-v4"))     		sample =  Form("DoubleMu2012B_13Jul2012v4V532_%s",            outfileid.Data());
-  else if (infile.Contains("DoubleMu_Run2012C-24Aug2012-v1"))    		sample =  Form("DoubleMu2012C_24Aug2012v1V532_%s",            outfileid.Data());
-  else if (infile.Contains("DoubleMu_Run2012C-PromptReco-v2"))    		sample =  Form("DoubleMu2012C_PromptRecov2V532_%s",           outfileid.Data());
-  else if (infile.Contains("DoubleMu_Run2012D-PromptReco-v1"))    		sample =  Form("DoubleMu2012D_PromptRecov1V532_%s",           outfileid.Data());
-  //electron+muon
-  else if (infile.Contains("MuEG_Run2012A-recover-06Aug2012-v1"))      	sample =  Form("MuEG2012A_recover06Aug2012V532_%s",           outfileid.Data());
-  else if (infile.Contains("MuEG_Run2012A-13Jul2012-v1"))      		sample =  Form("MuEG2012A_13Jul2012v1V532_%s",      	      outfileid.Data());
-  else if (infile.Contains("MuEG_Run2012B-13Jul2012-v1"))      		sample =  Form("MuEG2012B_13Jul2012v1V532_%s",      	      outfileid.Data());
-  else if (infile.Contains("MuEG_Run2012C-24Aug2012-v1"))     		sample =  Form("MuEG2012C_24Aug2012v1V532_%s",     	      outfileid.Data());
-  else if (infile.Contains("MuEG_Run2012C-PromptReco-v2"))     		sample =  Form("MuEG2012C_PromptRecov2V532_%s",     	      outfileid.Data());
-  else if (infile.Contains("MuEG_Run2012D-PromptReco-v1"))     		sample =  Form("MuEG2012D_PromptRecov1V532_%s",     	      outfileid.Data());
-  //dielectron
-  else if (infile.Contains("DoubleElectron_Run2012A-recover-06Aug2012-v1")) sample =  Form("DoubleElectron2012A_recover06Aug2012V532_%s", outfileid.Data());
-  else if (infile.Contains("DoubleElectron_Run2012A-13Jul2012-v1"))      	sample =  Form("DoubleElectron2012A_13Jul2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("DoubleElectron_Run2012B-13Jul2012-v1"))      	sample =  Form("DoubleElectron2012B_13Jul2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("DoubleElectron_Run2012C-24Aug2012-v1"))     	sample =  Form("DoubleElectron2012C_24Aug2012v1V532_%s",      outfileid.Data());
-  else if (infile.Contains("DoubleElectron_Run2012C-PromptReco-v2"))     	sample =  Form("DoubleElectron2012C_PromptRecov2V532_%s",     outfileid.Data());
-  else if (infile.Contains("DoubleElectron_Run2012D-PromptReco-v1"))     	sample =  Form("DoubleElectron2012D_PromptRecov1V532_%s",     outfileid.Data());
-  //otherwise
-  else sample = Form("boiade_%s", outfileid.Data());
+//  if (infile.Contains("TTJets_MassiveBinDECAY_TuneZ2star_8TeV"))     sample = Form("ttall_%s",  	 outfileid.Data());
+//  else if (infile.Contains("TTbar_40PU")) sample = Form("ttall_40PU_%s",        outfileid.Data());
+//  else if (infile.Contains("TTbar_60PU")) sample = Form("ttall_60PU_%s",        outfileid.Data());
+//  else if (infile.Contains("GluGluToHToGG_M-125")) sample = Form("hgg_m125_%s",  	 outfileid.Data());
+//  else if (infile.Contains("GluGluToHToWWTo2LAndTau2Nu_M-125")) sample = Form("hww_m125_%s",  	 outfileid.Data());
+//  else if (infile.Contains("DYJetsToLL"))                            sample = Form("DYtot_%s",           outfileid.Data());
+//  //Data
+//  //single mu-had
+//  else if (infile.Contains("MuHad_Run2012A-recover-06Aug2012-v1"))          sample =  Form("MuHad2012A_recover06Aug2012v1V532_%s",     outfileid.Data());
+//  else if (infile.Contains("MuHad_Run2012A-13Jul2012-v1"))                  sample =  Form("MuHad2012A_13Jul2012v1V532_%s",            outfileid.Data());
+//  //single muon
+//  else if (infile.Contains("SingleMu_Run2012A-recover-06Aug2012-v1"))       sample =  Form("SingleMu2012A_recover06Aug2012v1V532_%s",     outfileid.Data());
+//  else if (infile.Contains("SingleMu_Run2012A-13Jul2012-v1"))       	sample =  Form("SingleMu2012A_13Jul2012v1V532_%s",            outfileid.Data());
+//  else if (infile.Contains("SingleMu_Run2012B-13Jul2012-v1"))       	sample =  Form("SingleMu2012B_13Jul2012v1V532_%s",            outfileid.Data());
+//  else if (infile.Contains("SingleMu_Run2012C-24Aug2012-v1"))      		sample =  Form("SingleMu2012C_24Aug2012v1V532_%s",            outfileid.Data());
+//  else if (infile.Contains("SingleMu_Run2012C-PromptReco-v2"))      	sample =  Form("SingleMu2012C_PromptRecov2V532_%s",           outfileid.Data());
+//  else if (infile.Contains("SingleMu_Run2012D-PromptReco-v1"))      	sample =  Form("SingleMu2012D_PromptRecov1V532_%s",           outfileid.Data());
+//  //single electron
+//  else if (infile.Contains("SingleElectron_Run2012A-recover-06Aug2012-v1")) sample =  Form("SingleElectron2012A_recover06Aug2012V532_%s", outfileid.Data());
+//  else if (infile.Contains("SingleElectron_Run2012A-13Jul2012-v1"))       	sample =  Form("SingleElectron2012A_13Jul2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("SingleElectron_Run2012B-13Jul2012-v1"))       	sample =  Form("SingleElectron2012B_13Jul2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("SingleElectron_Run2012C-24Aug2012-v1"))      	sample =  Form("SingleElectron2012C_24Aug2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("SingleElectron_Run2012C-PromptReco-v2"))      	sample =  Form("SingleElectron2012C_PromptRecov2V532_%s",     outfileid.Data());
+//  else if (infile.Contains("SingleElectron_Run2012D-PromptReco-v1"))      	sample =  Form("SingleElectron2012D_PromptRecov1V532_%s",     outfileid.Data());
+//  //dimuon 
+//  else if (infile.Contains("DoubleMu_Run2012A-recover-06Aug2012-v1")) 	sample =  Form("DoubleMu2012A_recover06Aug2012V532_%s", outfileid.Data());
+//  else if (infile.Contains("DoubleMu_Run2012A-13Jul2012-v1"))     		sample =  Form("DoubleMu2012A_13Jul2012v1V532_%s",            outfileid.Data());
+//  else if (infile.Contains("DoubleMu_Run2012B-13Jul2012-v4"))     		sample =  Form("DoubleMu2012B_13Jul2012v4V532_%s",            outfileid.Data());
+//  else if (infile.Contains("DoubleMu_Run2012C-24Aug2012-v1"))    		sample =  Form("DoubleMu2012C_24Aug2012v1V532_%s",            outfileid.Data());
+//  else if (infile.Contains("DoubleMu_Run2012C-PromptReco-v2"))    		sample =  Form("DoubleMu2012C_PromptRecov2V532_%s",           outfileid.Data());
+//  else if (infile.Contains("DoubleMu_Run2012D-PromptReco-v1"))    		sample =  Form("DoubleMu2012D_PromptRecov1V532_%s",           outfileid.Data());
+//  //electron+muon
+//  else if (infile.Contains("MuEG_Run2012A-recover-06Aug2012-v1"))      	sample =  Form("MuEG2012A_recover06Aug2012V532_%s",           outfileid.Data());
+//  else if (infile.Contains("MuEG_Run2012A-13Jul2012-v1"))      		sample =  Form("MuEG2012A_13Jul2012v1V532_%s",      	      outfileid.Data());
+//  else if (infile.Contains("MuEG_Run2012B-13Jul2012-v1"))      		sample =  Form("MuEG2012B_13Jul2012v1V532_%s",      	      outfileid.Data());
+//  else if (infile.Contains("MuEG_Run2012C-24Aug2012-v1"))     		sample =  Form("MuEG2012C_24Aug2012v1V532_%s",     	      outfileid.Data());
+//  else if (infile.Contains("MuEG_Run2012C-PromptReco-v2"))     		sample =  Form("MuEG2012C_PromptRecov2V532_%s",     	      outfileid.Data());
+//  else if (infile.Contains("MuEG_Run2012D-PromptReco-v1"))     		sample =  Form("MuEG2012D_PromptRecov1V532_%s",     	      outfileid.Data());
+//  //dielectron
+//  else if (infile.Contains("DoubleElectron_Run2012A-recover-06Aug2012-v1")) sample =  Form("DoubleElectron2012A_recover06Aug2012V532_%s", outfileid.Data());
+//  else if (infile.Contains("DoubleElectron_Run2012A-13Jul2012-v1"))      	sample =  Form("DoubleElectron2012A_13Jul2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("DoubleElectron_Run2012B-13Jul2012-v1"))      	sample =  Form("DoubleElectron2012B_13Jul2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("DoubleElectron_Run2012C-24Aug2012-v1"))     	sample =  Form("DoubleElectron2012C_24Aug2012v1V532_%s",      outfileid.Data());
+//  else if (infile.Contains("DoubleElectron_Run2012C-PromptReco-v2"))     	sample =  Form("DoubleElectron2012C_PromptRecov2V532_%s",     outfileid.Data());
+//  else if (infile.Contains("DoubleElectron_Run2012D-PromptReco-v1"))     	sample =  Form("DoubleElectron2012D_PromptRecov1V532_%s",     outfileid.Data());
+//  //otherwise
+//  else sample = Form("out_%s", outfileid.Data());
+  sample = Form("out_%s", outfileid.Data());
 
   cout<<"sample is "<<sample<<endl;
 
@@ -130,7 +131,7 @@ void processNtuple( TString outfileid = "me_test", TString infile = "/hadoop/cms
   //set luminosity to scale to
   //--------------------------------
 
-  looper->ScanChain(chain, TString(sample), sign, em);
+  looper->ScanChain(chain, TString(sample), sign, isocortype);
 
   //  gSystem->Exit(0);
  

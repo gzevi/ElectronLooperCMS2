@@ -3719,6 +3719,9 @@ protected:
 	vector<vector<int> > els_convs_tkidx_;
 	TBranch *els_convs_tkidx_branch;
 	bool els_convs_tkidx_isLoaded;
+	vector<vector<int> > els_PFCand_idx_;
+	TBranch *els_PFCand_idx_branch;
+	bool els_PFCand_idx_isLoaded;
 	vector<vector<int> > genps_lepdaughter_id_;
 	TBranch *genps_lepdaughter_id_branch;
 	bool genps_lepdaughter_id_isLoaded;
@@ -10222,6 +10225,11 @@ void Init(TTree *tree) {
 		els_convs_tkidx_branch = tree->GetBranch(tree->GetAlias("els_convs_tkidx"));
 		if (els_convs_tkidx_branch) {els_convs_tkidx_branch->SetAddress(&els_convs_tkidx_);}
 	}
+	els_PFCand_idx_branch = 0;
+	if (tree->GetAlias("els_PFCand_idx") != 0) {
+		els_PFCand_idx_branch = tree->GetBranch(tree->GetAlias("els_PFCand_idx"));
+		if (els_PFCand_idx_branch) {els_PFCand_idx_branch->SetAddress(&els_PFCand_idx_);}
+	}
 	genps_lepdaughter_id_branch = 0;
 	if (tree->GetAlias("genps_lepdaughter_id") != 0) {
 		genps_lepdaughter_id_branch = tree->GetBranch(tree->GetAlias("genps_lepdaughter_id"));
@@ -12012,6 +12020,7 @@ void GetEntry(unsigned int idx)
 		els_convs_flag_isLoaded = false;
 		els_convs_gsftkidx_isLoaded = false;
 		els_convs_tkidx_isLoaded = false;
+		els_PFCand_idx_isLoaded = false;
 		genps_lepdaughter_id_isLoaded = false;
 		genps_lepdaughter_idx_isLoaded = false;
 		hlt_trigObjs_id_isLoaded = false;
@@ -13361,6 +13370,7 @@ void LoadAllBranches()
 	if (els_convs_flag_branch != 0) els_convs_flag();
 	if (els_convs_gsftkidx_branch != 0) els_convs_gsftkidx();
 	if (els_convs_tkidx_branch != 0) els_convs_tkidx();
+	if (els_PFCand_idx_branch != 0) els_PFCand_idx();
 	if (genps_lepdaughter_id_branch != 0) genps_lepdaughter_id();
 	if (genps_lepdaughter_idx_branch != 0) genps_lepdaughter_idx();
 	if (hlt_trigObjs_id_branch != 0) hlt_trigObjs_id();
@@ -29515,6 +29525,19 @@ void LoadAllBranches()
 		}
 		return els_convs_tkidx_;
 	}
+	vector<vector<int> > &els_PFCand_idx()
+	{
+		if (not els_PFCand_idx_isLoaded) {
+			if (els_PFCand_idx_branch != 0) {
+				els_PFCand_idx_branch->GetEntry(index);
+			} else { 
+				printf("branch els_PFCand_idx_branch does not exist!\n");
+				exit(1);
+			}
+			els_PFCand_idx_isLoaded = true;
+		}
+		return els_PFCand_idx_;
+	}
 	vector<vector<int> > &genps_lepdaughter_id()
 	{
 		if (not genps_lepdaughter_id_isLoaded) {
@@ -32255,6 +32278,7 @@ namespace tas {
 	vector<vector<int> > &els_convs_flag();
 	vector<vector<int> > &els_convs_gsftkidx();
 	vector<vector<int> > &els_convs_tkidx();
+	vector<vector<int> > &els_PFCand_idx();
 	vector<vector<int> > &genps_lepdaughter_id();
 	vector<vector<int> > &genps_lepdaughter_idx();
 	vector<vector<int> > &hlt_trigObjs_id();
