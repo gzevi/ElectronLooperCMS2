@@ -563,7 +563,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       for (unsigned int iel = 0; iel < els_p4().size(); ++iel) { 
         LorentzVector& el_p4 = els_p4().at(iel);
         float pt = el_p4.pt();
-        float eta = els_etaSC.at(iel);
+        float eta = els_etaSC().at(iel);
         if (pt < 10) continue;
 	//        if (pt < 20) continue;
 	//	if (pt < 10 || pt > 20) continue;
