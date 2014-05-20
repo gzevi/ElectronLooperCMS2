@@ -245,6 +245,15 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
   int nFakeEleT = 0;
   int nFOEle = 0; // This is the basis for the Fake Rate. One could use all Reco Electrons, but ideally should use something that's not biased by trigger
 
+  int nPromptEleBin[6] = {};
+  int nPromptEleLBin[6] = {};
+  int nPromptEleMBin[6] = {};
+  int nPromptEleTBin[6] = {};
+  int nFakeEleBin[6] = {};
+  int nFakeEleLBin[6] = {};
+  int nFakeEleMBin[6] = {};
+  int nFakeEleTBin[6] = {};
+
   while((currentFile = (TChainElement*)fileIter.Next())) {
     TFile* f = new TFile(currentFile->GetTitle());
     
@@ -554,13 +563,28 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       for (unsigned int iel = 0; iel < els_p4().size(); ++iel) { 
         LorentzVector& el_p4 = els_p4().at(iel);
         float pt = el_p4.pt();
-        float eta = el_p4.eta();
+        float eta = els_etaSC.at(iel);
         if (pt < 10) continue;
+	//        if (pt < 20) continue;
 	//	if (pt < 10 || pt > 20) continue;
 	if (fabs(eta) > 2.5) continue;
         h_el_pt->Fill(pt,1);
         h_el_eta->Fill(eta,1);
+
+	int effBin = 0;
+	if (fabs(eta) <= 1.479) {
+	  if (pt < 15.) effBin = 0;
+	  else if (pt < 20.) effBin = 2;
+	  else effBin = 4;	  
+	}
+	else {
+	  if (pt < 15.) effBin = 1;
+	  else if (pt < 20.) effBin = 3;
+	  else effBin = 5;
+	}
+
 	nFOEle++;
+	
 
 	bool ecalDriven = (cms2.els_type()[iel] & (1<<ISECALDRIVEN));
 	bool trackerDriven = (cms2.els_type()[iel] & (1<<ISTRACKERDRIVEN));
@@ -653,9 +677,9 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
           if ( dr > 0.02 ) continue;
           else truthmatched = true;
         }
-	if (truthmatched) nPromptEle++;
+	if (truthmatched) {nPromptEle++; nPromptEleBin[effBin]++;}
 	else if (abs(els_mc_id().at(iel) == 11)) nNonPromptEle++;
-	else { nFakeEle++; fakematched = true; }
+	else { nFakeEle++; nFakeEleBin[effBin]++; fakematched = true; }
 	//	cout<<" els_mc_id "<<els_mc_id().at(iel)<<", els_mc3_id "<<els_mc3_id().at(iel)<<", els_mc_motherid "<<els_mc_motherid().at(iel)<<", els_mc_motherid "<<els_mc3_motherid().at(iel)<<endl;
         if (fabs(eta) <= 1.479)   truthmatched ? fillElectronQuantities(hSet2, eleStruct) : ( fakematched ? fillElectronQuantities(hSet2f, eleStruct) : fillElectronQuantities(hSet2np, eleStruct) );
         else   truthmatched ? fillElectronQuantities(hSet2E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet2Ef, eleStruct) : fillElectronQuantities(hSet2Enp, eleStruct) );
@@ -672,12 +696,12 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         
 
 	// Run Without Isolation Cut
-      eleLcuts.iso_cor = 999;
-      eleLcutsEE.iso_cor = 999;
-      eleMcuts.iso_cor = 999;
-      eleMcutsEE.iso_cor = 999;
-      eleTcuts.iso_cor = 999;
-      eleTcutsEE.iso_cor = 999;
+      //eleLcuts.iso_cor = 999;
+      //eleLcutsEE.iso_cor = 999;
+      //eleMcuts.iso_cor = 999;
+      //eleMcutsEE.iso_cor = 999;
+      //eleTcuts.iso_cor = 999;
+      //eleTcutsEE.iso_cor = 999;
       eleDencuts.iso_cor = 999;
       eleDencutsEE.iso_cor = 999;
 
@@ -698,30 +722,32 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 //	else   truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
 //      }
 
+
+
       // Fill Plots After Cuts (not N-1), and counters
-//	if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) {
-//	  if (truthmatched) nPromptEleL++;
-//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleL++;
-//	  else nFakeEleL++;
+	if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) {
+	  if (truthmatched) {nPromptEleL++; nPromptEleLBin[effBin]++;}
+	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleL++;
+	  else {nFakeEleL++; nFakeEleLBin[effBin]++;}
 //	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet4, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4f, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
 //	  else truthmatched ? fillElectronQuantities(hSet4E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4Ef, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
-//	}
-//
-//	if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) {
-//	  if (truthmatched) nPromptEleM++;
-//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleM++;
-//	  else nFakeEleM++;
+	}
+
+	if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) {
+	  if (truthmatched) {nPromptEleM++; nPromptEleMBin[effBin]++;}
+	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleM++;
+	  else {nFakeEleM++; nFakeEleMBin[effBin]++;}
 //	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet5, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5f, eleStruct) : fillElectronQuantities(hSet5np, eleStruct) );
 //	  else truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
-//	}
-//
-//	if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) {
-//	  if (truthmatched) nPromptEleT++;
-//	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleT++;
-//	  else nFakeEleT++;
+	}
+
+	if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) {
+	  if (truthmatched) {nPromptEleT++; nPromptEleTBin[effBin]++;}
+	  else if (abs(els_mc_id().at(iel) == 11))  nNonPromptEleT++;
+	  else {nFakeEleT++; nFakeEleTBin[effBin]++;}
 //	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet6, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6f, eleStruct) : fillElectronQuantities(hSet6np, eleStruct) );
 //	  else truthmatched ? fillElectronQuantities(hSet6E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6Ef, eleStruct) : fillElectronQuantities(hSet6Enp, eleStruct) );
-//	}
+	}
 
 	//Debug: plot after each cut, one cut at the time
 //	float isoCut = eleLcuts.iso_cor;
@@ -845,13 +871,23 @@ cout << "FO Electrons: " << nFOEle << endl;
 cout << "Loose: \tTruthMatch: " << nPromptEleL << "\t NonPrompt: " << nNonPromptEleL<< "\t Fake: " << nFakeEleL <<"\t Eff: " << 1.*nPromptEleL/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleL+nNonPromptEleL)/(nFakeEle+nNonPromptEle) << endl;
 cout << "Medium:\tTruthMatch: " << nPromptEleM << "\t NonPrompt: " << nNonPromptEleM<< "\t Fake: " << nFakeEleM <<"\t Eff: " << 1.*nPromptEleM/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleM+nNonPromptEleM)/(nFakeEle+nNonPromptEle) << endl;
 cout << "Tight: \tTruthMatch: " << nPromptEleT << "\t NonPrompt: " << nNonPromptEleT<< "\t Fake: " << nFakeEleT <<"\t Eff: " << 1.*nPromptEleT/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleT+nNonPromptEleT)/(nFakeEle+nNonPromptEle) << endl;
- cout << "Eff: "<< 1.*nPromptEle/nTrueEle <<", "<< 1.*nPromptEleL/nTrueEle <<", "<< 1.*nPromptEleM/nTrueEle <<", "<< 1.*nPromptEleT/nTrueEle <<endl;
  cout << "EffVReco: "<< 1.*nPromptEle/nPromptEle <<", "<< 1.*nPromptEleL/nPromptEle <<", "<< 1.*nPromptEleM/nPromptEle <<", "<< 1.*nPromptEleT/nPromptEle <<endl;
- cout << "FakeRej: "<<1 - 1.*(nFakeEle+nNonPromptEle)/(nFakeEle+nNonPromptEle) <<", "<< 1 - 1.*(nFakeEleL+nNonPromptEleL)/(nFakeEle+nNonPromptEle) <<", "<< 1 - 1.*(nFakeEleM+nNonPromptEleM)/(nFakeEle+nNonPromptEle) <<", "<< 1 - 1.*(nFakeEleT+nNonPromptEleT)/(nFakeEle+nNonPromptEle) <<endl;
- cout << "FakeRejNP: "<<1 - 1.*(nNonPromptEle)/(nNonPromptEle) <<", "<< 1 - 1.*(nNonPromptEleL)/(nNonPromptEle) <<", "<< 1 - 1.*(nNonPromptEleM)/(nNonPromptEle) <<", "<< 1 - 1.*(nNonPromptEleT)/(nNonPromptEle) <<endl;
- cout << "FakeRejFake: "<<1 - 1.*(nFakeEle)/(nFakeEle) <<", "<< 1 - 1.*(nFakeEleL)/(nFakeEle) <<", "<< 1 - 1.*(nFakeEleM)/(nFakeEle) <<", "<< 1 - 1.*(nFakeEleT)/(nFakeEle) <<endl;
+ cout << "FR_Fake: "<<1.*(nFakeEle)/(nFakeEle) <<", "<< 1.*(nFakeEleL)/(nFakeEle) <<", "<< 1.*(nFakeEleM)/(nFakeEle) <<", "<< 1.*(nFakeEleT)/(nFakeEle) <<endl;
+ cout << "FR_NonPrompt: "<<1.*(nNonPromptEle)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleL)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleM)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleT)/(nNonPromptEle) <<endl;
+ cout << "FR_Tot: "<<1.*(nFakeEle+nNonPromptEle)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleL+nNonPromptEleL)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleM+nNonPromptEleM)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleT+nNonPromptEleT)/(nFakeEle+nNonPromptEle) <<endl;
 
-
+ cout << " float EffVReco1015[3] = {"<<   1.*nPromptEleLBin[0]/nPromptEleBin[0] <<", "<< 1.*nPromptEleMBin[0]/nPromptEleBin[0] <<", "<< 1.*nPromptEleTBin[0]/nPromptEleBin[0] <<"}"<<endl;
+ cout << " float FR_Fake1015[3] = {"<<     1.*(nFakeEleLBin[0])/(nFakeEleBin[0]) <<", "<< 1.*(nFakeEleMBin[0])/(nFakeEleBin[0]) <<", "<< 1.*(nFakeEleTBin[0])/(nFakeEleBin[0]) <<"}"<<endl;
+ cout << " float EffVReco1015EE[3] = {"<< 1.*nPromptEleLBin[1]/nPromptEleBin[1] <<", "<< 1.*nPromptEleMBin[1]/nPromptEleBin[1] <<", "<< 1.*nPromptEleTBin[1]/nPromptEleBin[1] <<"}"<<endl;
+ cout << " float FR_Fake1015EE[3] = {"<<   1.*(nFakeEleLBin[1])/(nFakeEleBin[1]) <<", "<< 1.*(nFakeEleMBin[1])/(nFakeEleBin[1]) <<", "<< 1.*(nFakeEleTBin[1])/(nFakeEleBin[1]) <<"}"<<endl;
+ cout << " float EffVReco1520[3] = {"<<   1.*nPromptEleLBin[2]/nPromptEleBin[2] <<", "<< 1.*nPromptEleMBin[2]/nPromptEleBin[2] <<", "<< 1.*nPromptEleTBin[2]/nPromptEleBin[2] <<"}"<<endl;
+ cout << " float FR_Fake1520[3] = {"<<     1.*(nFakeEleLBin[2])/(nFakeEleBin[2]) <<", "<< 1.*(nFakeEleMBin[2])/(nFakeEleBin[2]) <<", "<< 1.*(nFakeEleTBin[2])/(nFakeEleBin[2]) <<"}"<<endl;
+ cout << " float EffVReco1520EE[3] = {"<< 1.*nPromptEleLBin[3]/nPromptEleBin[3] <<", "<< 1.*nPromptEleMBin[3]/nPromptEleBin[3] <<", "<< 1.*nPromptEleTBin[3]/nPromptEleBin[3] <<"}"<<endl;
+ cout << " float FR_Fake1520EE[3] = {"<<   1.*(nFakeEleLBin[3])/(nFakeEleBin[3]) <<", "<< 1.*(nFakeEleMBin[3])/(nFakeEleBin[3]) <<", "<< 1.*(nFakeEleTBin[3])/(nFakeEleBin[3]) <<"}"<<endl;
+ cout << " float EffVReco20[3] = {"<<     1.*nPromptEleLBin[4]/nPromptEleBin[4] <<", "<< 1.*nPromptEleMBin[4]/nPromptEleBin[4] <<", "<< 1.*nPromptEleTBin[4]/nPromptEleBin[4] <<"}"<<endl;
+ cout << " float FR_Fake20[3] = {"<<       1.*(nFakeEleLBin[4])/(nFakeEleBin[4]) <<", "<< 1.*(nFakeEleMBin[4])/(nFakeEleBin[4]) <<", "<< 1.*(nFakeEleTBin[4])/(nFakeEleBin[4]) <<"}"<<endl;
+ cout << " float EffVReco20EE[3] = {"<<   1.*nPromptEleLBin[5]/nPromptEleBin[5] <<", "<< 1.*nPromptEleMBin[5]/nPromptEleBin[5] <<", "<< 1.*nPromptEleTBin[5]/nPromptEleBin[5] <<"}"<<endl;
+ cout << " float FR_Fake20EE[3] = {"<<     1.*(nFakeEleLBin[5])/(nFakeEleBin[5]) <<", "<< 1.*(nFakeEleMBin[5])/(nFakeEleBin[5]) <<", "<< 1.*(nFakeEleTBin[5])/(nFakeEleBin[5]) <<"}"<<endl;
 cout << endl;
 
 
@@ -1312,12 +1348,12 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
 
   TH1F * h_el_pt = new TH1F(Form("%s_el_pt",prefix.Data()),";electron pt",10,0.,100);
   TH1F * h_el_sieie = new TH1F(Form("%s_el_sieie",prefix.Data()),";electron sieie",100,0.,0.05);
-  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",100,-0.02,0.02);
-  TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,-0.2,0.2);
+  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",100,0,0.02);
+  TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,0,0.2);
   TH1F * h_el_hOverE = new TH1F(Form("%s_el_hOverE",prefix.Data()),";electron hOverE",100,0.,0.5);
-  TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,-0.2,0.2);
-  TH1F * h_el_z0corr = new TH1F(Form("%s_el_z0corr",prefix.Data()),";electron z0corr",100,-1,1.);
-  TH1F * h_el_ooemoop = new TH1F(Form("%s_el_ooemoop",prefix.Data()),";electron ooemoop",100,-0.5,0.5);
+  TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,0,0.2);
+  TH1F * h_el_z0corr = new TH1F(Form("%s_el_z0corr",prefix.Data()),";electron z0corr",100,0,1.);
+  TH1F * h_el_ooemoop = new TH1F(Form("%s_el_ooemoop",prefix.Data()),";electron ooemoop",100,0,0.5);
   TH1F * h_el_iso_cor = new TH1F(Form("%s_el_iso_cor",prefix.Data()),";electron iso_cor",100,0.,2.);
   TH1F * h_el_iso_corsize = new TH1F(Form("%s_el_iso_corzise",prefix.Data()),";electron iso_corsize",100,-1.,1.);
   TH1F * h_el_pfiso_ch = new TH1F(Form("%s_el_pfiso_ch",prefix.Data()),";electron pfiso_ch",100,0.,2.);
@@ -1376,12 +1412,12 @@ void dilepStudyLooper::fillElectronQuantities(std::map<std::string, TH1F*> & hSe
 
   fillUnderOverFlow( hSet["pt"]           , e.pt, 1);
   fillUnderOverFlow( hSet["sieie"]           , e.sieie, 1);
-  fillUnderOverFlow( hSet["dEtaIn"]          , e.dEtaIn, 1);
-  fillUnderOverFlow( hSet["dPhiIn"]          , e.dPhiIn, 1);
+  fillUnderOverFlow( hSet["dEtaIn"]          , fabs(e.dEtaIn), 1);
+  fillUnderOverFlow( hSet["dPhiIn"]          , fabs(e.dPhiIn), 1);
   fillUnderOverFlow( hSet["hOverE"]          , e.hOverE, 1);
-  fillUnderOverFlow( hSet["d0corr"]          , e.d0corr, 1);
-  fillUnderOverFlow( hSet["z0corr"]          , e.z0corr, 1);
-  fillUnderOverFlow( hSet["ooemoop"]         , e.ooemoop, 1);
+  fillUnderOverFlow( hSet["d0corr"]          , fabs(e.d0corr), 1);
+  fillUnderOverFlow( hSet["z0corr"]          , fabs(e.z0corr), 1);
+  fillUnderOverFlow( hSet["ooemoop"]         , fabs(e.ooemoop), 1);
   fillUnderOverFlow( hSet["iso_cor"]         , e.iso_cor, 1);
   fillUnderOverFlow( hSet["iso_corsize"]     , e.iso_cor - e.iso_uncor, 1);
   fillUnderOverFlow( hSet["pfiso_ch"]         , e.pfiso_ch, 1);
@@ -1431,12 +1467,12 @@ void dilepStudyLooper::fillElectronQuantitiesN1(std::map<std::string, TH1F*> & h
   int i = 0;
   
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["sieie"]->Fill(e.sieie, 1);                         i++;  
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dEtaIn"]->Fill(e.dEtaIn, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dPhiIn"]->Fill(e.dPhiIn, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dEtaIn"]->Fill(fabs(e.dEtaIn), 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dPhiIn"]->Fill(fabs(e.dPhiIn), 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["hOverE"]->Fill(e.hOverE, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["d0corr"]->Fill(e.d0corr, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["z0corr"]->Fill(e.z0corr, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["ooemoop"]->Fill(e.ooemoop, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["d0corr"]->Fill(fabs(e.d0corr), 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["z0corr"]->Fill(fabs(e.z0corr), 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["ooemoop"]->Fill(fabs(e.ooemoop), 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["iso_cor"]->Fill(e.iso_cor, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_ch"]->Fill(e.pfiso_ch, 1);		       i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_em"]->Fill(e.pfiso_em, 1);		       i++;
