@@ -18,6 +18,8 @@
 #include "../CORE/jetcorr/JetCorrectionUncertainty.h"
 #include "../CORE/MITConversionUtilities.h"
 
+//#include "CMS2.h" // This can be a different CMS2.h from the one in ../CORE and ../Tools, which have to be based on the full CMS2.h
+ 
 bool verbose              = false;
 bool doTenPercent         = false;
 bool doLowerPtThresh      = false;
@@ -302,10 +304,10 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       
       cms2.GetEntry(z);
 
-      if( evt_ww_rho_vor() != evt_ww_rho_vor() ){
-        cout << "Skipping event with rho = nan!!!" << endl;
-        continue;
-      }
+      //onlyAOD if( evt_ww_rho_vor() != evt_ww_rho_vor() ){
+      //onlyAOD   cout << "Skipping event with rho = nan!!!" << endl;
+      //onlyAOD   continue;
+      //onlyAOD }
       
       //      InitBaby();
       
@@ -622,8 +624,8 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         eleStruct.dEtaIn = els_dEtaIn().at(iel);
         eleStruct.dPhiIn = els_dPhiIn().at(iel);
         eleStruct.hOverE = els_hOverE().at(iel);
-        eleStruct.d0corr = els_d0corr().at(iel); 
-        eleStruct.z0corr = dzPV(els_vertex_p4()[iel], els_trk_p4()[iel], vtxs_position()[0]);//els_z0corr().at(iel);
+        eleStruct.d0corr = els_d0corr().at(iel); // for miniAOD move to els_dxyPV
+        eleStruct.z0corr = dzPV(els_vertex_p4()[iel], els_trk_p4()[iel], vtxs_position()[0]);//els_z0corr().at(iel); // for miniAOD move to els_dzPV
         eleStruct.ooemoop = (1.0/els_ecalEnergy().at(iel)) - (els_eOverPIn().at(iel)/els_ecalEnergy().at(iel)) ;
 	eleStruct.iso_uncor = electronPFiso(iel, false);
 	if (!doPFCandLoop) eleStruct.iso_cor = electronPFiso(iel, areaCorrection);// false = NO PILEUP AREA CORRECTION
@@ -644,7 +646,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	eleStruct.pfiso_nh = els_hcalIso().at(iel)/pt;
         eleStruct.valid_pixelHits = els_valid_pixelhits().at(iel);
         eleStruct.lost_pixelhits = els_lost_pixelhits().at(iel);
-        eleStruct.vtxFitConversion = isMITConversion(iel, 0,   1e-6,   2.0,   true,  false);
+        eleStruct.vtxFitConversion = !els_conv_vtx_flag().at(iel); // onlyAOD isMITConversion(iel, 0,   1e-6,   2.0,   true,  false);
 	eleStruct.chi2n = els_chi2().at(iel) / els_ndof().at(iel);
 	eleStruct.fbrem = els_fbrem().at(iel);
 	eleStruct.dEtaOut = els_dEtaOut().at(iel);
@@ -652,7 +654,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	eleStruct.phiWidth = els_phiSCwidth().at(iel);
 	eleStruct.e1x5e5x5 =  (els_e5x5().at(iel)) !=0. ? 1.-(els_e1x5().at(iel) / els_e5x5().at(iel)) : -1. ;
 	eleStruct.r9 = els_r9().at(iel); // e3x3(seed) / ele.superCluster()->rawEnergy();
-        eleStruct.sieieSC = els_sigmaIEtaIEtaSC().at(iel);
+         eleStruct.sieieSC = 0;// onlyAOD els_sigmaIEtaIEtaSC().at(iel);
 	eleStruct.eoverpIn = els_eOverPIn().at(iel);
 	eleStruct.eoverpOut = els_eOverPOut().at(iel);
 	eleStruct.psOverRaw = (els_eSCRaw().at(iel) != 0) ? 1.*els_eSCPresh().at(iel) / els_eSCRaw().at(iel) : -1;
@@ -790,11 +792,11 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	}
 
 
-        // loose ID, no iso
-        bool pass_loose = passElectronSelection_ZMet2012_v3_NoIso( iel,true,true,false);
-        // med ID, no iso
-        bool pass_med = passElectronSelection_Stop2012_v3_NoIso( iel,true,true,false);
-        bool pass_iso = bool(eleStruct.iso_cor < 0.15);
+//        // loose ID, no iso
+//        bool pass_loose = passElectronSelection_ZMet2012_v3_NoIso( iel,true,true,false);
+//        // med ID, no iso
+//        bool pass_med = passElectronSelection_Stop2012_v3_NoIso( iel,true,true,false);
+//        bool pass_iso = bool(eleStruct.iso_cor < 0.15);
         
         // require match to trigger object
         //        if (requireTrigMatch) {
@@ -1080,7 +1082,7 @@ float dilepStudyLooper::electronPFiso(const unsigned int index, const bool cor) 
 //  float pfiso_nh = cms2.els_pfNeutralHadronIso().at(index); // From AOD (wrong cone in 53X)
   
   // rho
-  float rhoPrime = std::max(cms2.evt_kt6pf_foregiso_rho(), float(0.0));
+  float rhoPrime = std::max(cms2.evt_fixgrid_rho_ctr(), float(0.0));   // onlyAOD std::max(cms2.evt_kt6pf_foregiso_rho(), float(0.0));
   float pfiso_n = pfiso_em + pfiso_nh;
   if (cor) pfiso_n = std::max(pfiso_em + pfiso_nh - rhoPrime * AEff, float(0.0));
   float pfiso = (pfiso_ch + pfiso_n) / pt;

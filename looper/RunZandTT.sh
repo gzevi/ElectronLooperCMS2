@@ -6,8 +6,8 @@
 #root -b -q 'processNtuple.C("tt700pre12patch","/tas/gzevi/files/babies/RelValTTbar/CMSSW_7_0_0_pre12-PU_START70_V5/GEN-SIM-RECO/TestLindsey/ntuple*.root")' > tt7b.log 
 #root -b -q 'processNtuple.C("Zee700pre12patch","/tas/gzevi/files/babies/RelValZEE/CMSSW_7_0_0_pre12-PU_START70_V5/GEN-SIM-RECO/TestLindsey/ntuple*.root")' > Zee7b.log
 
-root -b -q 'processNtuple.C("ZeePlusTT700","/tas/gzevi/files/babies/ttPlusZ700/ntuple*.root", 0, 1)' 
-root -b -q 'processNtuple.C("ZeePlusTT700patch","/tas/gzevi/files/babies/ttPlusZpatch/ntuple*.root", 0, 1)' 
+#root -b -q 'processNtuple.C("ZeePlusTT700","/tas/gzevi/files/babies/ttPlusZ700/ntuple*.root", 0, 1)' 
+#root -b -q 'processNtuple.C("ZeePlusTT700patch","/tas/gzevi/files/babies/ttPlusZpatch/ntuple*.root", 0, 1)' 
 
 #root -b -q 'processNtuple.C("ZeePlusTT536_10to20_BasicLoop","/tas/gzevi/files/babies/ttPlusZ536/ntuple*.root", 0, 0)' 
 #root -b -q 'processNtuple.C("ZeePlusTT536_10to20_AODarea","/tas/gzevi/files/babies/ttPlusZ536/ntuple*.root", 0, 1)'
@@ -15,3 +15,4 @@ root -b -q 'processNtuple.C("ZeePlusTT700patch","/tas/gzevi/files/babies/ttPlusZ
 #root -b -q 'processNtuple.C("ZeePlusTT536_10to20_DeltaBetaWeights","/tas/gzevi/files/babies/ttPlusZ536/ntuple*.root", 0, 3)' 
 #root -b -q 'processNtuple.C("ZeePlusTT536_10to20_DeltaBetaWeights01","/tas/gzevi/files/babies/ttPlusZ536/ntuple*.root", 0, 4)' 
 
+root -b -q 'processNtuple.C("testCMS3","/tas/gzevi/files/miniAOD/DYJetsToLL_M-50_13TeV-madgraph-pythia8_PAT_CMS3.root", 0, 1)' 
