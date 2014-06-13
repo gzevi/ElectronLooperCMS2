@@ -12,15 +12,20 @@
 #include "../CORE/trackSelections.h"
 #include "../CORE/susySelections.h"
 #include "../CORE/muonSelections.h"
-#include "../CORE/jetSelections.h"
-#include "../CORE/metSelections.h"
-#include "../CORE/jetSmearingTools.h"
+//#include "../CORE/jetSelections.h"
+//#include "../CORE/metSelections.h"
+//#include "../CORE/jetSmearingTools.h"
 #include "../CORE/jetcorr/JetCorrectionUncertainty.h"
 #include "../CORE/MITConversionUtilities.h"
 
-//#include "CMS2.h" // This can be a different CMS2.h from the one in ../CORE and ../Tools, which have to be based on the full CMS2.h
+//#include "CMS2.h" // This can be a different CMS2.h from the one in ../CORE and ../Tools, which have to be based on the full CMS2.h 
+// --> actually not! it always seems to load the one in ../CORE (this is done by jetSelectons and jetSmearingTools) --> so need to comment out jetSelections and jetSmearingTools
+// --> also keep in mind that ../Tools has to keep its own CMS2.h, otherwise it won't compile, and same for ../CORE
+// --> To check for conflict with other CMS2.h, just comment out the #ifndef and #endif lines in the local CMS2.h (this will show where the conflicting definitions are)
+// --> Actually can't get to run in this configuration. CMS2.h has to be included by someone above, maybe to be compiled? not clear. otherwise can't find any variables at all...
+// --> So we're stuck with adding the variables by hand to ../CORE/CMS2.h... ???
  
-bool verbose              = false;
+bool verbose              = true;
 bool doTenPercent         = false;
 bool doLowerPtThresh      = false;
 bool doEM                 = false;
@@ -344,30 +349,32 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       //-------------------------------------
       // skip events with bad els_conv_dist
       //-------------------------------------
-      
-      bool skipEvent = false;
-      for( unsigned int iEl = 0 ; iEl < els_conv_dist().size() ; ++iEl ){
-        if( els_conv_dist().at(iEl) != els_conv_dist().at(iEl) ){
-          skipEvent = true;
-        }
-        if( els_sigmaIEtaIEta().at(iEl) != els_sigmaIEtaIEta().at(iEl) ){
-          skipEvent = true;
-        }
-        if( els_sigmaIEtaIEtaSC().at(iEl) != els_sigmaIEtaIEtaSC().at(iEl) ){
-          skipEvent = true;
-        }
-      }
-
-      if( skipEvent ){
-        nSkip_els_conv_dist++;
-        continue;
-      }
+// onlyAOD      
+// onlyAOD      bool skipEvent = false;
+// onlyAOD      for( unsigned int iEl = 0 ; iEl < els_conv_dist().size() ; ++iEl ){
+// onlyAOD        if( els_conv_dist().at(iEl) != els_conv_dist().at(iEl) ){
+// onlyAOD          skipEvent = true;
+// onlyAOD        }
+// onlyAOD        if( els_sigmaIEtaIEta().at(iEl) != els_sigmaIEtaIEta().at(iEl) ){
+// onlyAOD          skipEvent = true;
+// onlyAOD        }
+// onlyAOD        if( els_sigmaIEtaIEtaSC().at(iEl) != els_sigmaIEtaIEtaSC().at(iEl) ){
+// onlyAOD          skipEvent = true;
+// onlyAOD        }
+// onlyAOD      }
+// onlyAOD
+// onlyAOD      if( skipEvent ){
+// onlyAOD        nSkip_els_conv_dist++;
+// onlyAOD        continue;
+// onlyAOD      }
 
       //---------------------------------------------
       // count vertices
       //---------------------------------------------
-      int nvtx = 0;
-      for (size_t v = 0; v < vtxs_position().size(); ++v){
+      int nvtx = 10;
+      cout<<__LINE__<<endl;
+      for (size_t v = 0; v < cms2.vtxs_position().size(); ++v){
+      cout<<__LINE__<<endl;
         if(isGoodVertex(v)) ++nvtx;
       }
 
@@ -555,7 +562,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
        for(unsigned int idx = 0; idx < genps_id().size(); idx++) {
           
           int pid = abs(genps_id().at(idx));          
-          if(genps_status().at(idx) != 3) continue; // this shouldn't happen, since only status 3 are in CMS2          
+          if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23) continue; // this shouldn't happen, since only status 3 are in CMS2          
           if(pid != 11) continue;
           if ( genps_p4().at(idx).pt() < 10.) continue;
           if ( fabs(genps_p4().at(idx).eta()) > 2.5) continue;
@@ -672,7 +679,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         for(unsigned int idx = 0; idx < genps_id().size(); idx++) {
           
           int pid = abs(genps_id().at(idx));          
-          if(genps_status().at(idx) != 3) continue; // this shouldn't happen, since only status 3 are in CMS2          
+          if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23) continue; // this shouldn't happen, since only status 3 are in CMS2          
           if(pid != 11) continue;
           float dr = dRbetweenVectors(genps_p4().at(idx), el_p4);
 	  h_el_truthmatch_DR->Fill(dr, 1);
@@ -1177,7 +1184,7 @@ bool dilepStudyLooper::ElectronFOIdV4(unsigned int i) {
 	}
   
   // MIT conversion
-	if ( isFromConversionMIT(i) ) return false;
+	// onlyAOD	if ( isFromConversionMIT(i) ) return false;
 	// conversion rejection - hit based
 	if ( cms2.els_exp_innerlayers().at(i) > 0 ) return false;
 	
@@ -1329,7 +1336,7 @@ isovals dilepStudyLooper::muonChIsoValuePF2012 (const unsigned int imu, const fl
     // should be the primary vertex
     if (cms2.pfcands_charge().at(ipf) != 0) {
       //        if (particleId == 211 || particleId == 321 || particleId == 2212 || particleId == 999211) {
-      if (cms2.pfcands_vtxidx().at(ipf) != ivtx) continue;
+      // onlyAOD if (cms2.pfcands_vtxidx().at(ipf) != ivtx) continue;
       if (dR < 0.0001)
         continue;
       
@@ -1574,7 +1581,7 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
     if (dR > R)              continue;
 
     // Endcap Vetoes
-    if (!(cms2.els_fiduciality()[iel] & (1<<ISEB))) {
+    if (!(cms2.els_fiduciality()[iel] & (1<<ISEB)) && !useMap) { // only apply these vetoes if we don't use the PFCand Map
       if (particleId == 211 && dR <= 0.015)   continue;
       if (particleId == 22  && dR <= 0.08)    continue;
     } 
@@ -1582,8 +1589,9 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
     // Charged hadron vertex matching
     bool isPU = false;
     if (particleId == 211) {
-      int pfVertexIndex = cms2.pfcands_vtxidx().at(ipf); 
-      if (pfVertexIndex != ivtx) isPU = true;
+// onlyAOD      int pfVertexIndex = cms2.pfcands_vtxidx().at(ipf); 
+// onlyAOD      if (pfVertexIndex != ivtx) isPU = true;
+      if ( cms2.pfcands_fromPV()[ipf] < 2) isPU = true;
     }
 
     // Use Map (only REL 7)
@@ -1609,7 +1617,8 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
 	if ( std::min(::fabs(p4.Phi() - p4_2.Phi()), 2 * M_PI - fabs(p4.Phi() - p4_2.Phi())) > 0.5 ) continue; 
 	float dR2 = dRbetweenVectors2(p4, p4_2);
 	//	cout<<"Nearby PFCand at dR "<<dR2<<" is ";
-	if (cms2.pfcands_vtxidx().at(jpf) == ivtx ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
+	// onlyAOD if (cms2.pfcands_vtxidx().at(jpf) == ivtx ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
+	if (cms2.pfcands_fromPV().at(jpf) < 2 ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
 	else {sumPU += 1./dR2; /*cout<<"PU"<<endl;*/}
 	
       }

@@ -29,6 +29,54 @@ protected:
 	vector<TString> hlt_trigNames_;
 	TBranch *hlt_trigNames_branch;
 	bool hlt_trigNames_isLoaded;
+	bool hcalnoise_HasBadRBXTS4TS5_;
+	TBranch *hcalnoise_HasBadRBXTS4TS5_branch;
+	bool hcalnoise_HasBadRBXTS4TS5_isLoaded;
+	bool evt_cscTightHaloId_;
+	TBranch *evt_cscTightHaloId_branch;
+	bool evt_cscTightHaloId_isLoaded;
+	bool evt_hbheFilter_;
+	TBranch *evt_hbheFilter_branch;
+	bool evt_hbheFilter_isLoaded;
+	bool filt_cscBeamHalo_;
+	TBranch *filt_cscBeamHalo_branch;
+	bool filt_cscBeamHalo_isLoaded;
+	bool filt_ecalLaser_;
+	TBranch *filt_ecalLaser_branch;
+	bool filt_ecalLaser_isLoaded;
+	bool filt_ecalTP_;
+	TBranch *filt_ecalTP_branch;
+	bool filt_ecalTP_isLoaded;
+	bool filt_eeBadSc_;
+	TBranch *filt_eeBadSc_branch;
+	bool filt_eeBadSc_isLoaded;
+	bool filt_goodVertices_;
+	TBranch *filt_goodVertices_branch;
+	bool filt_goodVertices_isLoaded;
+	bool filt_hbheNoise_;
+	TBranch *filt_hbheNoise_branch;
+	bool filt_hbheNoise_isLoaded;
+	bool filt_hcalLaser_;
+	TBranch *filt_hcalLaser_branch;
+	bool filt_hcalLaser_isLoaded;
+	bool filt_metfilter_;
+	TBranch *filt_metfilter_branch;
+	bool filt_metfilter_isLoaded;
+	bool filt_trackingFailure_;
+	TBranch *filt_trackingFailure_branch;
+	bool filt_trackingFailure_isLoaded;
+	bool filt_trkPOGFilters_;
+	TBranch *filt_trkPOGFilters_branch;
+	bool filt_trkPOGFilters_isLoaded;
+	bool filt_trkPOG_logErrorTooManyClusters_;
+	TBranch *filt_trkPOG_logErrorTooManyClusters_branch;
+	bool filt_trkPOG_logErrorTooManyClusters_isLoaded;
+	bool filt_trkPOG_manystripclus53X_;
+	TBranch *filt_trkPOG_manystripclus53X_branch;
+	bool filt_trkPOG_manystripclus53X_isLoaded;
+	bool filt_trkPOG_toomanystripclus53X_;
+	TBranch *filt_trkPOG_toomanystripclus53X_branch;
+	bool filt_trkPOG_toomanystripclus53X_isLoaded;
 	vector<bool> els_conv_vtx_flag_;
 	TBranch *els_conv_vtx_flag_branch;
 	bool els_conv_vtx_flag_isLoaded;
@@ -128,6 +176,102 @@ protected:
 	float gen_sumEt_;
 	TBranch *gen_sumEt_branch;
 	bool gen_sumEt_isLoaded;
+	float hcalnoise_GetRecHitEnergy_;
+	TBranch *hcalnoise_GetRecHitEnergy_branch;
+	bool hcalnoise_GetRecHitEnergy_isLoaded;
+	float hcalnoise_GetRecHitEnergy15_;
+	TBranch *hcalnoise_GetRecHitEnergy15_branch;
+	bool hcalnoise_GetRecHitEnergy15_isLoaded;
+	float hcalnoise_GetTotalCalibCharge_;
+	TBranch *hcalnoise_GetTotalCalibCharge_branch;
+	bool hcalnoise_GetTotalCalibCharge_isLoaded;
+	float hcalnoise_TS4TS5NoiseSumE_;
+	TBranch *hcalnoise_TS4TS5NoiseSumE_branch;
+	bool hcalnoise_TS4TS5NoiseSumE_isLoaded;
+	float hcalnoise_TS4TS5NoiseSumEt_;
+	TBranch *hcalnoise_TS4TS5NoiseSumEt_branch;
+	bool hcalnoise_TS4TS5NoiseSumEt_isLoaded;
+	float hcalnoise_eventChargeFraction_;
+	TBranch *hcalnoise_eventChargeFraction_branch;
+	bool hcalnoise_eventChargeFraction_isLoaded;
+	float hcalnoise_eventEMEnergy_;
+	TBranch *hcalnoise_eventEMEnergy_branch;
+	bool hcalnoise_eventEMEnergy_isLoaded;
+	float hcalnoise_eventEMFraction_;
+	TBranch *hcalnoise_eventEMFraction_branch;
+	bool hcalnoise_eventEMFraction_isLoaded;
+	float hcalnoise_eventHadEnergy_;
+	TBranch *hcalnoise_eventHadEnergy_branch;
+	bool hcalnoise_eventHadEnergy_isLoaded;
+	float hcalnoise_eventTrackEnergy_;
+	TBranch *hcalnoise_eventTrackEnergy_branch;
+	bool hcalnoise_eventTrackEnergy_isLoaded;
+	float hcalnoise_flatNoiseSumE_;
+	TBranch *hcalnoise_flatNoiseSumE_branch;
+	bool hcalnoise_flatNoiseSumE_isLoaded;
+	float hcalnoise_flatNoiseSumEt_;
+	TBranch *hcalnoise_flatNoiseSumEt_branch;
+	bool hcalnoise_flatNoiseSumEt_isLoaded;
+	float hcalnoise_isolatedNoiseSumE_;
+	TBranch *hcalnoise_isolatedNoiseSumE_branch;
+	bool hcalnoise_isolatedNoiseSumE_isLoaded;
+	float hcalnoise_isolatedNoiseSumEt_;
+	TBranch *hcalnoise_isolatedNoiseSumEt_branch;
+	bool hcalnoise_isolatedNoiseSumEt_isLoaded;
+	float hcalnoise_max10GeVHitTime_;
+	TBranch *hcalnoise_max10GeVHitTime_branch;
+	bool hcalnoise_max10GeVHitTime_isLoaded;
+	float hcalnoise_max25GeVHitTime_;
+	TBranch *hcalnoise_max25GeVHitTime_branch;
+	bool hcalnoise_max25GeVHitTime_isLoaded;
+	float hcalnoise_maxE10TS_;
+	TBranch *hcalnoise_maxE10TS_branch;
+	bool hcalnoise_maxE10TS_isLoaded;
+	float hcalnoise_maxE2Over10TS_;
+	TBranch *hcalnoise_maxE2Over10TS_branch;
+	bool hcalnoise_maxE2Over10TS_isLoaded;
+	float hcalnoise_maxE2TS_;
+	TBranch *hcalnoise_maxE2TS_branch;
+	bool hcalnoise_maxE2TS_isLoaded;
+	float hcalnoise_min10GeVHitTime_;
+	TBranch *hcalnoise_min10GeVHitTime_branch;
+	bool hcalnoise_min10GeVHitTime_isLoaded;
+	float hcalnoise_min25GeVHitTime_;
+	TBranch *hcalnoise_min25GeVHitTime_branch;
+	bool hcalnoise_min25GeVHitTime_isLoaded;
+	float hcalnoise_minE10TS_;
+	TBranch *hcalnoise_minE10TS_branch;
+	bool hcalnoise_minE10TS_isLoaded;
+	float hcalnoise_minE2Over10TS_;
+	TBranch *hcalnoise_minE2Over10TS_branch;
+	bool hcalnoise_minE2Over10TS_isLoaded;
+	float hcalnoise_minE2TS_;
+	TBranch *hcalnoise_minE2TS_branch;
+	bool hcalnoise_minE2TS_isLoaded;
+	float hcalnoise_minHPDEMF_;
+	TBranch *hcalnoise_minHPDEMF_branch;
+	bool hcalnoise_minHPDEMF_isLoaded;
+	float hcalnoise_minRBXEMF_;
+	TBranch *hcalnoise_minRBXEMF_branch;
+	bool hcalnoise_minRBXEMF_isLoaded;
+	float hcalnoise_rms10GeVHitTime_;
+	TBranch *hcalnoise_rms10GeVHitTime_branch;
+	bool hcalnoise_rms10GeVHitTime_isLoaded;
+	float hcalnoise_rms25GeVHitTime_;
+	TBranch *hcalnoise_rms25GeVHitTime_branch;
+	bool hcalnoise_rms25GeVHitTime_isLoaded;
+	float hcalnoise_spikeNoiseSumE_;
+	TBranch *hcalnoise_spikeNoiseSumE_branch;
+	bool hcalnoise_spikeNoiseSumE_isLoaded;
+	float hcalnoise_spikeNoiseSumEt_;
+	TBranch *hcalnoise_spikeNoiseSumEt_branch;
+	bool hcalnoise_spikeNoiseSumEt_isLoaded;
+	float hcalnoise_triangleNoiseSumE_;
+	TBranch *hcalnoise_triangleNoiseSumE_branch;
+	bool hcalnoise_triangleNoiseSumE_isLoaded;
+	float hcalnoise_triangleNoiseSumEt_;
+	TBranch *hcalnoise_triangleNoiseSumEt_branch;
+	bool hcalnoise_triangleNoiseSumEt_isLoaded;
 	float pdfinfo_pdf1_;
 	TBranch *pdfinfo_pdf1_branch;
 	bool pdfinfo_pdf1_isLoaded;
@@ -1370,6 +1514,63 @@ protected:
 	int evt_storeNumber_;
 	TBranch *evt_storeNumber_branch;
 	bool evt_storeNumber_isLoaded;
+	int hcalnoise_GetRecHitCount_;
+	TBranch *hcalnoise_GetRecHitCount_branch;
+	bool hcalnoise_GetRecHitCount_isLoaded;
+	int hcalnoise_GetRecHitCount15_;
+	TBranch *hcalnoise_GetRecHitCount15_branch;
+	bool hcalnoise_GetRecHitCount15_isLoaded;
+	int hcalnoise_maxHPDHits_;
+	TBranch *hcalnoise_maxHPDHits_branch;
+	bool hcalnoise_maxHPDHits_isLoaded;
+	int hcalnoise_maxHPDNoOtherHits_;
+	TBranch *hcalnoise_maxHPDNoOtherHits_branch;
+	bool hcalnoise_maxHPDNoOtherHits_isLoaded;
+	int hcalnoise_maxRBXHits_;
+	TBranch *hcalnoise_maxRBXHits_branch;
+	bool hcalnoise_maxRBXHits_isLoaded;
+	int hcalnoise_maxZeros_;
+	TBranch *hcalnoise_maxZeros_branch;
+	bool hcalnoise_maxZeros_isLoaded;
+	int hcalnoise_noiseFilterStatus_;
+	TBranch *hcalnoise_noiseFilterStatus_branch;
+	bool hcalnoise_noiseFilterStatus_isLoaded;
+	int hcalnoise_noiseType_;
+	TBranch *hcalnoise_noiseType_branch;
+	bool hcalnoise_noiseType_isLoaded;
+	int hcalnoise_num10GeVHits_;
+	TBranch *hcalnoise_num10GeVHits_branch;
+	bool hcalnoise_num10GeVHits_isLoaded;
+	int hcalnoise_num25GeVHits_;
+	TBranch *hcalnoise_num25GeVHits_branch;
+	bool hcalnoise_num25GeVHits_isLoaded;
+	int hcalnoise_numFlatNoiseChannels_;
+	TBranch *hcalnoise_numFlatNoiseChannels_branch;
+	bool hcalnoise_numFlatNoiseChannels_isLoaded;
+	int hcalnoise_numIsolatedNoiseChannels_;
+	TBranch *hcalnoise_numIsolatedNoiseChannels_branch;
+	bool hcalnoise_numIsolatedNoiseChannels_isLoaded;
+	int hcalnoise_numProblematicRBXs_;
+	TBranch *hcalnoise_numProblematicRBXs_branch;
+	bool hcalnoise_numProblematicRBXs_isLoaded;
+	int hcalnoise_numSpikeNoiseChannels_;
+	TBranch *hcalnoise_numSpikeNoiseChannels_branch;
+	bool hcalnoise_numSpikeNoiseChannels_isLoaded;
+	int hcalnoise_numTS4TS5NoiseChannels_;
+	TBranch *hcalnoise_numTS4TS5NoiseChannels_branch;
+	bool hcalnoise_numTS4TS5NoiseChannels_isLoaded;
+	int hcalnoise_numTriangleNoiseChannels_;
+	TBranch *hcalnoise_numTriangleNoiseChannels_branch;
+	bool hcalnoise_numTriangleNoiseChannels_isLoaded;
+	int hcalnoise_passHighLevelNoiseFilter_;
+	TBranch *hcalnoise_passHighLevelNoiseFilter_branch;
+	bool hcalnoise_passHighLevelNoiseFilter_isLoaded;
+	int hcalnoise_passLooseNoiseFilter_;
+	TBranch *hcalnoise_passLooseNoiseFilter_branch;
+	bool hcalnoise_passLooseNoiseFilter_isLoaded;
+	int hcalnoise_passTightNoiseFilter_;
+	TBranch *hcalnoise_passTightNoiseFilter_branch;
+	bool hcalnoise_passTightNoiseFilter_isLoaded;
 	int pdfinfo_id1_;
 	TBranch *pdfinfo_id1_branch;
 	bool pdfinfo_id1_isLoaded;
@@ -1808,6 +2009,9 @@ protected:
 	vector<int> pfjets_neutralMultiplicity_;
 	TBranch *pfjets_neutralMultiplicity_branch;
 	bool pfjets_neutralMultiplicity_isLoaded;
+	vector<int> pfjets_partonFlavour_;
+	TBranch *pfjets_partonFlavour_branch;
+	bool pfjets_partonFlavour_isLoaded;
 	vector<int> pfjets_photonMultiplicity_;
 	TBranch *pfjets_photonMultiplicity_branch;
 	bool pfjets_photonMultiplicity_isLoaded;
@@ -1883,6 +2087,9 @@ protected:
 	vector<vector<int> > convs_tkidx_;
 	TBranch *convs_tkidx_branch;
 	bool convs_tkidx_isLoaded;
+	vector<unsigned char> pfcands_fromPV_;
+	TBranch *pfcands_fromPV_branch;
+	bool pfcands_fromPV_isLoaded;
 	unsigned int els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_;
 	TBranch *els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_branch;
 	bool els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_isLoaded;
@@ -2319,6 +2526,86 @@ void Init(TTree *tree) {
 		hlt_trigNames_branch = tree->GetBranch(tree->GetAlias("hlt_trigNames"));
 		if (hlt_trigNames_branch) {hlt_trigNames_branch->SetAddress(&hlt_trigNames_);}
 	}
+	hcalnoise_HasBadRBXTS4TS5_branch = 0;
+	if (tree->GetAlias("hcalnoise_HasBadRBXTS4TS5") != 0) {
+		hcalnoise_HasBadRBXTS4TS5_branch = tree->GetBranch(tree->GetAlias("hcalnoise_HasBadRBXTS4TS5"));
+		if (hcalnoise_HasBadRBXTS4TS5_branch) {hcalnoise_HasBadRBXTS4TS5_branch->SetAddress(&hcalnoise_HasBadRBXTS4TS5_);}
+	}
+	evt_cscTightHaloId_branch = 0;
+	if (tree->GetAlias("evt_cscTightHaloId") != 0) {
+		evt_cscTightHaloId_branch = tree->GetBranch(tree->GetAlias("evt_cscTightHaloId"));
+		if (evt_cscTightHaloId_branch) {evt_cscTightHaloId_branch->SetAddress(&evt_cscTightHaloId_);}
+	}
+	evt_hbheFilter_branch = 0;
+	if (tree->GetAlias("evt_hbheFilter") != 0) {
+		evt_hbheFilter_branch = tree->GetBranch(tree->GetAlias("evt_hbheFilter"));
+		if (evt_hbheFilter_branch) {evt_hbheFilter_branch->SetAddress(&evt_hbheFilter_);}
+	}
+	filt_cscBeamHalo_branch = 0;
+	if (tree->GetAlias("filt_cscBeamHalo") != 0) {
+		filt_cscBeamHalo_branch = tree->GetBranch(tree->GetAlias("filt_cscBeamHalo"));
+		if (filt_cscBeamHalo_branch) {filt_cscBeamHalo_branch->SetAddress(&filt_cscBeamHalo_);}
+	}
+	filt_ecalLaser_branch = 0;
+	if (tree->GetAlias("filt_ecalLaser") != 0) {
+		filt_ecalLaser_branch = tree->GetBranch(tree->GetAlias("filt_ecalLaser"));
+		if (filt_ecalLaser_branch) {filt_ecalLaser_branch->SetAddress(&filt_ecalLaser_);}
+	}
+	filt_ecalTP_branch = 0;
+	if (tree->GetAlias("filt_ecalTP") != 0) {
+		filt_ecalTP_branch = tree->GetBranch(tree->GetAlias("filt_ecalTP"));
+		if (filt_ecalTP_branch) {filt_ecalTP_branch->SetAddress(&filt_ecalTP_);}
+	}
+	filt_eeBadSc_branch = 0;
+	if (tree->GetAlias("filt_eeBadSc") != 0) {
+		filt_eeBadSc_branch = tree->GetBranch(tree->GetAlias("filt_eeBadSc"));
+		if (filt_eeBadSc_branch) {filt_eeBadSc_branch->SetAddress(&filt_eeBadSc_);}
+	}
+	filt_goodVertices_branch = 0;
+	if (tree->GetAlias("filt_goodVertices") != 0) {
+		filt_goodVertices_branch = tree->GetBranch(tree->GetAlias("filt_goodVertices"));
+		if (filt_goodVertices_branch) {filt_goodVertices_branch->SetAddress(&filt_goodVertices_);}
+	}
+	filt_hbheNoise_branch = 0;
+	if (tree->GetAlias("filt_hbheNoise") != 0) {
+		filt_hbheNoise_branch = tree->GetBranch(tree->GetAlias("filt_hbheNoise"));
+		if (filt_hbheNoise_branch) {filt_hbheNoise_branch->SetAddress(&filt_hbheNoise_);}
+	}
+	filt_hcalLaser_branch = 0;
+	if (tree->GetAlias("filt_hcalLaser") != 0) {
+		filt_hcalLaser_branch = tree->GetBranch(tree->GetAlias("filt_hcalLaser"));
+		if (filt_hcalLaser_branch) {filt_hcalLaser_branch->SetAddress(&filt_hcalLaser_);}
+	}
+	filt_metfilter_branch = 0;
+	if (tree->GetAlias("filt_metfilter") != 0) {
+		filt_metfilter_branch = tree->GetBranch(tree->GetAlias("filt_metfilter"));
+		if (filt_metfilter_branch) {filt_metfilter_branch->SetAddress(&filt_metfilter_);}
+	}
+	filt_trackingFailure_branch = 0;
+	if (tree->GetAlias("filt_trackingFailure") != 0) {
+		filt_trackingFailure_branch = tree->GetBranch(tree->GetAlias("filt_trackingFailure"));
+		if (filt_trackingFailure_branch) {filt_trackingFailure_branch->SetAddress(&filt_trackingFailure_);}
+	}
+	filt_trkPOGFilters_branch = 0;
+	if (tree->GetAlias("filt_trkPOGFilters") != 0) {
+		filt_trkPOGFilters_branch = tree->GetBranch(tree->GetAlias("filt_trkPOGFilters"));
+		if (filt_trkPOGFilters_branch) {filt_trkPOGFilters_branch->SetAddress(&filt_trkPOGFilters_);}
+	}
+	filt_trkPOG_logErrorTooManyClusters_branch = 0;
+	if (tree->GetAlias("filt_trkPOG_logErrorTooManyClusters") != 0) {
+		filt_trkPOG_logErrorTooManyClusters_branch = tree->GetBranch(tree->GetAlias("filt_trkPOG_logErrorTooManyClusters"));
+		if (filt_trkPOG_logErrorTooManyClusters_branch) {filt_trkPOG_logErrorTooManyClusters_branch->SetAddress(&filt_trkPOG_logErrorTooManyClusters_);}
+	}
+	filt_trkPOG_manystripclus53X_branch = 0;
+	if (tree->GetAlias("filt_trkPOG_manystripclus53X") != 0) {
+		filt_trkPOG_manystripclus53X_branch = tree->GetBranch(tree->GetAlias("filt_trkPOG_manystripclus53X"));
+		if (filt_trkPOG_manystripclus53X_branch) {filt_trkPOG_manystripclus53X_branch->SetAddress(&filt_trkPOG_manystripclus53X_);}
+	}
+	filt_trkPOG_toomanystripclus53X_branch = 0;
+	if (tree->GetAlias("filt_trkPOG_toomanystripclus53X") != 0) {
+		filt_trkPOG_toomanystripclus53X_branch = tree->GetBranch(tree->GetAlias("filt_trkPOG_toomanystripclus53X"));
+		if (filt_trkPOG_toomanystripclus53X_branch) {filt_trkPOG_toomanystripclus53X_branch->SetAddress(&filt_trkPOG_toomanystripclus53X_);}
+	}
 	els_conv_vtx_flag_branch = 0;
 	if (tree->GetAlias("els_conv_vtx_flag") != 0) {
 		els_conv_vtx_flag_branch = tree->GetBranch(tree->GetAlias("els_conv_vtx_flag"));
@@ -2483,6 +2770,166 @@ void Init(TTree *tree) {
 	if (tree->GetAlias("gen_sumEt") != 0) {
 		gen_sumEt_branch = tree->GetBranch(tree->GetAlias("gen_sumEt"));
 		if (gen_sumEt_branch) {gen_sumEt_branch->SetAddress(&gen_sumEt_);}
+	}
+	hcalnoise_GetRecHitEnergy_branch = 0;
+	if (tree->GetAlias("hcalnoise_GetRecHitEnergy") != 0) {
+		hcalnoise_GetRecHitEnergy_branch = tree->GetBranch(tree->GetAlias("hcalnoise_GetRecHitEnergy"));
+		if (hcalnoise_GetRecHitEnergy_branch) {hcalnoise_GetRecHitEnergy_branch->SetAddress(&hcalnoise_GetRecHitEnergy_);}
+	}
+	hcalnoise_GetRecHitEnergy15_branch = 0;
+	if (tree->GetAlias("hcalnoise_GetRecHitEnergy15") != 0) {
+		hcalnoise_GetRecHitEnergy15_branch = tree->GetBranch(tree->GetAlias("hcalnoise_GetRecHitEnergy15"));
+		if (hcalnoise_GetRecHitEnergy15_branch) {hcalnoise_GetRecHitEnergy15_branch->SetAddress(&hcalnoise_GetRecHitEnergy15_);}
+	}
+	hcalnoise_GetTotalCalibCharge_branch = 0;
+	if (tree->GetAlias("hcalnoise_GetTotalCalibCharge") != 0) {
+		hcalnoise_GetTotalCalibCharge_branch = tree->GetBranch(tree->GetAlias("hcalnoise_GetTotalCalibCharge"));
+		if (hcalnoise_GetTotalCalibCharge_branch) {hcalnoise_GetTotalCalibCharge_branch->SetAddress(&hcalnoise_GetTotalCalibCharge_);}
+	}
+	hcalnoise_TS4TS5NoiseSumE_branch = 0;
+	if (tree->GetAlias("hcalnoise_TS4TS5NoiseSumE") != 0) {
+		hcalnoise_TS4TS5NoiseSumE_branch = tree->GetBranch(tree->GetAlias("hcalnoise_TS4TS5NoiseSumE"));
+		if (hcalnoise_TS4TS5NoiseSumE_branch) {hcalnoise_TS4TS5NoiseSumE_branch->SetAddress(&hcalnoise_TS4TS5NoiseSumE_);}
+	}
+	hcalnoise_TS4TS5NoiseSumEt_branch = 0;
+	if (tree->GetAlias("hcalnoise_TS4TS5NoiseSumEt") != 0) {
+		hcalnoise_TS4TS5NoiseSumEt_branch = tree->GetBranch(tree->GetAlias("hcalnoise_TS4TS5NoiseSumEt"));
+		if (hcalnoise_TS4TS5NoiseSumEt_branch) {hcalnoise_TS4TS5NoiseSumEt_branch->SetAddress(&hcalnoise_TS4TS5NoiseSumEt_);}
+	}
+	hcalnoise_eventChargeFraction_branch = 0;
+	if (tree->GetAlias("hcalnoise_eventChargeFraction") != 0) {
+		hcalnoise_eventChargeFraction_branch = tree->GetBranch(tree->GetAlias("hcalnoise_eventChargeFraction"));
+		if (hcalnoise_eventChargeFraction_branch) {hcalnoise_eventChargeFraction_branch->SetAddress(&hcalnoise_eventChargeFraction_);}
+	}
+	hcalnoise_eventEMEnergy_branch = 0;
+	if (tree->GetAlias("hcalnoise_eventEMEnergy") != 0) {
+		hcalnoise_eventEMEnergy_branch = tree->GetBranch(tree->GetAlias("hcalnoise_eventEMEnergy"));
+		if (hcalnoise_eventEMEnergy_branch) {hcalnoise_eventEMEnergy_branch->SetAddress(&hcalnoise_eventEMEnergy_);}
+	}
+	hcalnoise_eventEMFraction_branch = 0;
+	if (tree->GetAlias("hcalnoise_eventEMFraction") != 0) {
+		hcalnoise_eventEMFraction_branch = tree->GetBranch(tree->GetAlias("hcalnoise_eventEMFraction"));
+		if (hcalnoise_eventEMFraction_branch) {hcalnoise_eventEMFraction_branch->SetAddress(&hcalnoise_eventEMFraction_);}
+	}
+	hcalnoise_eventHadEnergy_branch = 0;
+	if (tree->GetAlias("hcalnoise_eventHadEnergy") != 0) {
+		hcalnoise_eventHadEnergy_branch = tree->GetBranch(tree->GetAlias("hcalnoise_eventHadEnergy"));
+		if (hcalnoise_eventHadEnergy_branch) {hcalnoise_eventHadEnergy_branch->SetAddress(&hcalnoise_eventHadEnergy_);}
+	}
+	hcalnoise_eventTrackEnergy_branch = 0;
+	if (tree->GetAlias("hcalnoise_eventTrackEnergy") != 0) {
+		hcalnoise_eventTrackEnergy_branch = tree->GetBranch(tree->GetAlias("hcalnoise_eventTrackEnergy"));
+		if (hcalnoise_eventTrackEnergy_branch) {hcalnoise_eventTrackEnergy_branch->SetAddress(&hcalnoise_eventTrackEnergy_);}
+	}
+	hcalnoise_flatNoiseSumE_branch = 0;
+	if (tree->GetAlias("hcalnoise_flatNoiseSumE") != 0) {
+		hcalnoise_flatNoiseSumE_branch = tree->GetBranch(tree->GetAlias("hcalnoise_flatNoiseSumE"));
+		if (hcalnoise_flatNoiseSumE_branch) {hcalnoise_flatNoiseSumE_branch->SetAddress(&hcalnoise_flatNoiseSumE_);}
+	}
+	hcalnoise_flatNoiseSumEt_branch = 0;
+	if (tree->GetAlias("hcalnoise_flatNoiseSumEt") != 0) {
+		hcalnoise_flatNoiseSumEt_branch = tree->GetBranch(tree->GetAlias("hcalnoise_flatNoiseSumEt"));
+		if (hcalnoise_flatNoiseSumEt_branch) {hcalnoise_flatNoiseSumEt_branch->SetAddress(&hcalnoise_flatNoiseSumEt_);}
+	}
+	hcalnoise_isolatedNoiseSumE_branch = 0;
+	if (tree->GetAlias("hcalnoise_isolatedNoiseSumE") != 0) {
+		hcalnoise_isolatedNoiseSumE_branch = tree->GetBranch(tree->GetAlias("hcalnoise_isolatedNoiseSumE"));
+		if (hcalnoise_isolatedNoiseSumE_branch) {hcalnoise_isolatedNoiseSumE_branch->SetAddress(&hcalnoise_isolatedNoiseSumE_);}
+	}
+	hcalnoise_isolatedNoiseSumEt_branch = 0;
+	if (tree->GetAlias("hcalnoise_isolatedNoiseSumEt") != 0) {
+		hcalnoise_isolatedNoiseSumEt_branch = tree->GetBranch(tree->GetAlias("hcalnoise_isolatedNoiseSumEt"));
+		if (hcalnoise_isolatedNoiseSumEt_branch) {hcalnoise_isolatedNoiseSumEt_branch->SetAddress(&hcalnoise_isolatedNoiseSumEt_);}
+	}
+	hcalnoise_max10GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_max10GeVHitTime") != 0) {
+		hcalnoise_max10GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_max10GeVHitTime"));
+		if (hcalnoise_max10GeVHitTime_branch) {hcalnoise_max10GeVHitTime_branch->SetAddress(&hcalnoise_max10GeVHitTime_);}
+	}
+	hcalnoise_max25GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_max25GeVHitTime") != 0) {
+		hcalnoise_max25GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_max25GeVHitTime"));
+		if (hcalnoise_max25GeVHitTime_branch) {hcalnoise_max25GeVHitTime_branch->SetAddress(&hcalnoise_max25GeVHitTime_);}
+	}
+	hcalnoise_maxE10TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxE10TS") != 0) {
+		hcalnoise_maxE10TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxE10TS"));
+		if (hcalnoise_maxE10TS_branch) {hcalnoise_maxE10TS_branch->SetAddress(&hcalnoise_maxE10TS_);}
+	}
+	hcalnoise_maxE2Over10TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxE2Over10TS") != 0) {
+		hcalnoise_maxE2Over10TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxE2Over10TS"));
+		if (hcalnoise_maxE2Over10TS_branch) {hcalnoise_maxE2Over10TS_branch->SetAddress(&hcalnoise_maxE2Over10TS_);}
+	}
+	hcalnoise_maxE2TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxE2TS") != 0) {
+		hcalnoise_maxE2TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxE2TS"));
+		if (hcalnoise_maxE2TS_branch) {hcalnoise_maxE2TS_branch->SetAddress(&hcalnoise_maxE2TS_);}
+	}
+	hcalnoise_min10GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_min10GeVHitTime") != 0) {
+		hcalnoise_min10GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_min10GeVHitTime"));
+		if (hcalnoise_min10GeVHitTime_branch) {hcalnoise_min10GeVHitTime_branch->SetAddress(&hcalnoise_min10GeVHitTime_);}
+	}
+	hcalnoise_min25GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_min25GeVHitTime") != 0) {
+		hcalnoise_min25GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_min25GeVHitTime"));
+		if (hcalnoise_min25GeVHitTime_branch) {hcalnoise_min25GeVHitTime_branch->SetAddress(&hcalnoise_min25GeVHitTime_);}
+	}
+	hcalnoise_minE10TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_minE10TS") != 0) {
+		hcalnoise_minE10TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_minE10TS"));
+		if (hcalnoise_minE10TS_branch) {hcalnoise_minE10TS_branch->SetAddress(&hcalnoise_minE10TS_);}
+	}
+	hcalnoise_minE2Over10TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_minE2Over10TS") != 0) {
+		hcalnoise_minE2Over10TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_minE2Over10TS"));
+		if (hcalnoise_minE2Over10TS_branch) {hcalnoise_minE2Over10TS_branch->SetAddress(&hcalnoise_minE2Over10TS_);}
+	}
+	hcalnoise_minE2TS_branch = 0;
+	if (tree->GetAlias("hcalnoise_minE2TS") != 0) {
+		hcalnoise_minE2TS_branch = tree->GetBranch(tree->GetAlias("hcalnoise_minE2TS"));
+		if (hcalnoise_minE2TS_branch) {hcalnoise_minE2TS_branch->SetAddress(&hcalnoise_minE2TS_);}
+	}
+	hcalnoise_minHPDEMF_branch = 0;
+	if (tree->GetAlias("hcalnoise_minHPDEMF") != 0) {
+		hcalnoise_minHPDEMF_branch = tree->GetBranch(tree->GetAlias("hcalnoise_minHPDEMF"));
+		if (hcalnoise_minHPDEMF_branch) {hcalnoise_minHPDEMF_branch->SetAddress(&hcalnoise_minHPDEMF_);}
+	}
+	hcalnoise_minRBXEMF_branch = 0;
+	if (tree->GetAlias("hcalnoise_minRBXEMF") != 0) {
+		hcalnoise_minRBXEMF_branch = tree->GetBranch(tree->GetAlias("hcalnoise_minRBXEMF"));
+		if (hcalnoise_minRBXEMF_branch) {hcalnoise_minRBXEMF_branch->SetAddress(&hcalnoise_minRBXEMF_);}
+	}
+	hcalnoise_rms10GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_rms10GeVHitTime") != 0) {
+		hcalnoise_rms10GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_rms10GeVHitTime"));
+		if (hcalnoise_rms10GeVHitTime_branch) {hcalnoise_rms10GeVHitTime_branch->SetAddress(&hcalnoise_rms10GeVHitTime_);}
+	}
+	hcalnoise_rms25GeVHitTime_branch = 0;
+	if (tree->GetAlias("hcalnoise_rms25GeVHitTime") != 0) {
+		hcalnoise_rms25GeVHitTime_branch = tree->GetBranch(tree->GetAlias("hcalnoise_rms25GeVHitTime"));
+		if (hcalnoise_rms25GeVHitTime_branch) {hcalnoise_rms25GeVHitTime_branch->SetAddress(&hcalnoise_rms25GeVHitTime_);}
+	}
+	hcalnoise_spikeNoiseSumE_branch = 0;
+	if (tree->GetAlias("hcalnoise_spikeNoiseSumE") != 0) {
+		hcalnoise_spikeNoiseSumE_branch = tree->GetBranch(tree->GetAlias("hcalnoise_spikeNoiseSumE"));
+		if (hcalnoise_spikeNoiseSumE_branch) {hcalnoise_spikeNoiseSumE_branch->SetAddress(&hcalnoise_spikeNoiseSumE_);}
+	}
+	hcalnoise_spikeNoiseSumEt_branch = 0;
+	if (tree->GetAlias("hcalnoise_spikeNoiseSumEt") != 0) {
+		hcalnoise_spikeNoiseSumEt_branch = tree->GetBranch(tree->GetAlias("hcalnoise_spikeNoiseSumEt"));
+		if (hcalnoise_spikeNoiseSumEt_branch) {hcalnoise_spikeNoiseSumEt_branch->SetAddress(&hcalnoise_spikeNoiseSumEt_);}
+	}
+	hcalnoise_triangleNoiseSumE_branch = 0;
+	if (tree->GetAlias("hcalnoise_triangleNoiseSumE") != 0) {
+		hcalnoise_triangleNoiseSumE_branch = tree->GetBranch(tree->GetAlias("hcalnoise_triangleNoiseSumE"));
+		if (hcalnoise_triangleNoiseSumE_branch) {hcalnoise_triangleNoiseSumE_branch->SetAddress(&hcalnoise_triangleNoiseSumE_);}
+	}
+	hcalnoise_triangleNoiseSumEt_branch = 0;
+	if (tree->GetAlias("hcalnoise_triangleNoiseSumEt") != 0) {
+		hcalnoise_triangleNoiseSumEt_branch = tree->GetBranch(tree->GetAlias("hcalnoise_triangleNoiseSumEt"));
+		if (hcalnoise_triangleNoiseSumEt_branch) {hcalnoise_triangleNoiseSumEt_branch->SetAddress(&hcalnoise_triangleNoiseSumEt_);}
 	}
 	pdfinfo_pdf1_branch = 0;
 	if (tree->GetAlias("pdfinfo_pdf1") != 0) {
@@ -4369,6 +4816,101 @@ void Init(TTree *tree) {
 		evt_storeNumber_branch = tree->GetBranch(tree->GetAlias("evt_storeNumber"));
 		if (evt_storeNumber_branch) {evt_storeNumber_branch->SetAddress(&evt_storeNumber_);}
 	}
+	hcalnoise_GetRecHitCount_branch = 0;
+	if (tree->GetAlias("hcalnoise_GetRecHitCount") != 0) {
+		hcalnoise_GetRecHitCount_branch = tree->GetBranch(tree->GetAlias("hcalnoise_GetRecHitCount"));
+		if (hcalnoise_GetRecHitCount_branch) {hcalnoise_GetRecHitCount_branch->SetAddress(&hcalnoise_GetRecHitCount_);}
+	}
+	hcalnoise_GetRecHitCount15_branch = 0;
+	if (tree->GetAlias("hcalnoise_GetRecHitCount15") != 0) {
+		hcalnoise_GetRecHitCount15_branch = tree->GetBranch(tree->GetAlias("hcalnoise_GetRecHitCount15"));
+		if (hcalnoise_GetRecHitCount15_branch) {hcalnoise_GetRecHitCount15_branch->SetAddress(&hcalnoise_GetRecHitCount15_);}
+	}
+	hcalnoise_maxHPDHits_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxHPDHits") != 0) {
+		hcalnoise_maxHPDHits_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxHPDHits"));
+		if (hcalnoise_maxHPDHits_branch) {hcalnoise_maxHPDHits_branch->SetAddress(&hcalnoise_maxHPDHits_);}
+	}
+	hcalnoise_maxHPDNoOtherHits_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxHPDNoOtherHits") != 0) {
+		hcalnoise_maxHPDNoOtherHits_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxHPDNoOtherHits"));
+		if (hcalnoise_maxHPDNoOtherHits_branch) {hcalnoise_maxHPDNoOtherHits_branch->SetAddress(&hcalnoise_maxHPDNoOtherHits_);}
+	}
+	hcalnoise_maxRBXHits_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxRBXHits") != 0) {
+		hcalnoise_maxRBXHits_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxRBXHits"));
+		if (hcalnoise_maxRBXHits_branch) {hcalnoise_maxRBXHits_branch->SetAddress(&hcalnoise_maxRBXHits_);}
+	}
+	hcalnoise_maxZeros_branch = 0;
+	if (tree->GetAlias("hcalnoise_maxZeros") != 0) {
+		hcalnoise_maxZeros_branch = tree->GetBranch(tree->GetAlias("hcalnoise_maxZeros"));
+		if (hcalnoise_maxZeros_branch) {hcalnoise_maxZeros_branch->SetAddress(&hcalnoise_maxZeros_);}
+	}
+	hcalnoise_noiseFilterStatus_branch = 0;
+	if (tree->GetAlias("hcalnoise_noiseFilterStatus") != 0) {
+		hcalnoise_noiseFilterStatus_branch = tree->GetBranch(tree->GetAlias("hcalnoise_noiseFilterStatus"));
+		if (hcalnoise_noiseFilterStatus_branch) {hcalnoise_noiseFilterStatus_branch->SetAddress(&hcalnoise_noiseFilterStatus_);}
+	}
+	hcalnoise_noiseType_branch = 0;
+	if (tree->GetAlias("hcalnoise_noiseType") != 0) {
+		hcalnoise_noiseType_branch = tree->GetBranch(tree->GetAlias("hcalnoise_noiseType"));
+		if (hcalnoise_noiseType_branch) {hcalnoise_noiseType_branch->SetAddress(&hcalnoise_noiseType_);}
+	}
+	hcalnoise_num10GeVHits_branch = 0;
+	if (tree->GetAlias("hcalnoise_num10GeVHits") != 0) {
+		hcalnoise_num10GeVHits_branch = tree->GetBranch(tree->GetAlias("hcalnoise_num10GeVHits"));
+		if (hcalnoise_num10GeVHits_branch) {hcalnoise_num10GeVHits_branch->SetAddress(&hcalnoise_num10GeVHits_);}
+	}
+	hcalnoise_num25GeVHits_branch = 0;
+	if (tree->GetAlias("hcalnoise_num25GeVHits") != 0) {
+		hcalnoise_num25GeVHits_branch = tree->GetBranch(tree->GetAlias("hcalnoise_num25GeVHits"));
+		if (hcalnoise_num25GeVHits_branch) {hcalnoise_num25GeVHits_branch->SetAddress(&hcalnoise_num25GeVHits_);}
+	}
+	hcalnoise_numFlatNoiseChannels_branch = 0;
+	if (tree->GetAlias("hcalnoise_numFlatNoiseChannels") != 0) {
+		hcalnoise_numFlatNoiseChannels_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numFlatNoiseChannels"));
+		if (hcalnoise_numFlatNoiseChannels_branch) {hcalnoise_numFlatNoiseChannels_branch->SetAddress(&hcalnoise_numFlatNoiseChannels_);}
+	}
+	hcalnoise_numIsolatedNoiseChannels_branch = 0;
+	if (tree->GetAlias("hcalnoise_numIsolatedNoiseChannels") != 0) {
+		hcalnoise_numIsolatedNoiseChannels_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numIsolatedNoiseChannels"));
+		if (hcalnoise_numIsolatedNoiseChannels_branch) {hcalnoise_numIsolatedNoiseChannels_branch->SetAddress(&hcalnoise_numIsolatedNoiseChannels_);}
+	}
+	hcalnoise_numProblematicRBXs_branch = 0;
+	if (tree->GetAlias("hcalnoise_numProblematicRBXs") != 0) {
+		hcalnoise_numProblematicRBXs_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numProblematicRBXs"));
+		if (hcalnoise_numProblematicRBXs_branch) {hcalnoise_numProblematicRBXs_branch->SetAddress(&hcalnoise_numProblematicRBXs_);}
+	}
+	hcalnoise_numSpikeNoiseChannels_branch = 0;
+	if (tree->GetAlias("hcalnoise_numSpikeNoiseChannels") != 0) {
+		hcalnoise_numSpikeNoiseChannels_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numSpikeNoiseChannels"));
+		if (hcalnoise_numSpikeNoiseChannels_branch) {hcalnoise_numSpikeNoiseChannels_branch->SetAddress(&hcalnoise_numSpikeNoiseChannels_);}
+	}
+	hcalnoise_numTS4TS5NoiseChannels_branch = 0;
+	if (tree->GetAlias("hcalnoise_numTS4TS5NoiseChannels") != 0) {
+		hcalnoise_numTS4TS5NoiseChannels_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numTS4TS5NoiseChannels"));
+		if (hcalnoise_numTS4TS5NoiseChannels_branch) {hcalnoise_numTS4TS5NoiseChannels_branch->SetAddress(&hcalnoise_numTS4TS5NoiseChannels_);}
+	}
+	hcalnoise_numTriangleNoiseChannels_branch = 0;
+	if (tree->GetAlias("hcalnoise_numTriangleNoiseChannels") != 0) {
+		hcalnoise_numTriangleNoiseChannels_branch = tree->GetBranch(tree->GetAlias("hcalnoise_numTriangleNoiseChannels"));
+		if (hcalnoise_numTriangleNoiseChannels_branch) {hcalnoise_numTriangleNoiseChannels_branch->SetAddress(&hcalnoise_numTriangleNoiseChannels_);}
+	}
+	hcalnoise_passHighLevelNoiseFilter_branch = 0;
+	if (tree->GetAlias("hcalnoise_passHighLevelNoiseFilter") != 0) {
+		hcalnoise_passHighLevelNoiseFilter_branch = tree->GetBranch(tree->GetAlias("hcalnoise_passHighLevelNoiseFilter"));
+		if (hcalnoise_passHighLevelNoiseFilter_branch) {hcalnoise_passHighLevelNoiseFilter_branch->SetAddress(&hcalnoise_passHighLevelNoiseFilter_);}
+	}
+	hcalnoise_passLooseNoiseFilter_branch = 0;
+	if (tree->GetAlias("hcalnoise_passLooseNoiseFilter") != 0) {
+		hcalnoise_passLooseNoiseFilter_branch = tree->GetBranch(tree->GetAlias("hcalnoise_passLooseNoiseFilter"));
+		if (hcalnoise_passLooseNoiseFilter_branch) {hcalnoise_passLooseNoiseFilter_branch->SetAddress(&hcalnoise_passLooseNoiseFilter_);}
+	}
+	hcalnoise_passTightNoiseFilter_branch = 0;
+	if (tree->GetAlias("hcalnoise_passTightNoiseFilter") != 0) {
+		hcalnoise_passTightNoiseFilter_branch = tree->GetBranch(tree->GetAlias("hcalnoise_passTightNoiseFilter"));
+		if (hcalnoise_passTightNoiseFilter_branch) {hcalnoise_passTightNoiseFilter_branch->SetAddress(&hcalnoise_passTightNoiseFilter_);}
+	}
 	pdfinfo_id1_branch = 0;
 	if (tree->GetAlias("pdfinfo_id1") != 0) {
 		pdfinfo_id1_branch = tree->GetBranch(tree->GetAlias("pdfinfo_id1"));
@@ -5099,6 +5641,11 @@ void Init(TTree *tree) {
 		pfjets_neutralMultiplicity_branch = tree->GetBranch(tree->GetAlias("pfjets_neutralMultiplicity"));
 		if (pfjets_neutralMultiplicity_branch) {pfjets_neutralMultiplicity_branch->SetAddress(&pfjets_neutralMultiplicity_);}
 	}
+	pfjets_partonFlavour_branch = 0;
+	if (tree->GetAlias("pfjets_partonFlavour") != 0) {
+		pfjets_partonFlavour_branch = tree->GetBranch(tree->GetAlias("pfjets_partonFlavour"));
+		if (pfjets_partonFlavour_branch) {pfjets_partonFlavour_branch->SetAddress(&pfjets_partonFlavour_);}
+	}
 	pfjets_photonMultiplicity_branch = 0;
 	if (tree->GetAlias("pfjets_photonMultiplicity") != 0) {
 		pfjets_photonMultiplicity_branch = tree->GetBranch(tree->GetAlias("pfjets_photonMultiplicity"));
@@ -5223,6 +5770,11 @@ void Init(TTree *tree) {
 	if (tree->GetAlias("convs_tkidx") != 0) {
 		convs_tkidx_branch = tree->GetBranch(tree->GetAlias("convs_tkidx"));
 		if (convs_tkidx_branch) {convs_tkidx_branch->SetAddress(&convs_tkidx_);}
+	}
+	pfcands_fromPV_branch = 0;
+	if (tree->GetAlias("pfcands_fromPV") != 0) {
+		pfcands_fromPV_branch = tree->GetBranch(tree->GetAlias("pfcands_fromPV"));
+		if (pfcands_fromPV_branch) {pfcands_fromPV_branch->SetAddress(&pfcands_fromPV_);}
 	}
 	els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_branch = 0;
 	if (tree->GetAlias("els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version") != 0) {
@@ -5614,6 +6166,22 @@ void GetEntry(unsigned int idx)
 		evt_CMS2tag_isLoaded = false;
 		evt_dataset_isLoaded = false;
 		hlt_trigNames_isLoaded = false;
+		hcalnoise_HasBadRBXTS4TS5_isLoaded = false;
+		evt_cscTightHaloId_isLoaded = false;
+		evt_hbheFilter_isLoaded = false;
+		filt_cscBeamHalo_isLoaded = false;
+		filt_ecalLaser_isLoaded = false;
+		filt_ecalTP_isLoaded = false;
+		filt_eeBadSc_isLoaded = false;
+		filt_goodVertices_isLoaded = false;
+		filt_hbheNoise_isLoaded = false;
+		filt_hcalLaser_isLoaded = false;
+		filt_metfilter_isLoaded = false;
+		filt_trackingFailure_isLoaded = false;
+		filt_trkPOGFilters_isLoaded = false;
+		filt_trkPOG_logErrorTooManyClusters_isLoaded = false;
+		filt_trkPOG_manystripclus53X_isLoaded = false;
+		filt_trkPOG_toomanystripclus53X_isLoaded = false;
 		els_conv_vtx_flag_isLoaded = false;
 		els_isGsfCtfScPixChargeConsistent_isLoaded = false;
 		els_passingMvaPreselection_isLoaded = false;
@@ -5647,6 +6215,38 @@ void GetEntry(unsigned int idx)
 		genps_qScale_isLoaded = false;
 		genps_weight_isLoaded = false;
 		gen_sumEt_isLoaded = false;
+		hcalnoise_GetRecHitEnergy_isLoaded = false;
+		hcalnoise_GetRecHitEnergy15_isLoaded = false;
+		hcalnoise_GetTotalCalibCharge_isLoaded = false;
+		hcalnoise_TS4TS5NoiseSumE_isLoaded = false;
+		hcalnoise_TS4TS5NoiseSumEt_isLoaded = false;
+		hcalnoise_eventChargeFraction_isLoaded = false;
+		hcalnoise_eventEMEnergy_isLoaded = false;
+		hcalnoise_eventEMFraction_isLoaded = false;
+		hcalnoise_eventHadEnergy_isLoaded = false;
+		hcalnoise_eventTrackEnergy_isLoaded = false;
+		hcalnoise_flatNoiseSumE_isLoaded = false;
+		hcalnoise_flatNoiseSumEt_isLoaded = false;
+		hcalnoise_isolatedNoiseSumE_isLoaded = false;
+		hcalnoise_isolatedNoiseSumEt_isLoaded = false;
+		hcalnoise_max10GeVHitTime_isLoaded = false;
+		hcalnoise_max25GeVHitTime_isLoaded = false;
+		hcalnoise_maxE10TS_isLoaded = false;
+		hcalnoise_maxE2Over10TS_isLoaded = false;
+		hcalnoise_maxE2TS_isLoaded = false;
+		hcalnoise_min10GeVHitTime_isLoaded = false;
+		hcalnoise_min25GeVHitTime_isLoaded = false;
+		hcalnoise_minE10TS_isLoaded = false;
+		hcalnoise_minE2Over10TS_isLoaded = false;
+		hcalnoise_minE2TS_isLoaded = false;
+		hcalnoise_minHPDEMF_isLoaded = false;
+		hcalnoise_minRBXEMF_isLoaded = false;
+		hcalnoise_rms10GeVHitTime_isLoaded = false;
+		hcalnoise_rms25GeVHitTime_isLoaded = false;
+		hcalnoise_spikeNoiseSumE_isLoaded = false;
+		hcalnoise_spikeNoiseSumEt_isLoaded = false;
+		hcalnoise_triangleNoiseSumE_isLoaded = false;
+		hcalnoise_triangleNoiseSumEt_isLoaded = false;
 		pdfinfo_pdf1_isLoaded = false;
 		pdfinfo_pdf2_isLoaded = false;
 		pdfinfo_scale_isLoaded = false;
@@ -6061,6 +6661,25 @@ void GetEntry(unsigned int idx)
 		evt_isRealData_isLoaded = false;
 		evt_orbitNumber_isLoaded = false;
 		evt_storeNumber_isLoaded = false;
+		hcalnoise_GetRecHitCount_isLoaded = false;
+		hcalnoise_GetRecHitCount15_isLoaded = false;
+		hcalnoise_maxHPDHits_isLoaded = false;
+		hcalnoise_maxHPDNoOtherHits_isLoaded = false;
+		hcalnoise_maxRBXHits_isLoaded = false;
+		hcalnoise_maxZeros_isLoaded = false;
+		hcalnoise_noiseFilterStatus_isLoaded = false;
+		hcalnoise_noiseType_isLoaded = false;
+		hcalnoise_num10GeVHits_isLoaded = false;
+		hcalnoise_num25GeVHits_isLoaded = false;
+		hcalnoise_numFlatNoiseChannels_isLoaded = false;
+		hcalnoise_numIsolatedNoiseChannels_isLoaded = false;
+		hcalnoise_numProblematicRBXs_isLoaded = false;
+		hcalnoise_numSpikeNoiseChannels_isLoaded = false;
+		hcalnoise_numTS4TS5NoiseChannels_isLoaded = false;
+		hcalnoise_numTriangleNoiseChannels_isLoaded = false;
+		hcalnoise_passHighLevelNoiseFilter_isLoaded = false;
+		hcalnoise_passLooseNoiseFilter_isLoaded = false;
+		hcalnoise_passTightNoiseFilter_isLoaded = false;
 		pdfinfo_id1_isLoaded = false;
 		pdfinfo_id2_isLoaded = false;
 		els_mc3_id_isLoaded = false;
@@ -6207,6 +6826,7 @@ void GetEntry(unsigned int idx)
 		pfjets_muonMultiplicity_isLoaded = false;
 		pfjets_neutralHadronMultiplicity_isLoaded = false;
 		pfjets_neutralMultiplicity_isLoaded = false;
+		pfjets_partonFlavour_isLoaded = false;
 		pfjets_photonMultiplicity_isLoaded = false;
 		taus_pf_charge_isLoaded = false;
 		photons_fiduciality_isLoaded = false;
@@ -6232,6 +6852,7 @@ void GetEntry(unsigned int idx)
 		convs_nHitsBeforeVtx_isLoaded = false;
 		convs_tkalgo_isLoaded = false;
 		convs_tkidx_isLoaded = false;
+		pfcands_fromPV_isLoaded = false;
 		els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_isLoaded = false;
 		els_HLT_Ele17_Ele8_LeadingLeg_version_isLoaded = false;
 		els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version_isLoaded = false;
@@ -6317,6 +6938,22 @@ void LoadAllBranches()
 	if (evt_CMS2tag_branch != 0) evt_CMS2tag();
 	if (evt_dataset_branch != 0) evt_dataset();
 	if (hlt_trigNames_branch != 0) hlt_trigNames();
+	if (hcalnoise_HasBadRBXTS4TS5_branch != 0) hcalnoise_HasBadRBXTS4TS5();
+	if (evt_cscTightHaloId_branch != 0) evt_cscTightHaloId();
+	if (evt_hbheFilter_branch != 0) evt_hbheFilter();
+	if (filt_cscBeamHalo_branch != 0) filt_cscBeamHalo();
+	if (filt_ecalLaser_branch != 0) filt_ecalLaser();
+	if (filt_ecalTP_branch != 0) filt_ecalTP();
+	if (filt_eeBadSc_branch != 0) filt_eeBadSc();
+	if (filt_goodVertices_branch != 0) filt_goodVertices();
+	if (filt_hbheNoise_branch != 0) filt_hbheNoise();
+	if (filt_hcalLaser_branch != 0) filt_hcalLaser();
+	if (filt_metfilter_branch != 0) filt_metfilter();
+	if (filt_trackingFailure_branch != 0) filt_trackingFailure();
+	if (filt_trkPOGFilters_branch != 0) filt_trkPOGFilters();
+	if (filt_trkPOG_logErrorTooManyClusters_branch != 0) filt_trkPOG_logErrorTooManyClusters();
+	if (filt_trkPOG_manystripclus53X_branch != 0) filt_trkPOG_manystripclus53X();
+	if (filt_trkPOG_toomanystripclus53X_branch != 0) filt_trkPOG_toomanystripclus53X();
 	if (els_conv_vtx_flag_branch != 0) els_conv_vtx_flag();
 	if (els_isGsfCtfScPixChargeConsistent_branch != 0) els_isGsfCtfScPixChargeConsistent();
 	if (els_passingMvaPreselection_branch != 0) els_passingMvaPreselection();
@@ -6350,6 +6987,38 @@ void LoadAllBranches()
 	if (genps_qScale_branch != 0) genps_qScale();
 	if (genps_weight_branch != 0) genps_weight();
 	if (gen_sumEt_branch != 0) gen_sumEt();
+	if (hcalnoise_GetRecHitEnergy_branch != 0) hcalnoise_GetRecHitEnergy();
+	if (hcalnoise_GetRecHitEnergy15_branch != 0) hcalnoise_GetRecHitEnergy15();
+	if (hcalnoise_GetTotalCalibCharge_branch != 0) hcalnoise_GetTotalCalibCharge();
+	if (hcalnoise_TS4TS5NoiseSumE_branch != 0) hcalnoise_TS4TS5NoiseSumE();
+	if (hcalnoise_TS4TS5NoiseSumEt_branch != 0) hcalnoise_TS4TS5NoiseSumEt();
+	if (hcalnoise_eventChargeFraction_branch != 0) hcalnoise_eventChargeFraction();
+	if (hcalnoise_eventEMEnergy_branch != 0) hcalnoise_eventEMEnergy();
+	if (hcalnoise_eventEMFraction_branch != 0) hcalnoise_eventEMFraction();
+	if (hcalnoise_eventHadEnergy_branch != 0) hcalnoise_eventHadEnergy();
+	if (hcalnoise_eventTrackEnergy_branch != 0) hcalnoise_eventTrackEnergy();
+	if (hcalnoise_flatNoiseSumE_branch != 0) hcalnoise_flatNoiseSumE();
+	if (hcalnoise_flatNoiseSumEt_branch != 0) hcalnoise_flatNoiseSumEt();
+	if (hcalnoise_isolatedNoiseSumE_branch != 0) hcalnoise_isolatedNoiseSumE();
+	if (hcalnoise_isolatedNoiseSumEt_branch != 0) hcalnoise_isolatedNoiseSumEt();
+	if (hcalnoise_max10GeVHitTime_branch != 0) hcalnoise_max10GeVHitTime();
+	if (hcalnoise_max25GeVHitTime_branch != 0) hcalnoise_max25GeVHitTime();
+	if (hcalnoise_maxE10TS_branch != 0) hcalnoise_maxE10TS();
+	if (hcalnoise_maxE2Over10TS_branch != 0) hcalnoise_maxE2Over10TS();
+	if (hcalnoise_maxE2TS_branch != 0) hcalnoise_maxE2TS();
+	if (hcalnoise_min10GeVHitTime_branch != 0) hcalnoise_min10GeVHitTime();
+	if (hcalnoise_min25GeVHitTime_branch != 0) hcalnoise_min25GeVHitTime();
+	if (hcalnoise_minE10TS_branch != 0) hcalnoise_minE10TS();
+	if (hcalnoise_minE2Over10TS_branch != 0) hcalnoise_minE2Over10TS();
+	if (hcalnoise_minE2TS_branch != 0) hcalnoise_minE2TS();
+	if (hcalnoise_minHPDEMF_branch != 0) hcalnoise_minHPDEMF();
+	if (hcalnoise_minRBXEMF_branch != 0) hcalnoise_minRBXEMF();
+	if (hcalnoise_rms10GeVHitTime_branch != 0) hcalnoise_rms10GeVHitTime();
+	if (hcalnoise_rms25GeVHitTime_branch != 0) hcalnoise_rms25GeVHitTime();
+	if (hcalnoise_spikeNoiseSumE_branch != 0) hcalnoise_spikeNoiseSumE();
+	if (hcalnoise_spikeNoiseSumEt_branch != 0) hcalnoise_spikeNoiseSumEt();
+	if (hcalnoise_triangleNoiseSumE_branch != 0) hcalnoise_triangleNoiseSumE();
+	if (hcalnoise_triangleNoiseSumEt_branch != 0) hcalnoise_triangleNoiseSumEt();
 	if (pdfinfo_pdf1_branch != 0) pdfinfo_pdf1();
 	if (pdfinfo_pdf2_branch != 0) pdfinfo_pdf2();
 	if (pdfinfo_scale_branch != 0) pdfinfo_scale();
@@ -6764,6 +7433,25 @@ void LoadAllBranches()
 	if (evt_isRealData_branch != 0) evt_isRealData();
 	if (evt_orbitNumber_branch != 0) evt_orbitNumber();
 	if (evt_storeNumber_branch != 0) evt_storeNumber();
+	if (hcalnoise_GetRecHitCount_branch != 0) hcalnoise_GetRecHitCount();
+	if (hcalnoise_GetRecHitCount15_branch != 0) hcalnoise_GetRecHitCount15();
+	if (hcalnoise_maxHPDHits_branch != 0) hcalnoise_maxHPDHits();
+	if (hcalnoise_maxHPDNoOtherHits_branch != 0) hcalnoise_maxHPDNoOtherHits();
+	if (hcalnoise_maxRBXHits_branch != 0) hcalnoise_maxRBXHits();
+	if (hcalnoise_maxZeros_branch != 0) hcalnoise_maxZeros();
+	if (hcalnoise_noiseFilterStatus_branch != 0) hcalnoise_noiseFilterStatus();
+	if (hcalnoise_noiseType_branch != 0) hcalnoise_noiseType();
+	if (hcalnoise_num10GeVHits_branch != 0) hcalnoise_num10GeVHits();
+	if (hcalnoise_num25GeVHits_branch != 0) hcalnoise_num25GeVHits();
+	if (hcalnoise_numFlatNoiseChannels_branch != 0) hcalnoise_numFlatNoiseChannels();
+	if (hcalnoise_numIsolatedNoiseChannels_branch != 0) hcalnoise_numIsolatedNoiseChannels();
+	if (hcalnoise_numProblematicRBXs_branch != 0) hcalnoise_numProblematicRBXs();
+	if (hcalnoise_numSpikeNoiseChannels_branch != 0) hcalnoise_numSpikeNoiseChannels();
+	if (hcalnoise_numTS4TS5NoiseChannels_branch != 0) hcalnoise_numTS4TS5NoiseChannels();
+	if (hcalnoise_numTriangleNoiseChannels_branch != 0) hcalnoise_numTriangleNoiseChannels();
+	if (hcalnoise_passHighLevelNoiseFilter_branch != 0) hcalnoise_passHighLevelNoiseFilter();
+	if (hcalnoise_passLooseNoiseFilter_branch != 0) hcalnoise_passLooseNoiseFilter();
+	if (hcalnoise_passTightNoiseFilter_branch != 0) hcalnoise_passTightNoiseFilter();
 	if (pdfinfo_id1_branch != 0) pdfinfo_id1();
 	if (pdfinfo_id2_branch != 0) pdfinfo_id2();
 	if (els_mc3_id_branch != 0) els_mc3_id();
@@ -6910,6 +7598,7 @@ void LoadAllBranches()
 	if (pfjets_muonMultiplicity_branch != 0) pfjets_muonMultiplicity();
 	if (pfjets_neutralHadronMultiplicity_branch != 0) pfjets_neutralHadronMultiplicity();
 	if (pfjets_neutralMultiplicity_branch != 0) pfjets_neutralMultiplicity();
+	if (pfjets_partonFlavour_branch != 0) pfjets_partonFlavour();
 	if (pfjets_photonMultiplicity_branch != 0) pfjets_photonMultiplicity();
 	if (taus_pf_charge_branch != 0) taus_pf_charge();
 	if (photons_fiduciality_branch != 0) photons_fiduciality();
@@ -6935,6 +7624,7 @@ void LoadAllBranches()
 	if (convs_nHitsBeforeVtx_branch != 0) convs_nHitsBeforeVtx();
 	if (convs_tkalgo_branch != 0) convs_tkalgo();
 	if (convs_tkidx_branch != 0) convs_tkidx();
+	if (pfcands_fromPV_branch != 0) pfcands_fromPV();
 	if (els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version_branch != 0) els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version();
 	if (els_HLT_Ele17_Ele8_LeadingLeg_version_branch != 0) els_HLT_Ele17_Ele8_LeadingLeg_version();
 	if (els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version_branch != 0) els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version();
@@ -7064,6 +7754,214 @@ void LoadAllBranches()
 			hlt_trigNames_isLoaded = true;
 		}
 		return hlt_trigNames_;
+	}
+	bool &hcalnoise_HasBadRBXTS4TS5()
+	{
+		if (not hcalnoise_HasBadRBXTS4TS5_isLoaded) {
+			if (hcalnoise_HasBadRBXTS4TS5_branch != 0) {
+				hcalnoise_HasBadRBXTS4TS5_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_HasBadRBXTS4TS5_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_HasBadRBXTS4TS5_isLoaded = true;
+		}
+		return hcalnoise_HasBadRBXTS4TS5_;
+	}
+	bool &evt_cscTightHaloId()
+	{
+		if (not evt_cscTightHaloId_isLoaded) {
+			if (evt_cscTightHaloId_branch != 0) {
+				evt_cscTightHaloId_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_cscTightHaloId_branch does not exist!\n");
+				exit(1);
+			}
+			evt_cscTightHaloId_isLoaded = true;
+		}
+		return evt_cscTightHaloId_;
+	}
+	bool &evt_hbheFilter()
+	{
+		if (not evt_hbheFilter_isLoaded) {
+			if (evt_hbheFilter_branch != 0) {
+				evt_hbheFilter_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_hbheFilter_branch does not exist!\n");
+				exit(1);
+			}
+			evt_hbheFilter_isLoaded = true;
+		}
+		return evt_hbheFilter_;
+	}
+	bool &filt_cscBeamHalo()
+	{
+		if (not filt_cscBeamHalo_isLoaded) {
+			if (filt_cscBeamHalo_branch != 0) {
+				filt_cscBeamHalo_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_cscBeamHalo_branch does not exist!\n");
+				exit(1);
+			}
+			filt_cscBeamHalo_isLoaded = true;
+		}
+		return filt_cscBeamHalo_;
+	}
+	bool &filt_ecalLaser()
+	{
+		if (not filt_ecalLaser_isLoaded) {
+			if (filt_ecalLaser_branch != 0) {
+				filt_ecalLaser_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_ecalLaser_branch does not exist!\n");
+				exit(1);
+			}
+			filt_ecalLaser_isLoaded = true;
+		}
+		return filt_ecalLaser_;
+	}
+	bool &filt_ecalTP()
+	{
+		if (not filt_ecalTP_isLoaded) {
+			if (filt_ecalTP_branch != 0) {
+				filt_ecalTP_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_ecalTP_branch does not exist!\n");
+				exit(1);
+			}
+			filt_ecalTP_isLoaded = true;
+		}
+		return filt_ecalTP_;
+	}
+	bool &filt_eeBadSc()
+	{
+		if (not filt_eeBadSc_isLoaded) {
+			if (filt_eeBadSc_branch != 0) {
+				filt_eeBadSc_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_eeBadSc_branch does not exist!\n");
+				exit(1);
+			}
+			filt_eeBadSc_isLoaded = true;
+		}
+		return filt_eeBadSc_;
+	}
+	bool &filt_goodVertices()
+	{
+		if (not filt_goodVertices_isLoaded) {
+			if (filt_goodVertices_branch != 0) {
+				filt_goodVertices_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_goodVertices_branch does not exist!\n");
+				exit(1);
+			}
+			filt_goodVertices_isLoaded = true;
+		}
+		return filt_goodVertices_;
+	}
+	bool &filt_hbheNoise()
+	{
+		if (not filt_hbheNoise_isLoaded) {
+			if (filt_hbheNoise_branch != 0) {
+				filt_hbheNoise_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_hbheNoise_branch does not exist!\n");
+				exit(1);
+			}
+			filt_hbheNoise_isLoaded = true;
+		}
+		return filt_hbheNoise_;
+	}
+	bool &filt_hcalLaser()
+	{
+		if (not filt_hcalLaser_isLoaded) {
+			if (filt_hcalLaser_branch != 0) {
+				filt_hcalLaser_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_hcalLaser_branch does not exist!\n");
+				exit(1);
+			}
+			filt_hcalLaser_isLoaded = true;
+		}
+		return filt_hcalLaser_;
+	}
+	bool &filt_metfilter()
+	{
+		if (not filt_metfilter_isLoaded) {
+			if (filt_metfilter_branch != 0) {
+				filt_metfilter_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_metfilter_branch does not exist!\n");
+				exit(1);
+			}
+			filt_metfilter_isLoaded = true;
+		}
+		return filt_metfilter_;
+	}
+	bool &filt_trackingFailure()
+	{
+		if (not filt_trackingFailure_isLoaded) {
+			if (filt_trackingFailure_branch != 0) {
+				filt_trackingFailure_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_trackingFailure_branch does not exist!\n");
+				exit(1);
+			}
+			filt_trackingFailure_isLoaded = true;
+		}
+		return filt_trackingFailure_;
+	}
+	bool &filt_trkPOGFilters()
+	{
+		if (not filt_trkPOGFilters_isLoaded) {
+			if (filt_trkPOGFilters_branch != 0) {
+				filt_trkPOGFilters_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_trkPOGFilters_branch does not exist!\n");
+				exit(1);
+			}
+			filt_trkPOGFilters_isLoaded = true;
+		}
+		return filt_trkPOGFilters_;
+	}
+	bool &filt_trkPOG_logErrorTooManyClusters()
+	{
+		if (not filt_trkPOG_logErrorTooManyClusters_isLoaded) {
+			if (filt_trkPOG_logErrorTooManyClusters_branch != 0) {
+				filt_trkPOG_logErrorTooManyClusters_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_trkPOG_logErrorTooManyClusters_branch does not exist!\n");
+				exit(1);
+			}
+			filt_trkPOG_logErrorTooManyClusters_isLoaded = true;
+		}
+		return filt_trkPOG_logErrorTooManyClusters_;
+	}
+	bool &filt_trkPOG_manystripclus53X()
+	{
+		if (not filt_trkPOG_manystripclus53X_isLoaded) {
+			if (filt_trkPOG_manystripclus53X_branch != 0) {
+				filt_trkPOG_manystripclus53X_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_trkPOG_manystripclus53X_branch does not exist!\n");
+				exit(1);
+			}
+			filt_trkPOG_manystripclus53X_isLoaded = true;
+		}
+		return filt_trkPOG_manystripclus53X_;
+	}
+	bool &filt_trkPOG_toomanystripclus53X()
+	{
+		if (not filt_trkPOG_toomanystripclus53X_isLoaded) {
+			if (filt_trkPOG_toomanystripclus53X_branch != 0) {
+				filt_trkPOG_toomanystripclus53X_branch->GetEntry(index);
+			} else { 
+				printf("branch filt_trkPOG_toomanystripclus53X_branch does not exist!\n");
+				exit(1);
+			}
+			filt_trkPOG_toomanystripclus53X_isLoaded = true;
+		}
+		return filt_trkPOG_toomanystripclus53X_;
 	}
 	vector<bool> &els_conv_vtx_flag()
 	{
@@ -7493,6 +8391,422 @@ void LoadAllBranches()
 			gen_sumEt_isLoaded = true;
 		}
 		return gen_sumEt_;
+	}
+	float &hcalnoise_GetRecHitEnergy()
+	{
+		if (not hcalnoise_GetRecHitEnergy_isLoaded) {
+			if (hcalnoise_GetRecHitEnergy_branch != 0) {
+				hcalnoise_GetRecHitEnergy_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_GetRecHitEnergy_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_GetRecHitEnergy_isLoaded = true;
+		}
+		return hcalnoise_GetRecHitEnergy_;
+	}
+	float &hcalnoise_GetRecHitEnergy15()
+	{
+		if (not hcalnoise_GetRecHitEnergy15_isLoaded) {
+			if (hcalnoise_GetRecHitEnergy15_branch != 0) {
+				hcalnoise_GetRecHitEnergy15_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_GetRecHitEnergy15_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_GetRecHitEnergy15_isLoaded = true;
+		}
+		return hcalnoise_GetRecHitEnergy15_;
+	}
+	float &hcalnoise_GetTotalCalibCharge()
+	{
+		if (not hcalnoise_GetTotalCalibCharge_isLoaded) {
+			if (hcalnoise_GetTotalCalibCharge_branch != 0) {
+				hcalnoise_GetTotalCalibCharge_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_GetTotalCalibCharge_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_GetTotalCalibCharge_isLoaded = true;
+		}
+		return hcalnoise_GetTotalCalibCharge_;
+	}
+	float &hcalnoise_TS4TS5NoiseSumE()
+	{
+		if (not hcalnoise_TS4TS5NoiseSumE_isLoaded) {
+			if (hcalnoise_TS4TS5NoiseSumE_branch != 0) {
+				hcalnoise_TS4TS5NoiseSumE_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_TS4TS5NoiseSumE_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_TS4TS5NoiseSumE_isLoaded = true;
+		}
+		return hcalnoise_TS4TS5NoiseSumE_;
+	}
+	float &hcalnoise_TS4TS5NoiseSumEt()
+	{
+		if (not hcalnoise_TS4TS5NoiseSumEt_isLoaded) {
+			if (hcalnoise_TS4TS5NoiseSumEt_branch != 0) {
+				hcalnoise_TS4TS5NoiseSumEt_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_TS4TS5NoiseSumEt_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_TS4TS5NoiseSumEt_isLoaded = true;
+		}
+		return hcalnoise_TS4TS5NoiseSumEt_;
+	}
+	float &hcalnoise_eventChargeFraction()
+	{
+		if (not hcalnoise_eventChargeFraction_isLoaded) {
+			if (hcalnoise_eventChargeFraction_branch != 0) {
+				hcalnoise_eventChargeFraction_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_eventChargeFraction_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_eventChargeFraction_isLoaded = true;
+		}
+		return hcalnoise_eventChargeFraction_;
+	}
+	float &hcalnoise_eventEMEnergy()
+	{
+		if (not hcalnoise_eventEMEnergy_isLoaded) {
+			if (hcalnoise_eventEMEnergy_branch != 0) {
+				hcalnoise_eventEMEnergy_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_eventEMEnergy_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_eventEMEnergy_isLoaded = true;
+		}
+		return hcalnoise_eventEMEnergy_;
+	}
+	float &hcalnoise_eventEMFraction()
+	{
+		if (not hcalnoise_eventEMFraction_isLoaded) {
+			if (hcalnoise_eventEMFraction_branch != 0) {
+				hcalnoise_eventEMFraction_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_eventEMFraction_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_eventEMFraction_isLoaded = true;
+		}
+		return hcalnoise_eventEMFraction_;
+	}
+	float &hcalnoise_eventHadEnergy()
+	{
+		if (not hcalnoise_eventHadEnergy_isLoaded) {
+			if (hcalnoise_eventHadEnergy_branch != 0) {
+				hcalnoise_eventHadEnergy_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_eventHadEnergy_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_eventHadEnergy_isLoaded = true;
+		}
+		return hcalnoise_eventHadEnergy_;
+	}
+	float &hcalnoise_eventTrackEnergy()
+	{
+		if (not hcalnoise_eventTrackEnergy_isLoaded) {
+			if (hcalnoise_eventTrackEnergy_branch != 0) {
+				hcalnoise_eventTrackEnergy_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_eventTrackEnergy_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_eventTrackEnergy_isLoaded = true;
+		}
+		return hcalnoise_eventTrackEnergy_;
+	}
+	float &hcalnoise_flatNoiseSumE()
+	{
+		if (not hcalnoise_flatNoiseSumE_isLoaded) {
+			if (hcalnoise_flatNoiseSumE_branch != 0) {
+				hcalnoise_flatNoiseSumE_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_flatNoiseSumE_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_flatNoiseSumE_isLoaded = true;
+		}
+		return hcalnoise_flatNoiseSumE_;
+	}
+	float &hcalnoise_flatNoiseSumEt()
+	{
+		if (not hcalnoise_flatNoiseSumEt_isLoaded) {
+			if (hcalnoise_flatNoiseSumEt_branch != 0) {
+				hcalnoise_flatNoiseSumEt_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_flatNoiseSumEt_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_flatNoiseSumEt_isLoaded = true;
+		}
+		return hcalnoise_flatNoiseSumEt_;
+	}
+	float &hcalnoise_isolatedNoiseSumE()
+	{
+		if (not hcalnoise_isolatedNoiseSumE_isLoaded) {
+			if (hcalnoise_isolatedNoiseSumE_branch != 0) {
+				hcalnoise_isolatedNoiseSumE_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_isolatedNoiseSumE_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_isolatedNoiseSumE_isLoaded = true;
+		}
+		return hcalnoise_isolatedNoiseSumE_;
+	}
+	float &hcalnoise_isolatedNoiseSumEt()
+	{
+		if (not hcalnoise_isolatedNoiseSumEt_isLoaded) {
+			if (hcalnoise_isolatedNoiseSumEt_branch != 0) {
+				hcalnoise_isolatedNoiseSumEt_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_isolatedNoiseSumEt_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_isolatedNoiseSumEt_isLoaded = true;
+		}
+		return hcalnoise_isolatedNoiseSumEt_;
+	}
+	float &hcalnoise_max10GeVHitTime()
+	{
+		if (not hcalnoise_max10GeVHitTime_isLoaded) {
+			if (hcalnoise_max10GeVHitTime_branch != 0) {
+				hcalnoise_max10GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_max10GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_max10GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_max10GeVHitTime_;
+	}
+	float &hcalnoise_max25GeVHitTime()
+	{
+		if (not hcalnoise_max25GeVHitTime_isLoaded) {
+			if (hcalnoise_max25GeVHitTime_branch != 0) {
+				hcalnoise_max25GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_max25GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_max25GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_max25GeVHitTime_;
+	}
+	float &hcalnoise_maxE10TS()
+	{
+		if (not hcalnoise_maxE10TS_isLoaded) {
+			if (hcalnoise_maxE10TS_branch != 0) {
+				hcalnoise_maxE10TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxE10TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxE10TS_isLoaded = true;
+		}
+		return hcalnoise_maxE10TS_;
+	}
+	float &hcalnoise_maxE2Over10TS()
+	{
+		if (not hcalnoise_maxE2Over10TS_isLoaded) {
+			if (hcalnoise_maxE2Over10TS_branch != 0) {
+				hcalnoise_maxE2Over10TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxE2Over10TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxE2Over10TS_isLoaded = true;
+		}
+		return hcalnoise_maxE2Over10TS_;
+	}
+	float &hcalnoise_maxE2TS()
+	{
+		if (not hcalnoise_maxE2TS_isLoaded) {
+			if (hcalnoise_maxE2TS_branch != 0) {
+				hcalnoise_maxE2TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxE2TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxE2TS_isLoaded = true;
+		}
+		return hcalnoise_maxE2TS_;
+	}
+	float &hcalnoise_min10GeVHitTime()
+	{
+		if (not hcalnoise_min10GeVHitTime_isLoaded) {
+			if (hcalnoise_min10GeVHitTime_branch != 0) {
+				hcalnoise_min10GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_min10GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_min10GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_min10GeVHitTime_;
+	}
+	float &hcalnoise_min25GeVHitTime()
+	{
+		if (not hcalnoise_min25GeVHitTime_isLoaded) {
+			if (hcalnoise_min25GeVHitTime_branch != 0) {
+				hcalnoise_min25GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_min25GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_min25GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_min25GeVHitTime_;
+	}
+	float &hcalnoise_minE10TS()
+	{
+		if (not hcalnoise_minE10TS_isLoaded) {
+			if (hcalnoise_minE10TS_branch != 0) {
+				hcalnoise_minE10TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_minE10TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_minE10TS_isLoaded = true;
+		}
+		return hcalnoise_minE10TS_;
+	}
+	float &hcalnoise_minE2Over10TS()
+	{
+		if (not hcalnoise_minE2Over10TS_isLoaded) {
+			if (hcalnoise_minE2Over10TS_branch != 0) {
+				hcalnoise_minE2Over10TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_minE2Over10TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_minE2Over10TS_isLoaded = true;
+		}
+		return hcalnoise_minE2Over10TS_;
+	}
+	float &hcalnoise_minE2TS()
+	{
+		if (not hcalnoise_minE2TS_isLoaded) {
+			if (hcalnoise_minE2TS_branch != 0) {
+				hcalnoise_minE2TS_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_minE2TS_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_minE2TS_isLoaded = true;
+		}
+		return hcalnoise_minE2TS_;
+	}
+	float &hcalnoise_minHPDEMF()
+	{
+		if (not hcalnoise_minHPDEMF_isLoaded) {
+			if (hcalnoise_minHPDEMF_branch != 0) {
+				hcalnoise_minHPDEMF_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_minHPDEMF_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_minHPDEMF_isLoaded = true;
+		}
+		return hcalnoise_minHPDEMF_;
+	}
+	float &hcalnoise_minRBXEMF()
+	{
+		if (not hcalnoise_minRBXEMF_isLoaded) {
+			if (hcalnoise_minRBXEMF_branch != 0) {
+				hcalnoise_minRBXEMF_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_minRBXEMF_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_minRBXEMF_isLoaded = true;
+		}
+		return hcalnoise_minRBXEMF_;
+	}
+	float &hcalnoise_rms10GeVHitTime()
+	{
+		if (not hcalnoise_rms10GeVHitTime_isLoaded) {
+			if (hcalnoise_rms10GeVHitTime_branch != 0) {
+				hcalnoise_rms10GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_rms10GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_rms10GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_rms10GeVHitTime_;
+	}
+	float &hcalnoise_rms25GeVHitTime()
+	{
+		if (not hcalnoise_rms25GeVHitTime_isLoaded) {
+			if (hcalnoise_rms25GeVHitTime_branch != 0) {
+				hcalnoise_rms25GeVHitTime_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_rms25GeVHitTime_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_rms25GeVHitTime_isLoaded = true;
+		}
+		return hcalnoise_rms25GeVHitTime_;
+	}
+	float &hcalnoise_spikeNoiseSumE()
+	{
+		if (not hcalnoise_spikeNoiseSumE_isLoaded) {
+			if (hcalnoise_spikeNoiseSumE_branch != 0) {
+				hcalnoise_spikeNoiseSumE_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_spikeNoiseSumE_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_spikeNoiseSumE_isLoaded = true;
+		}
+		return hcalnoise_spikeNoiseSumE_;
+	}
+	float &hcalnoise_spikeNoiseSumEt()
+	{
+		if (not hcalnoise_spikeNoiseSumEt_isLoaded) {
+			if (hcalnoise_spikeNoiseSumEt_branch != 0) {
+				hcalnoise_spikeNoiseSumEt_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_spikeNoiseSumEt_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_spikeNoiseSumEt_isLoaded = true;
+		}
+		return hcalnoise_spikeNoiseSumEt_;
+	}
+	float &hcalnoise_triangleNoiseSumE()
+	{
+		if (not hcalnoise_triangleNoiseSumE_isLoaded) {
+			if (hcalnoise_triangleNoiseSumE_branch != 0) {
+				hcalnoise_triangleNoiseSumE_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_triangleNoiseSumE_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_triangleNoiseSumE_isLoaded = true;
+		}
+		return hcalnoise_triangleNoiseSumE_;
+	}
+	float &hcalnoise_triangleNoiseSumEt()
+	{
+		if (not hcalnoise_triangleNoiseSumEt_isLoaded) {
+			if (hcalnoise_triangleNoiseSumEt_branch != 0) {
+				hcalnoise_triangleNoiseSumEt_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_triangleNoiseSumEt_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_triangleNoiseSumEt_isLoaded = true;
+		}
+		return hcalnoise_triangleNoiseSumEt_;
 	}
 	float &pdfinfo_pdf1()
 	{
@@ -12876,6 +14190,253 @@ void LoadAllBranches()
 		}
 		return evt_storeNumber_;
 	}
+	int &hcalnoise_GetRecHitCount()
+	{
+		if (not hcalnoise_GetRecHitCount_isLoaded) {
+			if (hcalnoise_GetRecHitCount_branch != 0) {
+				hcalnoise_GetRecHitCount_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_GetRecHitCount_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_GetRecHitCount_isLoaded = true;
+		}
+		return hcalnoise_GetRecHitCount_;
+	}
+	int &hcalnoise_GetRecHitCount15()
+	{
+		if (not hcalnoise_GetRecHitCount15_isLoaded) {
+			if (hcalnoise_GetRecHitCount15_branch != 0) {
+				hcalnoise_GetRecHitCount15_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_GetRecHitCount15_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_GetRecHitCount15_isLoaded = true;
+		}
+		return hcalnoise_GetRecHitCount15_;
+	}
+	int &hcalnoise_maxHPDHits()
+	{
+		if (not hcalnoise_maxHPDHits_isLoaded) {
+			if (hcalnoise_maxHPDHits_branch != 0) {
+				hcalnoise_maxHPDHits_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxHPDHits_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxHPDHits_isLoaded = true;
+		}
+		return hcalnoise_maxHPDHits_;
+	}
+	int &hcalnoise_maxHPDNoOtherHits()
+	{
+		if (not hcalnoise_maxHPDNoOtherHits_isLoaded) {
+			if (hcalnoise_maxHPDNoOtherHits_branch != 0) {
+				hcalnoise_maxHPDNoOtherHits_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxHPDNoOtherHits_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxHPDNoOtherHits_isLoaded = true;
+		}
+		return hcalnoise_maxHPDNoOtherHits_;
+	}
+	int &hcalnoise_maxRBXHits()
+	{
+		if (not hcalnoise_maxRBXHits_isLoaded) {
+			if (hcalnoise_maxRBXHits_branch != 0) {
+				hcalnoise_maxRBXHits_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxRBXHits_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxRBXHits_isLoaded = true;
+		}
+		return hcalnoise_maxRBXHits_;
+	}
+	int &hcalnoise_maxZeros()
+	{
+		if (not hcalnoise_maxZeros_isLoaded) {
+			if (hcalnoise_maxZeros_branch != 0) {
+				hcalnoise_maxZeros_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_maxZeros_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_maxZeros_isLoaded = true;
+		}
+		return hcalnoise_maxZeros_;
+	}
+	int &hcalnoise_noiseFilterStatus()
+	{
+		if (not hcalnoise_noiseFilterStatus_isLoaded) {
+			if (hcalnoise_noiseFilterStatus_branch != 0) {
+				hcalnoise_noiseFilterStatus_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_noiseFilterStatus_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_noiseFilterStatus_isLoaded = true;
+		}
+		return hcalnoise_noiseFilterStatus_;
+	}
+	int &hcalnoise_noiseType()
+	{
+		if (not hcalnoise_noiseType_isLoaded) {
+			if (hcalnoise_noiseType_branch != 0) {
+				hcalnoise_noiseType_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_noiseType_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_noiseType_isLoaded = true;
+		}
+		return hcalnoise_noiseType_;
+	}
+	int &hcalnoise_num10GeVHits()
+	{
+		if (not hcalnoise_num10GeVHits_isLoaded) {
+			if (hcalnoise_num10GeVHits_branch != 0) {
+				hcalnoise_num10GeVHits_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_num10GeVHits_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_num10GeVHits_isLoaded = true;
+		}
+		return hcalnoise_num10GeVHits_;
+	}
+	int &hcalnoise_num25GeVHits()
+	{
+		if (not hcalnoise_num25GeVHits_isLoaded) {
+			if (hcalnoise_num25GeVHits_branch != 0) {
+				hcalnoise_num25GeVHits_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_num25GeVHits_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_num25GeVHits_isLoaded = true;
+		}
+		return hcalnoise_num25GeVHits_;
+	}
+	int &hcalnoise_numFlatNoiseChannels()
+	{
+		if (not hcalnoise_numFlatNoiseChannels_isLoaded) {
+			if (hcalnoise_numFlatNoiseChannels_branch != 0) {
+				hcalnoise_numFlatNoiseChannels_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numFlatNoiseChannels_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numFlatNoiseChannels_isLoaded = true;
+		}
+		return hcalnoise_numFlatNoiseChannels_;
+	}
+	int &hcalnoise_numIsolatedNoiseChannels()
+	{
+		if (not hcalnoise_numIsolatedNoiseChannels_isLoaded) {
+			if (hcalnoise_numIsolatedNoiseChannels_branch != 0) {
+				hcalnoise_numIsolatedNoiseChannels_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numIsolatedNoiseChannels_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numIsolatedNoiseChannels_isLoaded = true;
+		}
+		return hcalnoise_numIsolatedNoiseChannels_;
+	}
+	int &hcalnoise_numProblematicRBXs()
+	{
+		if (not hcalnoise_numProblematicRBXs_isLoaded) {
+			if (hcalnoise_numProblematicRBXs_branch != 0) {
+				hcalnoise_numProblematicRBXs_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numProblematicRBXs_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numProblematicRBXs_isLoaded = true;
+		}
+		return hcalnoise_numProblematicRBXs_;
+	}
+	int &hcalnoise_numSpikeNoiseChannels()
+	{
+		if (not hcalnoise_numSpikeNoiseChannels_isLoaded) {
+			if (hcalnoise_numSpikeNoiseChannels_branch != 0) {
+				hcalnoise_numSpikeNoiseChannels_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numSpikeNoiseChannels_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numSpikeNoiseChannels_isLoaded = true;
+		}
+		return hcalnoise_numSpikeNoiseChannels_;
+	}
+	int &hcalnoise_numTS4TS5NoiseChannels()
+	{
+		if (not hcalnoise_numTS4TS5NoiseChannels_isLoaded) {
+			if (hcalnoise_numTS4TS5NoiseChannels_branch != 0) {
+				hcalnoise_numTS4TS5NoiseChannels_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numTS4TS5NoiseChannels_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numTS4TS5NoiseChannels_isLoaded = true;
+		}
+		return hcalnoise_numTS4TS5NoiseChannels_;
+	}
+	int &hcalnoise_numTriangleNoiseChannels()
+	{
+		if (not hcalnoise_numTriangleNoiseChannels_isLoaded) {
+			if (hcalnoise_numTriangleNoiseChannels_branch != 0) {
+				hcalnoise_numTriangleNoiseChannels_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_numTriangleNoiseChannels_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_numTriangleNoiseChannels_isLoaded = true;
+		}
+		return hcalnoise_numTriangleNoiseChannels_;
+	}
+	int &hcalnoise_passHighLevelNoiseFilter()
+	{
+		if (not hcalnoise_passHighLevelNoiseFilter_isLoaded) {
+			if (hcalnoise_passHighLevelNoiseFilter_branch != 0) {
+				hcalnoise_passHighLevelNoiseFilter_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_passHighLevelNoiseFilter_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_passHighLevelNoiseFilter_isLoaded = true;
+		}
+		return hcalnoise_passHighLevelNoiseFilter_;
+	}
+	int &hcalnoise_passLooseNoiseFilter()
+	{
+		if (not hcalnoise_passLooseNoiseFilter_isLoaded) {
+			if (hcalnoise_passLooseNoiseFilter_branch != 0) {
+				hcalnoise_passLooseNoiseFilter_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_passLooseNoiseFilter_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_passLooseNoiseFilter_isLoaded = true;
+		}
+		return hcalnoise_passLooseNoiseFilter_;
+	}
+	int &hcalnoise_passTightNoiseFilter()
+	{
+		if (not hcalnoise_passTightNoiseFilter_isLoaded) {
+			if (hcalnoise_passTightNoiseFilter_branch != 0) {
+				hcalnoise_passTightNoiseFilter_branch->GetEntry(index);
+			} else { 
+				printf("branch hcalnoise_passTightNoiseFilter_branch does not exist!\n");
+				exit(1);
+			}
+			hcalnoise_passTightNoiseFilter_isLoaded = true;
+		}
+		return hcalnoise_passTightNoiseFilter_;
+	}
 	int &pdfinfo_id1()
 	{
 		if (not pdfinfo_id1_isLoaded) {
@@ -14774,6 +16335,19 @@ void LoadAllBranches()
 		}
 		return pfjets_neutralMultiplicity_;
 	}
+	vector<int> &pfjets_partonFlavour()
+	{
+		if (not pfjets_partonFlavour_isLoaded) {
+			if (pfjets_partonFlavour_branch != 0) {
+				pfjets_partonFlavour_branch->GetEntry(index);
+			} else { 
+				printf("branch pfjets_partonFlavour_branch does not exist!\n");
+				exit(1);
+			}
+			pfjets_partonFlavour_isLoaded = true;
+		}
+		return pfjets_partonFlavour_;
+	}
 	vector<int> &pfjets_photonMultiplicity()
 	{
 		if (not pfjets_photonMultiplicity_isLoaded) {
@@ -15098,6 +16672,19 @@ void LoadAllBranches()
 			convs_tkidx_isLoaded = true;
 		}
 		return convs_tkidx_;
+	}
+	vector<unsigned char> &pfcands_fromPV()
+	{
+		if (not pfcands_fromPV_isLoaded) {
+			if (pfcands_fromPV_branch != 0) {
+				pfcands_fromPV_branch->GetEntry(index);
+			} else { 
+				printf("branch pfcands_fromPV_branch does not exist!\n");
+				exit(1);
+			}
+			pfcands_fromPV_isLoaded = true;
+		}
+		return pfcands_fromPV_;
 	}
 	unsigned int &els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version()
 	{
@@ -16133,6 +17720,22 @@ namespace tas {
 	vector<TString> &evt_CMS2tag();
 	vector<TString> &evt_dataset();
 	vector<TString> &hlt_trigNames();
+	bool &hcalnoise_HasBadRBXTS4TS5();
+	bool &evt_cscTightHaloId();
+	bool &evt_hbheFilter();
+	bool &filt_cscBeamHalo();
+	bool &filt_ecalLaser();
+	bool &filt_ecalTP();
+	bool &filt_eeBadSc();
+	bool &filt_goodVertices();
+	bool &filt_hbheNoise();
+	bool &filt_hcalLaser();
+	bool &filt_metfilter();
+	bool &filt_trackingFailure();
+	bool &filt_trkPOGFilters();
+	bool &filt_trkPOG_logErrorTooManyClusters();
+	bool &filt_trkPOG_manystripclus53X();
+	bool &filt_trkPOG_toomanystripclus53X();
 	vector<bool> &els_conv_vtx_flag();
 	vector<bool> &els_isGsfCtfScPixChargeConsistent();
 	vector<bool> &els_passingMvaPreselection();
@@ -16166,6 +17769,38 @@ namespace tas {
 	float &genps_qScale();
 	float &genps_weight();
 	float &gen_sumEt();
+	float &hcalnoise_GetRecHitEnergy();
+	float &hcalnoise_GetRecHitEnergy15();
+	float &hcalnoise_GetTotalCalibCharge();
+	float &hcalnoise_TS4TS5NoiseSumE();
+	float &hcalnoise_TS4TS5NoiseSumEt();
+	float &hcalnoise_eventChargeFraction();
+	float &hcalnoise_eventEMEnergy();
+	float &hcalnoise_eventEMFraction();
+	float &hcalnoise_eventHadEnergy();
+	float &hcalnoise_eventTrackEnergy();
+	float &hcalnoise_flatNoiseSumE();
+	float &hcalnoise_flatNoiseSumEt();
+	float &hcalnoise_isolatedNoiseSumE();
+	float &hcalnoise_isolatedNoiseSumEt();
+	float &hcalnoise_max10GeVHitTime();
+	float &hcalnoise_max25GeVHitTime();
+	float &hcalnoise_maxE10TS();
+	float &hcalnoise_maxE2Over10TS();
+	float &hcalnoise_maxE2TS();
+	float &hcalnoise_min10GeVHitTime();
+	float &hcalnoise_min25GeVHitTime();
+	float &hcalnoise_minE10TS();
+	float &hcalnoise_minE2Over10TS();
+	float &hcalnoise_minE2TS();
+	float &hcalnoise_minHPDEMF();
+	float &hcalnoise_minRBXEMF();
+	float &hcalnoise_rms10GeVHitTime();
+	float &hcalnoise_rms25GeVHitTime();
+	float &hcalnoise_spikeNoiseSumE();
+	float &hcalnoise_spikeNoiseSumEt();
+	float &hcalnoise_triangleNoiseSumE();
+	float &hcalnoise_triangleNoiseSumEt();
 	float &pdfinfo_pdf1();
 	float &pdfinfo_pdf2();
 	float &pdfinfo_scale();
@@ -16580,6 +18215,25 @@ namespace tas {
 	int &evt_isRealData();
 	int &evt_orbitNumber();
 	int &evt_storeNumber();
+	int &hcalnoise_GetRecHitCount();
+	int &hcalnoise_GetRecHitCount15();
+	int &hcalnoise_maxHPDHits();
+	int &hcalnoise_maxHPDNoOtherHits();
+	int &hcalnoise_maxRBXHits();
+	int &hcalnoise_maxZeros();
+	int &hcalnoise_noiseFilterStatus();
+	int &hcalnoise_noiseType();
+	int &hcalnoise_num10GeVHits();
+	int &hcalnoise_num25GeVHits();
+	int &hcalnoise_numFlatNoiseChannels();
+	int &hcalnoise_numIsolatedNoiseChannels();
+	int &hcalnoise_numProblematicRBXs();
+	int &hcalnoise_numSpikeNoiseChannels();
+	int &hcalnoise_numTS4TS5NoiseChannels();
+	int &hcalnoise_numTriangleNoiseChannels();
+	int &hcalnoise_passHighLevelNoiseFilter();
+	int &hcalnoise_passLooseNoiseFilter();
+	int &hcalnoise_passTightNoiseFilter();
 	int &pdfinfo_id1();
 	int &pdfinfo_id2();
 	vector<int> &els_mc3_id();
@@ -16726,6 +18380,7 @@ namespace tas {
 	vector<int> &pfjets_muonMultiplicity();
 	vector<int> &pfjets_neutralHadronMultiplicity();
 	vector<int> &pfjets_neutralMultiplicity();
+	vector<int> &pfjets_partonFlavour();
 	vector<int> &pfjets_photonMultiplicity();
 	vector<int> &taus_pf_charge();
 	vector<int> &photons_fiduciality();
@@ -16751,6 +18406,7 @@ namespace tas {
 	vector<vector<int> > &convs_nHitsBeforeVtx();
 	vector<vector<int> > &convs_tkalgo();
 	vector<vector<int> > &convs_tkidx();
+	vector<unsigned char> &pfcands_fromPV();
 	unsigned int &els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version();
 	unsigned int &els_HLT_Ele17_Ele8_LeadingLeg_version();
 	unsigned int &els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version();

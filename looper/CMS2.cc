@@ -5,6 +5,22 @@ namespace tas {
 	vector<TString> &evt_CMS2tag() { return cms2.evt_CMS2tag(); }
 	vector<TString> &evt_dataset() { return cms2.evt_dataset(); }
 	vector<TString> &hlt_trigNames() { return cms2.hlt_trigNames(); }
+	bool &hcalnoise_HasBadRBXTS4TS5() { return cms2.hcalnoise_HasBadRBXTS4TS5(); }
+	bool &evt_cscTightHaloId() { return cms2.evt_cscTightHaloId(); }
+	bool &evt_hbheFilter() { return cms2.evt_hbheFilter(); }
+	bool &filt_cscBeamHalo() { return cms2.filt_cscBeamHalo(); }
+	bool &filt_ecalLaser() { return cms2.filt_ecalLaser(); }
+	bool &filt_ecalTP() { return cms2.filt_ecalTP(); }
+	bool &filt_eeBadSc() { return cms2.filt_eeBadSc(); }
+	bool &filt_goodVertices() { return cms2.filt_goodVertices(); }
+	bool &filt_hbheNoise() { return cms2.filt_hbheNoise(); }
+	bool &filt_hcalLaser() { return cms2.filt_hcalLaser(); }
+	bool &filt_metfilter() { return cms2.filt_metfilter(); }
+	bool &filt_trackingFailure() { return cms2.filt_trackingFailure(); }
+	bool &filt_trkPOGFilters() { return cms2.filt_trkPOGFilters(); }
+	bool &filt_trkPOG_logErrorTooManyClusters() { return cms2.filt_trkPOG_logErrorTooManyClusters(); }
+	bool &filt_trkPOG_manystripclus53X() { return cms2.filt_trkPOG_manystripclus53X(); }
+	bool &filt_trkPOG_toomanystripclus53X() { return cms2.filt_trkPOG_toomanystripclus53X(); }
 	vector<bool> &els_conv_vtx_flag() { return cms2.els_conv_vtx_flag(); }
 	vector<bool> &els_isGsfCtfScPixChargeConsistent() { return cms2.els_isGsfCtfScPixChargeConsistent(); }
 	vector<bool> &els_passingMvaPreselection() { return cms2.els_passingMvaPreselection(); }
@@ -38,6 +54,38 @@ namespace tas {
 	float &genps_qScale() { return cms2.genps_qScale(); }
 	float &genps_weight() { return cms2.genps_weight(); }
 	float &gen_sumEt() { return cms2.gen_sumEt(); }
+	float &hcalnoise_GetRecHitEnergy() { return cms2.hcalnoise_GetRecHitEnergy(); }
+	float &hcalnoise_GetRecHitEnergy15() { return cms2.hcalnoise_GetRecHitEnergy15(); }
+	float &hcalnoise_GetTotalCalibCharge() { return cms2.hcalnoise_GetTotalCalibCharge(); }
+	float &hcalnoise_TS4TS5NoiseSumE() { return cms2.hcalnoise_TS4TS5NoiseSumE(); }
+	float &hcalnoise_TS4TS5NoiseSumEt() { return cms2.hcalnoise_TS4TS5NoiseSumEt(); }
+	float &hcalnoise_eventChargeFraction() { return cms2.hcalnoise_eventChargeFraction(); }
+	float &hcalnoise_eventEMEnergy() { return cms2.hcalnoise_eventEMEnergy(); }
+	float &hcalnoise_eventEMFraction() { return cms2.hcalnoise_eventEMFraction(); }
+	float &hcalnoise_eventHadEnergy() { return cms2.hcalnoise_eventHadEnergy(); }
+	float &hcalnoise_eventTrackEnergy() { return cms2.hcalnoise_eventTrackEnergy(); }
+	float &hcalnoise_flatNoiseSumE() { return cms2.hcalnoise_flatNoiseSumE(); }
+	float &hcalnoise_flatNoiseSumEt() { return cms2.hcalnoise_flatNoiseSumEt(); }
+	float &hcalnoise_isolatedNoiseSumE() { return cms2.hcalnoise_isolatedNoiseSumE(); }
+	float &hcalnoise_isolatedNoiseSumEt() { return cms2.hcalnoise_isolatedNoiseSumEt(); }
+	float &hcalnoise_max10GeVHitTime() { return cms2.hcalnoise_max10GeVHitTime(); }
+	float &hcalnoise_max25GeVHitTime() { return cms2.hcalnoise_max25GeVHitTime(); }
+	float &hcalnoise_maxE10TS() { return cms2.hcalnoise_maxE10TS(); }
+	float &hcalnoise_maxE2Over10TS() { return cms2.hcalnoise_maxE2Over10TS(); }
+	float &hcalnoise_maxE2TS() { return cms2.hcalnoise_maxE2TS(); }
+	float &hcalnoise_min10GeVHitTime() { return cms2.hcalnoise_min10GeVHitTime(); }
+	float &hcalnoise_min25GeVHitTime() { return cms2.hcalnoise_min25GeVHitTime(); }
+	float &hcalnoise_minE10TS() { return cms2.hcalnoise_minE10TS(); }
+	float &hcalnoise_minE2Over10TS() { return cms2.hcalnoise_minE2Over10TS(); }
+	float &hcalnoise_minE2TS() { return cms2.hcalnoise_minE2TS(); }
+	float &hcalnoise_minHPDEMF() { return cms2.hcalnoise_minHPDEMF(); }
+	float &hcalnoise_minRBXEMF() { return cms2.hcalnoise_minRBXEMF(); }
+	float &hcalnoise_rms10GeVHitTime() { return cms2.hcalnoise_rms10GeVHitTime(); }
+	float &hcalnoise_rms25GeVHitTime() { return cms2.hcalnoise_rms25GeVHitTime(); }
+	float &hcalnoise_spikeNoiseSumE() { return cms2.hcalnoise_spikeNoiseSumE(); }
+	float &hcalnoise_spikeNoiseSumEt() { return cms2.hcalnoise_spikeNoiseSumEt(); }
+	float &hcalnoise_triangleNoiseSumE() { return cms2.hcalnoise_triangleNoiseSumE(); }
+	float &hcalnoise_triangleNoiseSumEt() { return cms2.hcalnoise_triangleNoiseSumEt(); }
 	float &pdfinfo_pdf1() { return cms2.pdfinfo_pdf1(); }
 	float &pdfinfo_pdf2() { return cms2.pdfinfo_pdf2(); }
 	float &pdfinfo_scale() { return cms2.pdfinfo_scale(); }
@@ -452,6 +500,25 @@ namespace tas {
 	int &evt_isRealData() { return cms2.evt_isRealData(); }
 	int &evt_orbitNumber() { return cms2.evt_orbitNumber(); }
 	int &evt_storeNumber() { return cms2.evt_storeNumber(); }
+	int &hcalnoise_GetRecHitCount() { return cms2.hcalnoise_GetRecHitCount(); }
+	int &hcalnoise_GetRecHitCount15() { return cms2.hcalnoise_GetRecHitCount15(); }
+	int &hcalnoise_maxHPDHits() { return cms2.hcalnoise_maxHPDHits(); }
+	int &hcalnoise_maxHPDNoOtherHits() { return cms2.hcalnoise_maxHPDNoOtherHits(); }
+	int &hcalnoise_maxRBXHits() { return cms2.hcalnoise_maxRBXHits(); }
+	int &hcalnoise_maxZeros() { return cms2.hcalnoise_maxZeros(); }
+	int &hcalnoise_noiseFilterStatus() { return cms2.hcalnoise_noiseFilterStatus(); }
+	int &hcalnoise_noiseType() { return cms2.hcalnoise_noiseType(); }
+	int &hcalnoise_num10GeVHits() { return cms2.hcalnoise_num10GeVHits(); }
+	int &hcalnoise_num25GeVHits() { return cms2.hcalnoise_num25GeVHits(); }
+	int &hcalnoise_numFlatNoiseChannels() { return cms2.hcalnoise_numFlatNoiseChannels(); }
+	int &hcalnoise_numIsolatedNoiseChannels() { return cms2.hcalnoise_numIsolatedNoiseChannels(); }
+	int &hcalnoise_numProblematicRBXs() { return cms2.hcalnoise_numProblematicRBXs(); }
+	int &hcalnoise_numSpikeNoiseChannels() { return cms2.hcalnoise_numSpikeNoiseChannels(); }
+	int &hcalnoise_numTS4TS5NoiseChannels() { return cms2.hcalnoise_numTS4TS5NoiseChannels(); }
+	int &hcalnoise_numTriangleNoiseChannels() { return cms2.hcalnoise_numTriangleNoiseChannels(); }
+	int &hcalnoise_passHighLevelNoiseFilter() { return cms2.hcalnoise_passHighLevelNoiseFilter(); }
+	int &hcalnoise_passLooseNoiseFilter() { return cms2.hcalnoise_passLooseNoiseFilter(); }
+	int &hcalnoise_passTightNoiseFilter() { return cms2.hcalnoise_passTightNoiseFilter(); }
 	int &pdfinfo_id1() { return cms2.pdfinfo_id1(); }
 	int &pdfinfo_id2() { return cms2.pdfinfo_id2(); }
 	vector<int> &els_mc3_id() { return cms2.els_mc3_id(); }
@@ -598,6 +665,7 @@ namespace tas {
 	vector<int> &pfjets_muonMultiplicity() { return cms2.pfjets_muonMultiplicity(); }
 	vector<int> &pfjets_neutralHadronMultiplicity() { return cms2.pfjets_neutralHadronMultiplicity(); }
 	vector<int> &pfjets_neutralMultiplicity() { return cms2.pfjets_neutralMultiplicity(); }
+	vector<int> &pfjets_partonFlavour() { return cms2.pfjets_partonFlavour(); }
 	vector<int> &pfjets_photonMultiplicity() { return cms2.pfjets_photonMultiplicity(); }
 	vector<int> &taus_pf_charge() { return cms2.taus_pf_charge(); }
 	vector<int> &photons_fiduciality() { return cms2.photons_fiduciality(); }
@@ -623,6 +691,7 @@ namespace tas {
 	vector<vector<int> > &convs_nHitsBeforeVtx() { return cms2.convs_nHitsBeforeVtx(); }
 	vector<vector<int> > &convs_tkalgo() { return cms2.convs_tkalgo(); }
 	vector<vector<int> > &convs_tkidx() { return cms2.convs_tkidx(); }
+	vector<unsigned char> &pfcands_fromPV() { return cms2.pfcands_fromPV(); }
 	unsigned int &els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version() { return cms2.els_HLT_Ele17_Ele8_L1sL1DoubleEG137_version(); }
 	unsigned int &els_HLT_Ele17_Ele8_LeadingLeg_version() { return cms2.els_HLT_Ele17_Ele8_LeadingLeg_version(); }
 	unsigned int &els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version() { return cms2.els_HLT_Ele17_Ele8_Mass50_LeadingLeg_version(); }
