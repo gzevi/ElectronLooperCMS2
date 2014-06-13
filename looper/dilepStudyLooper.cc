@@ -12,9 +12,9 @@
 #include "../CORE/trackSelections.h"
 #include "../CORE/susySelections.h"
 #include "../CORE/muonSelections.h"
-//#include "../CORE/jetSelections.h"
-//#include "../CORE/metSelections.h"
-//#include "../CORE/jetSmearingTools.h"
+#include "../CORE/jetSelections.h"
+#include "../CORE/metSelections.h"
+#include "../CORE/jetSmearingTools.h"
 #include "../CORE/jetcorr/JetCorrectionUncertainty.h"
 #include "../CORE/MITConversionUtilities.h"
 
@@ -25,7 +25,7 @@
 // --> Actually can't get to run in this configuration. CMS2.h has to be included by someone above, maybe to be compiled? not clear. otherwise can't find any variables at all...
 // --> So we're stuck with adding the variables by hand to ../CORE/CMS2.h... ???
  
-bool verbose              = true;
+bool verbose              = false;
 bool doTenPercent         = false;
 bool doLowerPtThresh      = false;
 bool doEM                 = false;
@@ -371,10 +371,8 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       //---------------------------------------------
       // count vertices
       //---------------------------------------------
-      int nvtx = 10;
-      cout<<__LINE__<<endl;
+      int nvtx = 0;
       for (size_t v = 0; v < cms2.vtxs_position().size(); ++v){
-      cout<<__LINE__<<endl;
         if(isGoodVertex(v)) ++nvtx;
       }
 
