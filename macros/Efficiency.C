@@ -116,10 +116,10 @@ TGraphErrors* EffRej(TString file1, TString file2, TString la1, TString la2, TSt
 
 void EfficiencyIsoCut()
 {
-  TString filename1 = "../looper/output/out_ZeePlusTT536_40to60_BasicLoop.root";
-  TString filename2 = "../looper/output/out_ZeePlusTT536_40to60_AODarea.root";	       
-  TString filename3 = "../looper/output/out_ZeePlusTT536_40to60_DeltaBetaSimple.root";
-  TString filename4 = "../looper/output/out_ZeePlusTT536_40to60_DeltaBetaWeights.root";
+  TString filename1 = "../looper/output/out_TTCMS3_gt20_5uncorr.root";
+  TString filename2 = "../looper/output/out_TTCMS3_gt20_2basicDeltaBeta.root";	       
+  TString filename3 = "../looper/output/out_TTCMS3_gt20_3DeltaBetaDR.root";
+  TString filename4 = "../looper/output/out_TTCMS3_gt20_6DeltaBetaLogPtDR.root";
   TString filename5 = "../looper/output/out_ZeePlusTT536_40to60_DeltaBetaWeights01.root";
   TString label1    = "True";
   TString label2    = "Fake";
@@ -127,9 +127,9 @@ void EfficiencyIsoCut()
   //void EffRej(TString file1, TString file2, TString la1, TString la2, TString nplot1, TString nplot2, TString xname, int reb =1, TString fix="")
   //  EffRej(filename1, filename2 , label1, label2, "Muon 1JetIncl 1 B-tag MET C4" , "MET",1);
   TGraphErrors* h_1 = EffRej(filename1, filename1 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "uncorr"); 
-  TGraphErrors* h_2 = EffRej(filename2, filename2 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "area");
-  TGraphErrors* h_3 = EffRej(filename3, filename3 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "DB");
-  TGraphErrors* h_4 = EffRej(filename4, filename4 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "DBW");
+  TGraphErrors* h_2 = EffRej(filename2, filename2 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "DB");
+  TGraphErrors* h_3 = EffRej(filename3, filename3 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "DBW 1/DR^2");
+  TGraphErrors* h_4 = EffRej(filename4, filename4 , label1, label2, "h_true"+EE+"_el_iso_cor" ,"h_fake"+EE+"_el_iso_cor" , "RelIso",1, "DBW log(pT/DR)");
 
   canv = new TCanvas();
   canv->cd();
@@ -163,9 +163,9 @@ void EfficiencyIsoCut()
   leg->SetFillColor(kWhite);
   leg->SetBorderSize(0);
   leg->AddEntry(h_1,"PFCand loop, uncorr","PL");
-  leg->AddEntry(h_2,"PFCand loop, area corr","PL");
-  leg->AddEntry(h_3,"PFCand loop, simple DeltaBeta","PL");
-  leg->AddEntry(h_4,"PFCand loop, DeltaBetaWeights","PL");
+  leg->AddEntry(h_2,"PFCand loop, simple DeltaBeta","PL");
+  leg->AddEntry(h_3,"PFCand loop, DeltaBetaWeights DR2","PL");
+  leg->AddEntry(h_4,"PFCand loop, DeltaBetaWeights log(pT/DR)","PL");
 
   h_1->Draw("AP");
   h_2->Draw("Psame");
@@ -260,6 +260,6 @@ void EfficiencySieieCut()
 
 void Efficiency()
 {
-  //  EfficiencyIsoCut();
-  EfficiencySieieCut();
+    EfficiencyIsoCut();
+  //  EfficiencySieieCut();
 }

@@ -40,7 +40,7 @@ public:
   void BookHistos (const TString& prefix);
   void InitBaby();
   float electronPFiso(const unsigned int index, const bool cor = false);
-  void  electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh,  float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, bool useDeltaBetaWeights);
+  void  electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh,  float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights);
 
   float muonPFiso(const unsigned int imu, const bool cor = false);
   float dRbetweenVectors(LorentzVector vec1, LorentzVector vec2 );
@@ -88,6 +88,7 @@ public:
     float ooemoop;
     float iso_cor;
     float iso_uncor;
+    float pfiso_chPU;
     float pfiso_ch;
     float pfiso_em;
     float pfiso_nh;

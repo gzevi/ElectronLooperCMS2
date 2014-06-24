@@ -33,6 +33,7 @@ bool doME                 = false;
 bool requireTrigMatch     = true;
 bool doSS                 = false;
 bool doOS                 = false;
+bool m_miniAOD            = false;
 
 using namespace std;
 using namespace tas;
@@ -345,6 +346,8 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
           continue;
         }
       }
+      TString filename = currentFile->GetTitle();
+      if (filename.Contains("CMS3")) m_miniAOD = true;
 
       //-------------------------------------
       // skip events with bad els_conv_dist
@@ -571,8 +574,8 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         LorentzVector& el_p4 = els_p4().at(iel);
         float pt = el_p4.pt();
         float eta = els_etaSC().at(iel);
-        if (pt < 10) continue;
-	//        if (pt < 20) continue;
+        if (pt < 20 || pt > 50) continue;
+	//if (pt < 20) continue;
 	//	if (pt < 10 || pt > 20) continue;
 	if (fabs(eta) > 2.5) continue;
         h_el_pt->Fill(pt,1);
@@ -606,18 +609,28 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	float chPU = 0;
 	bool useMap = false;
 	bool doPFCandLoop = true;
-	bool useDeltaBetaWeights = true;
+	int useDeltaBetaWeights = 1; // 0: no, 1: 1/DR^2, 2: log(pt^2/DR^2)
 	bool DeltaBetaSimple = false; 
 	float isocut = 0.15;
 	bool areaCorrection = false;
-	//if ( prefix.Contains("700") ) useMap = true;
+	//if ( prefix.Contains("700") || prefix.Contains("CMS3") ) useMap = true;
 
-
-	if (isocortype==0) { doPFCandLoop = false; useDeltaBetaWeights = false; DeltaBetaSimple = false; areaCorrection = false;} // uncorrected
-	if (isocortype==1) { doPFCandLoop = false; useDeltaBetaWeights = false; DeltaBetaSimple = false; areaCorrection = true; }// area
-	if (isocortype==2) { doPFCandLoop = true; useDeltaBetaWeights = false; DeltaBetaSimple = true; areaCorrection = false;  }// DeltaBeta
-	if (isocortype==3) { doPFCandLoop = true; useDeltaBetaWeights = true; DeltaBetaSimple = false; areaCorrection = false;  }// DeltaBetaWeights
-	if (isocortype==4) { doPFCandLoop = true; useDeltaBetaWeights = true; DeltaBetaSimple = false; areaCorrection = false; isocut = 0.10; }// DeltaBetaWeights01
+	// don't use map
+	if (isocortype==0) { doPFCandLoop = false; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = false;} // uncorrected
+	if (isocortype==1) { doPFCandLoop = false; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = true; }// area
+	if (isocortype==2) { doPFCandLoop = true; useDeltaBetaWeights = 0; DeltaBetaSimple = true; areaCorrection = false;  }// DeltaBeta
+	if (isocortype==3) { doPFCandLoop = true; useDeltaBetaWeights = 1; DeltaBetaSimple = false; areaCorrection = false;  }// DeltaBetaWeights DR
+	if (isocortype==4) { doPFCandLoop = true; useDeltaBetaWeights = 1; DeltaBetaSimple = false; areaCorrection = false; isocut = 0.10; }// DeltaBetaWeights DR. cut at 0.1
+	if (isocortype==5) { doPFCandLoop = true; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = false; }// uncorrected, do loop
+	if (isocortype==6) { doPFCandLoop = true; useDeltaBetaWeights = 2; DeltaBetaSimple = false; areaCorrection = false; }// DeltaBetaWeight log pT DR
+	// use map
+	if (isocortype==10) { useMap = true; doPFCandLoop = false; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = false;} // uncorrected
+	if (isocortype==11) { useMap = true; doPFCandLoop = false; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = true; }// area
+	if (isocortype==12) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 0; DeltaBetaSimple = true; areaCorrection = false;  }// DeltaBeta
+	if (isocortype==13) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 1; DeltaBetaSimple = false; areaCorrection = false;  }// DeltaBetaWeights DR
+	if (isocortype==14) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 1; DeltaBetaSimple = false; areaCorrection = false; isocut = 0.10; }// DeltaBetaWeights DR. cut at 0.1
+	if (isocortype==15) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 0; DeltaBetaSimple = false; areaCorrection = false; }// uncorrected, do loop
+	if (isocortype==16) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 2; DeltaBetaSimple = false; areaCorrection = false; }// DeltaBetaWeight log pT DR
 
 	if ( doPFCandLoop ) electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights); 	
 
@@ -625,14 +638,14 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         dilepStudyLooper::electron eleStruct; 
 	eleStruct.pt = pt;
         eleStruct.eta = eta;
-        eleStruct.sieie = els_sigmaIEtaIEta().at(iel);
+        eleStruct.sieie = m_miniAOD ? els_sigmaIEtaIEta_full5x5().at(iel) : els_sigmaIEtaIEta().at(iel);
         eleStruct.dEtaIn = els_dEtaIn().at(iel);
         eleStruct.dPhiIn = els_dPhiIn().at(iel);
         eleStruct.hOverE = els_hOverE().at(iel);
         eleStruct.d0corr = els_d0corr().at(iel); // for miniAOD move to els_dxyPV
         eleStruct.z0corr = dzPV(els_vertex_p4()[iel], els_trk_p4()[iel], vtxs_position()[0]);//els_z0corr().at(iel); // for miniAOD move to els_dzPV
         eleStruct.ooemoop = (1.0/els_ecalEnergy().at(iel)) - (els_eOverPIn().at(iel)/els_ecalEnergy().at(iel)) ;
-	eleStruct.iso_uncor = electronPFiso(iel, false);
+	eleStruct.iso_uncor = !doPFCandLoop ? electronPFiso(iel, false) : 0;
 	if (!doPFCandLoop) eleStruct.iso_cor = electronPFiso(iel, areaCorrection);// false = NO PILEUP AREA CORRECTION
 	else {
 	  if (DeltaBetaSimple) eleStruct.iso_cor = ( ch + std::max(0.0, nh + em - 0.5 * chPU) ) / pt;
@@ -643,15 +656,16 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 //	eleStruct.pfiso_ch = prefix.Contains("700") ? ch/pt : cms2.els_iso03_pf2012ext_ch().at(iel) / pt; //els_pfChargedHadronIso().at(iel) / pt;
 //	eleStruct.pfiso_em = prefix.Contains("700") ? em/pt : cms2.els_iso03_pf2012ext_em().at(iel) / pt; //els_pfNeutralHadronIso().at(iel) / pt;
 //	eleStruct.pfiso_nh = prefix.Contains("700") ? nh/pt : cms2.els_iso03_pf2012ext_nh().at(iel) / pt; //els_pfPhotonIso().at(iel) / pt;
-	//ComponentsOfPFIso eleStruct.pfiso_ch = ch/pt;
-	//ComponentsOfPFIso eleStruct.pfiso_em = em/pt;
-	//ComponentsOfPFIso eleStruct.pfiso_nh = nh/pt;
-	eleStruct.pfiso_ch = els_tkIso().at(iel)/pt;
-	eleStruct.pfiso_em = els_ecalIso().at(iel)/pt;
-	eleStruct.pfiso_nh = els_hcalIso().at(iel)/pt;
+	eleStruct.pfiso_chPU = chPU/pt;  //ComponentsOfPFIso
+	eleStruct.pfiso_ch = ch/pt;  //ComponentsOfPFIso
+	eleStruct.pfiso_em = em/pt;  //ComponentsOfPFIso
+	eleStruct.pfiso_nh = nh/pt;  //ComponentsOfPFIso
+//eleStruct.pfiso_ch = els_tkIso().at(iel)/pt;    // Detector Iso
+//eleStruct.pfiso_em = els_ecalIso().at(iel)/pt;  // Detector Iso
+//eleStruct.pfiso_nh = els_hcalIso().at(iel)/pt;  // Detector Iso
         eleStruct.valid_pixelHits = els_valid_pixelhits().at(iel);
         eleStruct.lost_pixelhits = els_lost_pixelhits().at(iel);
-        eleStruct.vtxFitConversion = !els_conv_vtx_flag().at(iel); // onlyAOD isMITConversion(iel, 0,   1e-6,   2.0,   true,  false);
+        eleStruct.vtxFitConversion = m_miniAOD ? !els_conv_vtx_flag().at(iel) : isMITConversion(iel, 0,   1e-6,   2.0,   true,  false);
 	eleStruct.chi2n = els_chi2().at(iel) / els_ndof().at(iel);
 	eleStruct.fbrem = els_fbrem().at(iel);
 	eleStruct.dEtaOut = els_dEtaOut().at(iel);
@@ -659,7 +673,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	eleStruct.phiWidth = els_phiSCwidth().at(iel);
 	eleStruct.e1x5e5x5 =  (els_e5x5().at(iel)) !=0. ? 1.-(els_e1x5().at(iel) / els_e5x5().at(iel)) : -1. ;
 	eleStruct.r9 = els_r9().at(iel); // e3x3(seed) / ele.superCluster()->rawEnergy();
-         eleStruct.sieieSC = 0;// onlyAOD els_sigmaIEtaIEtaSC().at(iel);
+	eleStruct.sieieSC = m_miniAOD ? 0 : els_sigmaIEtaIEtaSC().at(iel);
 	eleStruct.eoverpIn = els_eOverPIn().at(iel);
 	eleStruct.eoverpOut = els_eOverPOut().at(iel);
 	eleStruct.psOverRaw = (els_eSCRaw().at(iel) != 0) ? 1.*els_eSCPresh().at(iel) / els_eSCRaw().at(iel) : -1;
@@ -1087,7 +1101,7 @@ float dilepStudyLooper::electronPFiso(const unsigned int index, const bool cor) 
 //  float pfiso_nh = cms2.els_pfNeutralHadronIso().at(index); // From AOD (wrong cone in 53X)
   
   // rho
-  float rhoPrime = std::max(cms2.evt_fixgrid_rho_ctr(), float(0.0));   // onlyAOD std::max(cms2.evt_kt6pf_foregiso_rho(), float(0.0));
+  float rhoPrime = m_miniAOD ? std::max(cms2.evt_fixgrid_rho_ctr(), float(0.0)) : std::max(cms2.evt_kt6pf_foregiso_rho(), float(0.0));
   float pfiso_n = pfiso_em + pfiso_nh;
   if (cor) pfiso_n = std::max(pfiso_em + pfiso_nh - rhoPrime * AEff, float(0.0));
   float pfiso = (pfiso_ch + pfiso_n) / pt;
@@ -1353,16 +1367,17 @@ isovals dilepStudyLooper::muonChIsoValuePF2012 (const unsigned int imu, const fl
 
 void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, TString prefix ){
 
-  TH1F * h_el_pt = new TH1F(Form("%s_el_pt",prefix.Data()),";electron pt",10,0.,100);
+  TH1F * h_el_pt = new TH1F(Form("%s_el_pt",prefix.Data()),";electron pt",40,0.,100);
   TH1F * h_el_sieie = new TH1F(Form("%s_el_sieie",prefix.Data()),";electron sieie",100,0.,0.05);
-  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",100,0,0.02);
-  TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,0,0.2);
+  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",100,-0.02,0.02);
+  TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,-0.2,0.2);
   TH1F * h_el_hOverE = new TH1F(Form("%s_el_hOverE",prefix.Data()),";electron hOverE",100,0.,0.5);
-  TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,0,0.2);
-  TH1F * h_el_z0corr = new TH1F(Form("%s_el_z0corr",prefix.Data()),";electron z0corr",100,0,1.);
-  TH1F * h_el_ooemoop = new TH1F(Form("%s_el_ooemoop",prefix.Data()),";electron ooemoop",100,0,0.5);
+  TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,-0.2,0.2);
+  TH1F * h_el_z0corr = new TH1F(Form("%s_el_z0corr",prefix.Data()),";electron z0corr",100,-1.,1.);
+  TH1F * h_el_ooemoop = new TH1F(Form("%s_el_ooemoop",prefix.Data()),";electron ooemoop",100,-0.5,0.5);
   TH1F * h_el_iso_cor = new TH1F(Form("%s_el_iso_cor",prefix.Data()),";electron iso_cor",100,0.,2.);
   TH1F * h_el_iso_corsize = new TH1F(Form("%s_el_iso_corzise",prefix.Data()),";electron iso_corsize",100,-1.,1.);
+  TH1F * h_el_pfiso_chPU = new TH1F(Form("%s_el_pfiso_chPU",prefix.Data()),";electron pfiso_chPU",100,0.,2.);
   TH1F * h_el_pfiso_ch = new TH1F(Form("%s_el_pfiso_ch",prefix.Data()),";electron pfiso_ch",100,0.,2.);
   TH1F * h_el_pfiso_em = new TH1F(Form("%s_el_pfiso_em",prefix.Data()),";electron pfiso_em",100,0.,2.);
   TH1F * h_el_pfiso_nh = new TH1F(Form("%s_el_pfiso_nh",prefix.Data()),";electron pfiso_nh",100,0.,2.);
@@ -1392,6 +1407,7 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
   hSet.insert(std::pair<std::string, TH1F*> ("ooemoop",h_el_ooemoop));
   hSet.insert(std::pair<std::string, TH1F*> ("iso_cor",h_el_iso_cor));
   hSet.insert(std::pair<std::string, TH1F*> ("iso_corsize",h_el_iso_corsize));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_chPU",h_el_pfiso_chPU));
   hSet.insert(std::pair<std::string, TH1F*> ("pfiso_ch",h_el_pfiso_ch));
   hSet.insert(std::pair<std::string, TH1F*> ("pfiso_em",h_el_pfiso_em));
   hSet.insert(std::pair<std::string, TH1F*> ("pfiso_nh",h_el_pfiso_nh));
@@ -1419,14 +1435,15 @@ void dilepStudyLooper::fillElectronQuantities(std::map<std::string, TH1F*> & hSe
 
   fillUnderOverFlow( hSet["pt"]           , e.pt, 1);
   fillUnderOverFlow( hSet["sieie"]           , e.sieie, 1);
-  fillUnderOverFlow( hSet["dEtaIn"]          , fabs(e.dEtaIn), 1);
-  fillUnderOverFlow( hSet["dPhiIn"]          , fabs(e.dPhiIn), 1);
+  fillUnderOverFlow( hSet["dEtaIn"]          , e.dEtaIn, 1);
+  fillUnderOverFlow( hSet["dPhiIn"]          , e.dPhiIn, 1);
   fillUnderOverFlow( hSet["hOverE"]          , e.hOverE, 1);
-  fillUnderOverFlow( hSet["d0corr"]          , fabs(e.d0corr), 1);
-  fillUnderOverFlow( hSet["z0corr"]          , fabs(e.z0corr), 1);
-  fillUnderOverFlow( hSet["ooemoop"]         , fabs(e.ooemoop), 1);
+  fillUnderOverFlow( hSet["d0corr"]          , e.d0corr, 1);
+  fillUnderOverFlow( hSet["z0corr"]          , e.z0corr, 1);
+  fillUnderOverFlow( hSet["ooemoop"]         , e.ooemoop, 1);
   fillUnderOverFlow( hSet["iso_cor"]         , e.iso_cor, 1);
   fillUnderOverFlow( hSet["iso_corsize"]     , e.iso_cor - e.iso_uncor, 1);
+  fillUnderOverFlow( hSet["pfiso_chPU"]       , e.pfiso_chPU, 1);
   fillUnderOverFlow( hSet["pfiso_ch"]         , e.pfiso_ch, 1);
   fillUnderOverFlow( hSet["pfiso_em"]         , e.pfiso_em, 1);
   fillUnderOverFlow( hSet["pfiso_nh"]         , e.pfiso_nh, 1);
@@ -1474,14 +1491,15 @@ void dilepStudyLooper::fillElectronQuantitiesN1(std::map<std::string, TH1F*> & h
   int i = 0;
   
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["sieie"]->Fill(e.sieie, 1);                         i++;  
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dEtaIn"]->Fill(fabs(e.dEtaIn), 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dPhiIn"]->Fill(fabs(e.dPhiIn), 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dEtaIn"]->Fill(e.dEtaIn, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dPhiIn"]->Fill(e.dPhiIn, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["hOverE"]->Fill(e.hOverE, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["d0corr"]->Fill(fabs(e.d0corr), 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["z0corr"]->Fill(fabs(e.z0corr), 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["ooemoop"]->Fill(fabs(e.ooemoop), 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["d0corr"]->Fill(e.d0corr, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["z0corr"]->Fill(e.z0corr, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["ooemoop"]->Fill(e.ooemoop, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["iso_cor"]->Fill(e.iso_cor, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_ch"]->Fill(e.pfiso_ch, 1);		       i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_chPU"]->Fill(e.pfiso_chPU, 1);	       i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_em"]->Fill(e.pfiso_em, 1);		       i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["pfiso_nh"]->Fill(e.pfiso_nh, 1);		      i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["valid_pixelHits"]->Fill(e.valid_pixelHits, 1);	   i++;
@@ -1556,12 +1574,13 @@ void dilepStudyLooper::fillUnderOverFlow(TH1F *h1, float value, float weight){
   h1->Fill(value, weight);
 }
 
-void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh, float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, bool useDeltaBetaWeights) {
+void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh, float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights) {
   // Mostly taken from electronIsoValuePF2012 in electronSelections.cc
 
   pfiso_ch = 0;
   pfiso_em = 0;
   pfiso_nh = 0;
+  pfiso_chPU = 0;
 
   for (unsigned int ipf = 0; ipf < cms2.pfcands_p4().size(); ++ipf) {
     
@@ -1587,9 +1606,18 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
     // Charged hadron vertex matching
     bool isPU = false;
     if (particleId == 211) {
-// onlyAOD      int pfVertexIndex = cms2.pfcands_vtxidx().at(ipf); 
-// onlyAOD      if (pfVertexIndex != ivtx) isPU = true;
-      if ( cms2.pfcands_fromPV()[ipf] < 2) isPU = true;
+      if (m_miniAOD) {
+	if ( cms2.pfcands_fromPV()[ipf] < 2) isPU = true;
+      }
+      else {
+	int pfVertexIndex = cms2.pfcands_vtxidx().at(ipf); 
+	if (pfVertexIndex != ivtx) isPU = true;
+      }
+//      cout<<"charghed pfcand with fromPV "<< (int) cms2.pfcands_fromPV()[ipf] ;
+//      cout<<". <1 ? "<< (cms2.pfcands_fromPV()[ipf] < 1);
+//      cout<<". <2 ? "<< (cms2.pfcands_fromPV()[ipf] < 2);
+//      cout<<". <3 ? "<< (cms2.pfcands_fromPV()[ipf] < 3)<<endl;
+      
     }
 
     // Use Map (only REL 7)
@@ -1604,9 +1632,10 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
 
     LorentzVector & p4 = cms2.pfcands_p4()[ipf];
     float weight = 1.0;
-    if (useDeltaBetaWeights && (particleId == 22 || particleId == 130) ) {      
-      float sumPU = 0.;
-      float sumNPU = 0.;
+    if (useDeltaBetaWeights>0 && (particleId == 22 || particleId == 130) ) {      
+      float sumPU = useDeltaBetaWeights == 2 ? 1. : 0;
+      float sumNPU = useDeltaBetaWeights == 2 ? 1. : 0;
+      float tempSum = 0;
       //      cout<<"Found neutral PFCand with pT "<<p4.pt()<<endl;
       for (unsigned int jpf = 0; jpf < cms2.pfcands_p4().size(); ++jpf) { // loop over PFCands
 	if (abs(cms2.pfcands_particleId()[jpf]) != 211)  continue; // only keep charged
@@ -1614,14 +1643,30 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
 	if ( fabs(p4.Eta() - p4_2.Eta()) > 0.5 ) continue; // only keep close-by (avoid DR calculation with all the event!)
 	if ( std::min(::fabs(p4.Phi() - p4_2.Phi()), 2 * M_PI - fabs(p4.Phi() - p4_2.Phi())) > 0.5 ) continue; 
 	float dR2 = dRbetweenVectors2(p4, p4_2);
+	if (dR2 > 0.25) continue; // use a circle instead of square
 	//	cout<<"Nearby PFCand at dR "<<dR2<<" is ";
-	// onlyAOD if (cms2.pfcands_vtxidx().at(jpf) == ivtx ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
-	if (cms2.pfcands_fromPV().at(jpf) < 2 ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
-	else {sumPU += 1./dR2; /*cout<<"PU"<<endl;*/}
-	
+	bool fromPV = true;
+	if (m_miniAOD) {
+	  if (cms2.pfcands_fromPV().at(jpf) < 2 ) fromPV = false;
+	} 
+	else {
+	  if (cms2.pfcands_vtxidx().at(jpf) == ivtx ) fromPV = false;
+	}
+
+	if (useDeltaBetaWeights==1) { // 1/DR^2 metric
+	  if (fromPV ) {sumNPU += 1./dR2; /*cout<<"NPU"<<endl;*/} 
+	  else {sumPU += 1./dR2; /*cout<<"PU"<<endl;*/}
+	}
+	if (useDeltaBetaWeights==2) { // log(pt/DR) metric
+	  tempSum= 1.*p4_2.pt()*p4_2.pt()/dR2; //cout<<"tempSum "<<tempSum<<endl;
+	  if (fromPV  && tempSum > 0) {sumNPU *= tempSum; /*cout<<"NPU"<<endl;*/}
+	  else if (tempSum > 0) {sumPU *= tempSum; /*cout<<"PU"<<endl;*/}
+	}	
       }
+      //cout<<"sumPU "<<sumPU<<", sumNPU "<<sumNPU<<endl;
+      if (useDeltaBetaWeights==2) {sumPU=0.5*log(sumPU); sumNPU=0.5*log(sumNPU);  /*cout<<"after log: sumPU "<<sumPU<<", sumNPU "<<sumNPU<<endl;*/}
       weight = 1.0 * sumNPU / (sumNPU+sumPU);
-      //      cout<<"Weight is "<<weight<<endl;
+      //cout<<"Weight is "<<weight<<endl;
     }
     
     

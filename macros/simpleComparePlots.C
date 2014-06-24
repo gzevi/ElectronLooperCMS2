@@ -8,18 +8,21 @@ void simpleComparePlots(TString histoName, TString title){
   //  TFile* f_00eta09 = TFile::Open(Form("trktest_hp/histo_algo%02d_00eta09.root",algo));
 
 
-  TFile* f_1 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_BasicLoop.root");
-  TFile* f_2 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_AODarea.root");
-  TFile* f_3 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaSimple.root");
-  TFile* f_4 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaWeights.root");
-  TFile* f_5 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaWeights01.root");
-
+//  TFile* f_1 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_BasicLoop.root");
+//  TFile* f_2 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_AODarea.root");
+//  TFile* f_3 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaSimple.root");
+//  TFile* f_4 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaWeights.root");
+//  TFile* f_5 = TFile::Open("../looper/output/out_ZeePlusTT536_10to20_DeltaBetaWeights01.root");
+  TFile* f_1 = TFile::Open("../looper/output/out_TTCMS3_gt20_5uncorr.root");
+  TFile* f_2 = TFile::Open("../looper/output/out_TTCMS3_gt20_2basicDeltaBeta.root");	       
+  TFile* f_3 = TFile::Open("../looper/output/out_TTCMS3_gt20_3DeltaBetaDR.root");
+  TFile* f_4 = TFile::Open("../looper/output/out_TTCMS3_gt20_6DeltaBetaLogPtDR.root");
 
   TH1F* h_1 = (TH1F*) f_1->Get(histoName);
   TH1F* h_2 = (TH1F*) f_2->Get(histoName);
   TH1F* h_3 = (TH1F*) f_3->Get(histoName);
   TH1F* h_4 = (TH1F*) f_4->Get(histoName);
-  TH1F* h_5 = (TH1F*) f_5->Get(histoName);
+  TH1F* h_5 = (TH1F*) f_4->Get(histoName);
 
   h_1->SetMarkerColor(kRed);
   h_2->SetMarkerColor(kBlue);
@@ -60,7 +63,7 @@ void simpleComparePlots(TString histoName, TString title){
     //    c.SetLogy();
     h_1->GetYaxis()->SetTickLength(0.01);
     int rebin = 1;
-    if (histoName.Contains("_fake")) rebin = 2;
+    //    if (histoName.Contains("_fake")) rebin = 2;
     h_1->Rebin(rebin);
     h_2->Rebin(rebin);
     h_3->Rebin(rebin);
@@ -79,7 +82,7 @@ void simpleComparePlots(TString histoName, TString title){
     h_2->Draw("sameP");
     h_3->Draw("sameP");
     h_4->Draw("sameP");
-    h_5->Draw("sameP");
+    //    h_5->Draw("sameP");
   }
 
   TLegend* leg = new TLegend(0.22,0.75,0.60,0.89);
@@ -88,10 +91,14 @@ void simpleComparePlots(TString histoName, TString title){
   //  leg->SetNColumns(3);
  if ( !histoName.Contains("_eff") && !histoName.Contains("_fr") )  {
    //  leg->AddEntry(h_1,"from AOD, uncorr","PL");
+//  leg->AddEntry(h_1,"PFCand loop, uncorr","PL");
+//  leg->AddEntry(h_2,"PFCand loop, area corr","PL");
+//  leg->AddEntry(h_3,"PFCand loop, simple DeltaBeta","PL");
+//  leg->AddEntry(h_4,"PFCand loop, DeltaBetaWeights","PL");
   leg->AddEntry(h_1,"PFCand loop, uncorr","PL");
-  leg->AddEntry(h_2,"PFCand loop, area corr","PL");
-  leg->AddEntry(h_3,"PFCand loop, simple DeltaBeta","PL");
-  leg->AddEntry(h_4,"PFCand loop, DeltaBetaWeights","PL");
+  leg->AddEntry(h_2,"PFCand loop, simple DeltaBeta","PL");
+  leg->AddEntry(h_3,"PFCand loop, DeltaBetaWeights DR^-2","PL");
+  leg->AddEntry(h_4,"PFCand loop, DeltaBetaWeights log(pT/DR)","PL");
  }
  else {
    //  leg->AddEntry(h_1,"from AOD, uncorr, <0.15","PL");
@@ -103,7 +110,7 @@ void simpleComparePlots(TString histoName, TString title){
  }
   leg->Draw();
 
-  c.SaveAs("compare/"+histoName+"_1020.pdf");
+  c.SaveAs("compare/"+histoName+".pdf");
 
 }
 
