@@ -27,7 +27,7 @@
 #root -b -q 'processNtuple.C("TTCMS3_gt20_5uncorr"  ,"/tas/gzevi/miniAOD/CMSSW_7_0_4/src/CMS2/NtupleMaker/test/TT_Tune4C_13TeV-pythia8-tauola-PU_S14_PAT_big_CMS3.root", 0, 5)' 
 #root -b -q 'processNtuple.C("TTCMS3_gt20_6DeltaBetaLogPtDR"  ,"/tas/gzevi/miniAOD/CMSSW_7_0_4/src/CMS2/NtupleMaker/test/TT_Tune4C_13TeV-pythia8-tauola-PU_S14_PAT_big_CMS3.root", 0, 6)' 
 
-root -b -q 'processNtuple.C("tt532_2basicDeltaBeta","/tas/gzevi/files/babies/RelValTTbar/CMSSW_5_3_6-PU_START53_V14-v1/GEN-SIM-RECO/ntuple*.root", 0, 2)' 
+#root -b -q 'processNtuple.C("tt532_2basicDeltaBeta","/tas/gzevi/files/babies/RelValTTbar/CMSSW_5_3_6-PU_START53_V14-v1/GEN-SIM-RECO/ntuple*.root", 0, 2)' 
 #root -b -q 'processNtuple.C("TTCMS3_2basicDeltaBeta"  ,"/tas/gzevi/miniAOD/CMSSW_7_0_4/src/CMS2/NtupleMaker/test/TT_Tune4C_13TeV-pythia8-tauola-PU_S14_PAT_big_CMS3.root", 0, 2)' 
 #root -b -q 'processNtuple.C("TTCMS3_25ns_2basicDeltaBeta"  ,"/tas/gzevi/files/miniAOD/TT_Tune4C_13TeV-pythia8-tauola-Flat20to50_POSTLS170_V5-v1_Big_CMS3.root ", 0, 2)' 
 
@@ -36,3 +36,5 @@ root -b -q 'processNtuple.C("tt532_2basicDeltaBeta","/tas/gzevi/files/babies/Rel
 
 
 #root -b -q 'processNtuple.C("TTCMS3_12basicDeltaBetaMap"  ,"/tas/gzevi/miniAOD/CMSSW_7_0_4/src/CMS2/NtupleMaker/test/TT_Tune4C_13TeV-pythia8-tauola-PU_S14_PAT_big_CMS3.root", 0, 12)' 
+
+root -b -q 'processNtuple.C("dataDoubleElectronD_CMS3_test","/tas/gzevi/files/miniAOD/DoubleEleMiniAOD.root",0,2)'

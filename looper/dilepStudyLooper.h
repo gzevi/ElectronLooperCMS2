@@ -45,6 +45,7 @@ public:
   float muonPFiso(const unsigned int imu, const bool cor = false);
   float dRbetweenVectors(LorentzVector vec1, LorentzVector vec2 );
   float dRbetweenVectors2(LorentzVector vec1, LorentzVector vec2 );
+  float Mt( LorentzVector p4, float met, float met_phi );
   void labelAxis(TH2F* h, int axis, int lep);
   
   //
@@ -92,6 +93,9 @@ public:
     float pfiso_ch;
     float pfiso_em;
     float pfiso_nh;
+    float detiso_ch;
+    float detiso_em;
+    float detiso_nh;
     float valid_pixelHits;
     float lost_pixelhits;
     bool vtxFitConversion;   
@@ -109,6 +113,7 @@ public:
     int   seed;
     int   ncluster;
   };
+  void fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso);
   void fillElectronQuantities(std::map<std::string, TH1F*> & hSet, electron e );
   void bookElectronHistos(std::map<std::string, TH1F*> & hSet, TString prefix );
   void fillElectronQuantitiesN1(std::map<std::string, TH1F*> & hSet, electron e, electron cut);
@@ -195,6 +200,15 @@ private:
   std::map<std::string, TH1F*> hSet4Enp;
   std::map<std::string, TH1F*> hSet5Enp;
   std::map<std::string, TH1F*> hSet6Enp;
+
+    std::map<std::string, TH1F*> hSet7;
+    std::map<std::string, TH1F*> hSet7f;
+    std::map<std::string, TH1F*> hSet7np;
+    std::map<std::string, TH1F*> hSet7E;
+    std::map<std::string, TH1F*> hSet7Ef;
+    std::map<std::string, TH1F*> hSet7Enp;
+
+
 std::map<std::string, TH1F*> hSetCut1;  
 std::map<std::string, TH1F*> hSetCut2;
 std::map<std::string, TH1F*> hSetCut3;
