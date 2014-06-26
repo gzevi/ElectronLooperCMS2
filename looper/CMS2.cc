@@ -490,6 +490,7 @@ namespace tas {
 	vector<float> &els_r9() { return cms2.els_r9(); }
 	vector<float> &els_sigmaEtaEta() { return cms2.els_sigmaEtaEta(); }
 	vector<float> &els_sigmaIEtaIEta() { return cms2.els_sigmaIEtaIEta(); }
+	vector<float> &els_sigmaIEtaIEta_full5x5() { return cms2.els_sigmaIEtaIEta_full5x5(); }
 	vector<float> &els_sigmaIEtaIEtaSC() { return cms2.els_sigmaIEtaIEtaSC(); }
 	vector<float> &els_sigmaIEtaIPhi() { return cms2.els_sigmaIEtaIPhi(); }
 	vector<float> &els_sigmaIPhiIPhi() { return cms2.els_sigmaIPhiIPhi(); }

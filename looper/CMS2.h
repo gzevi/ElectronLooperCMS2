@@ -1484,6 +1484,9 @@ protected:
 	vector<float> els_sigmaIEtaIEta_;
 	TBranch *els_sigmaIEtaIEta_branch;
 	bool els_sigmaIEtaIEta_isLoaded;
+	vector<float> els_sigmaIEtaIEta_full5x5_;
+	TBranch *els_sigmaIEtaIEta_full5x5_branch;
+	bool els_sigmaIEtaIEta_full5x5_isLoaded;
 	vector<float> els_sigmaIEtaIEtaSC_;
 	TBranch *els_sigmaIEtaIEtaSC_branch;
 	bool els_sigmaIEtaIEtaSC_isLoaded;
@@ -6503,6 +6506,11 @@ void Init(TTree *tree) {
 		els_sigmaIEtaIEta_branch = tree->GetBranch(tree->GetAlias("els_sigmaIEtaIEta"));
 		if (els_sigmaIEtaIEta_branch) {els_sigmaIEtaIEta_branch->SetAddress(&els_sigmaIEtaIEta_);}
 	}
+	els_sigmaIEtaIEta_full5x5_branch = 0;
+	if (tree->GetAlias("els_sigmaIEtaIEta_full5x5") != 0) {
+		els_sigmaIEtaIEta_full5x5_branch = tree->GetBranch(tree->GetAlias("els_sigmaIEtaIEta_full5x5"));
+		if (els_sigmaIEtaIEta_full5x5_branch) {els_sigmaIEtaIEta_full5x5_branch->SetAddress(&els_sigmaIEtaIEta_full5x5_);}
+	}
 	els_sigmaIEtaIEtaSC_branch = 0;
 	if (tree->GetAlias("els_sigmaIEtaIEtaSC") != 0) {
 		els_sigmaIEtaIEtaSC_branch = tree->GetBranch(tree->GetAlias("els_sigmaIEtaIEtaSC"));
@@ -11283,6 +11291,7 @@ void GetEntry(unsigned int idx)
 		els_r9_isLoaded = false;
 		els_sigmaEtaEta_isLoaded = false;
 		els_sigmaIEtaIEta_isLoaded = false;
+		els_sigmaIEtaIEta_full5x5_isLoaded = false;
 		els_sigmaIEtaIEtaSC_isLoaded = false;
 		els_sigmaIEtaIPhi_isLoaded = false;
 		els_sigmaIPhiIPhi_isLoaded = false;
@@ -12634,6 +12643,7 @@ void LoadAllBranches()
 	if (els_r9_branch != 0) els_r9();
 	if (els_sigmaEtaEta_branch != 0) els_sigmaEtaEta();
 	if (els_sigmaIEtaIEta_branch != 0) els_sigmaIEtaIEta();
+	if (els_sigmaIEtaIEta_full5x5_branch != 0) els_sigmaIEtaIEta_full5x5();
 	if (els_sigmaIEtaIEtaSC_branch != 0) els_sigmaIEtaIEtaSC();
 	if (els_sigmaIEtaIPhi_branch != 0) els_sigmaIEtaIPhi();
 	if (els_sigmaIPhiIPhi_branch != 0) els_sigmaIPhiIPhi();
@@ -19849,6 +19859,19 @@ void LoadAllBranches()
 			els_sigmaIEtaIEta_isLoaded = true;
 		}
 		return els_sigmaIEtaIEta_;
+	}
+	vector<float> &els_sigmaIEtaIEta_full5x5()
+	{
+		if (not els_sigmaIEtaIEta_full5x5_isLoaded) {
+			if (els_sigmaIEtaIEta_full5x5_branch != 0) {
+				els_sigmaIEtaIEta_full5x5_branch->GetEntry(index);
+			} else { 
+				printf("branch els_sigmaIEtaIEta_full5x5_branch does not exist!\n");
+				exit(1);
+			}
+			els_sigmaIEtaIEta_full5x5_isLoaded = true;
+		}
+		return els_sigmaIEtaIEta_full5x5_;
 	}
 	vector<float> &els_sigmaIEtaIEtaSC()
 	{
@@ -31556,6 +31579,7 @@ namespace tas {
 	vector<float> &els_r9();
 	vector<float> &els_sigmaEtaEta();
 	vector<float> &els_sigmaIEtaIEta();
+	vector<float> &els_sigmaIEtaIEta_full5x5();
 	vector<float> &els_sigmaIEtaIEtaSC();
 	vector<float> &els_sigmaIEtaIPhi();
 	vector<float> &els_sigmaIPhiIPhi();
