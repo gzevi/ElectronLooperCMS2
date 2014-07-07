@@ -1352,6 +1352,9 @@ protected:
 	vector<float> els_hOverE_;
 	TBranch *els_hOverE_branch;
 	bool els_hOverE_isLoaded;
+	vector<float> els_hOverEBC_;
+	TBranch *els_hOverEBC_branch;
+	bool els_hOverEBC_isLoaded;
 	vector<float> els_hcalDepth1OverEcal_;
 	TBranch *els_hcalDepth1OverEcal_branch;
 	bool els_hcalDepth1OverEcal_isLoaded;
@@ -1463,6 +1466,9 @@ protected:
 	vector<float> els_pfPhotonIso_;
 	TBranch *els_pfPhotonIso_branch;
 	bool els_pfPhotonIso_isLoaded;
+	vector<float> els_pfPUIso_;
+	TBranch *els_pfPUIso_branch;
+	bool els_pfPUIso_isLoaded;
 	vector<float> els_phiErr_;
 	TBranch *els_phiErr_branch;
 	bool els_phiErr_isLoaded;
@@ -6286,6 +6292,11 @@ void Init(TTree *tree) {
 		els_hOverE_branch = tree->GetBranch(tree->GetAlias("els_hOverE"));
 		if (els_hOverE_branch) {els_hOverE_branch->SetAddress(&els_hOverE_);}
 	}
+	els_hOverEBC_branch = 0;
+	if (tree->GetAlias("els_hOverEBC") != 0) {
+		els_hOverEBC_branch = tree->GetBranch(tree->GetAlias("els_hOverEBC"));
+		if (els_hOverEBC_branch) {els_hOverEBC_branch->SetAddress(&els_hOverEBC_);}
+	}
 	els_hcalDepth1OverEcal_branch = 0;
 	if (tree->GetAlias("els_hcalDepth1OverEcal") != 0) {
 		els_hcalDepth1OverEcal_branch = tree->GetBranch(tree->GetAlias("els_hcalDepth1OverEcal"));
@@ -6470,6 +6481,11 @@ void Init(TTree *tree) {
 	if (tree->GetAlias("els_pfPhotonIso") != 0) {
 		els_pfPhotonIso_branch = tree->GetBranch(tree->GetAlias("els_pfPhotonIso"));
 		if (els_pfPhotonIso_branch) {els_pfPhotonIso_branch->SetAddress(&els_pfPhotonIso_);}
+	}
+	els_pfPUIso_branch = 0;
+	if (tree->GetAlias("els_pfPUIso") != 0) {
+		els_pfPUIso_branch = tree->GetBranch(tree->GetAlias("els_pfPUIso"));
+		if (els_pfPUIso_branch) {els_pfPUIso_branch->SetAddress(&els_pfPUIso_);}
 	}
 	els_phiErr_branch = 0;
 	if (tree->GetAlias("els_phiErr") != 0) {
@@ -11247,6 +11263,7 @@ void GetEntry(unsigned int idx)
 		els_etaSCwidth_isLoaded = false;
 		els_fbrem_isLoaded = false;
 		els_hOverE_isLoaded = false;
+		els_hOverEBC_isLoaded = false;
 		els_hcalDepth1OverEcal_isLoaded = false;
 		els_hcalDepth1TowerSumEt_isLoaded = false;
 		els_hcalDepth1TowerSumEt04_isLoaded = false;
@@ -11284,6 +11301,7 @@ void GetEntry(unsigned int idx)
 		els_pfChargedHadronIso_isLoaded = false;
 		els_pfNeutralHadronIso_isLoaded = false;
 		els_pfPhotonIso_isLoaded = false;
+		els_pfPUIso_isLoaded = false;
 		els_phiErr_isLoaded = false;
 		els_phiSC_isLoaded = false;
 		els_phiSCwidth_isLoaded = false;
@@ -12599,6 +12617,7 @@ void LoadAllBranches()
 	if (els_etaSCwidth_branch != 0) els_etaSCwidth();
 	if (els_fbrem_branch != 0) els_fbrem();
 	if (els_hOverE_branch != 0) els_hOverE();
+	if (els_hOverEBC_branch != 0) els_hOverEBC();
 	if (els_hcalDepth1OverEcal_branch != 0) els_hcalDepth1OverEcal();
 	if (els_hcalDepth1TowerSumEt_branch != 0) els_hcalDepth1TowerSumEt();
 	if (els_hcalDepth1TowerSumEt04_branch != 0) els_hcalDepth1TowerSumEt04();
@@ -12636,6 +12655,7 @@ void LoadAllBranches()
 	if (els_pfChargedHadronIso_branch != 0) els_pfChargedHadronIso();
 	if (els_pfNeutralHadronIso_branch != 0) els_pfNeutralHadronIso();
 	if (els_pfPhotonIso_branch != 0) els_pfPhotonIso();
+	if (els_pfPUIso_branch != 0) els_pfPUIso();
 	if (els_phiErr_branch != 0) els_phiErr();
 	if (els_phiSC_branch != 0) els_phiSC();
 	if (els_phiSCwidth_branch != 0) els_phiSCwidth();
@@ -19288,6 +19308,19 @@ void LoadAllBranches()
 		}
 		return els_hOverE_;
 	}
+	vector<float> &els_hOverEBC()
+	{
+		if (not els_hOverEBC_isLoaded) {
+			if (els_hOverEBC_branch != 0) {
+				els_hOverEBC_branch->GetEntry(index);
+			} else { 
+				printf("branch els_hOverEBC_branch does not exist!\n");
+				exit(1);
+			}
+			els_hOverEBC_isLoaded = true;
+		}
+		return els_hOverEBC_;
+	}
 	vector<float> &els_hcalDepth1OverEcal()
 	{
 		if (not els_hcalDepth1OverEcal_isLoaded) {
@@ -19768,6 +19801,19 @@ void LoadAllBranches()
 			els_pfPhotonIso_isLoaded = true;
 		}
 		return els_pfPhotonIso_;
+	}
+	vector<float> &els_pfPUIso()
+	{
+		if (not els_pfPUIso_isLoaded) {
+			if (els_pfPUIso_branch != 0) {
+				els_pfPUIso_branch->GetEntry(index);
+			} else { 
+				printf("branch els_pfPUIso_branch does not exist!\n");
+				exit(1);
+			}
+			els_pfPUIso_isLoaded = true;
+		}
+		return els_pfPUIso_;
 	}
 	vector<float> &els_phiErr()
 	{
@@ -31535,6 +31581,7 @@ namespace tas {
 	vector<float> &els_etaSCwidth();
 	vector<float> &els_fbrem();
 	vector<float> &els_hOverE();
+	vector<float> &els_hOverEBC();
 	vector<float> &els_hcalDepth1OverEcal();
 	vector<float> &els_hcalDepth1TowerSumEt();
 	vector<float> &els_hcalDepth1TowerSumEt04();
@@ -31572,6 +31619,7 @@ namespace tas {
 	vector<float> &els_pfChargedHadronIso();
 	vector<float> &els_pfNeutralHadronIso();
 	vector<float> &els_pfPhotonIso();
+	vector<float> &els_pfPUIso();
 	vector<float> &els_phiErr();
 	vector<float> &els_phiSC();
 	vector<float> &els_phiSCwidth();

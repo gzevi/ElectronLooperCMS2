@@ -3,6 +3,7 @@
 #include "TDatabasePDG.h"
 #include "TLorentzVector.h"
 #include <bitset>
+#include "TGraph.h"
 
 #include "../Tools/goodrun.h"
 #include "../Tools/vtxreweight.h"
@@ -23,7 +24,8 @@
 // --> also keep in mind that ../Tools has to keep its own CMS2.h, otherwise it won't compile, and same for ../CORE
 // --> To check for conflict with other CMS2.h, just comment out the #ifndef and #endif lines in the local CMS2.h (this will show where the conflicting definitions are)
 // --> Actually can't get to run in this configuration. CMS2.h has to be included by someone above, maybe to be compiled? not clear. otherwise can't find any variables at all...
-// --> So we're stuck with adding the variables by hand to ../CORE/CMS2.h... ???
+// --> So we're stuck with adding the variables by hand to ../CORE/CMS2.h... ??? YES. 
+// --> Actually the local CMS2.h and .cc are the ones to commit! At the beginning of a new setup they will be copied to ../CORE
  
 bool verbose              = false;
 bool doTenPercent         = false;
@@ -34,6 +36,10 @@ bool requireTrigMatch     = true;
 bool doSS                 = false;
 bool doOS                 = false;
 bool m_miniAOD            = true;
+      bool is25ns = false;
+
+bool  m_newISO = false;
+bool  m_newID = false;
 
 using namespace std;
 using namespace tas;
@@ -263,13 +269,55 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
   int nFOEle = 0; // This is the basis for the Fake Rate. One could use all Reco Electrons, but ideally should use something that's not biased by trigger
 
   int nPromptEleBin[6] = {};
+  int nPromptEleVBin[6] = {};
   int nPromptEleLBin[6] = {};
   int nPromptEleMBin[6] = {};
   int nPromptEleTBin[6] = {};
   int nFakeEleBin[6] = {};
+  int nFakeEleVBin[6] = {};
   int nFakeEleLBin[6] = {};
   int nFakeEleMBin[6] = {};
   int nFakeEleTBin[6] = {};
+  int nNPEleBin[6] = {};
+  int nNPEleVBin[6] = {};
+  int nNPEleLBin[6] = {};
+  int nNPEleMBin[6] = {};
+  int nNPEleTBin[6] = {};
+  int nPromptEleVBinNoIso[6] = {};
+  int nPromptEleLBinNoIso[6] = {};
+  int nPromptEleMBinNoIso[6] = {};
+  int nPromptEleTBinNoIso[6] = {};
+  int nFakeEleVBinNoIso[6] = {};
+  int nFakeEleLBinNoIso[6] = {};
+  int nFakeEleMBinNoIso[6] = {};
+  int nFakeEleTBinNoIso[6] = {};
+  int nNPEleVBinNoIso[6] = {};
+  int nNPEleLBinNoIso[6] = {};
+  int nNPEleMBinNoIso[6] = {};
+  int nNPEleTBinNoIso[6] = {};
+
+
+  int CountVstdIDstdISO[6][3] = {};//stdIDstdISO // 6 regions (pt/eta), 3 types (truth, nonprompt, fake)
+  int CountLstdIDstdISO[6][3] = {};
+  int CountMstdIDstdISO[6][3] = {};
+  int CountTstdIDstdISO[6][3] = {};
+  int CountVnewIDstdISO[6][3] = {};//newIDstdISO
+  int CountLnewIDstdISO[6][3] = {};
+  int CountMnewIDstdISO[6][3] = {};
+  int CountTnewIDstdISO[6][3] = {};
+  int CountVnewIDnewISO[6][3] = {};//newIDnewISO
+  int CountLnewIDnewISO[6][3] = {};
+  int CountMnewIDnewISO[6][3] = {};
+  int CountTnewIDnewISO[6][3] = {};
+  int CountVstdIDnoISO[6][3] = {};//stdIDnoISO
+  int CountLstdIDnoISO[6][3] = {};
+  int CountMstdIDnoISO[6][3] = {};
+  int CountTstdIDnoISO[6][3] = {};
+  int CountVnewIDnoISO[6][3] = {};//newIDnoISO  
+  int CountLnewIDnoISO[6][3] = {};
+  int CountMnewIDnoISO[6][3] = {};
+  int CountTnewIDnoISO[6][3] = {};
+
 
   while((currentFile = (TChainElement*)fileIter.Next())) {
     TFile* f = new TFile(currentFile->GetTitle());
@@ -356,8 +404,10 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         }
       }
       TString filename = currentFile->GetTitle();
-      if (filename.Contains("CMS3") || filename.Contains("miniAOD")) m_miniAOD = true;
+      if (filename.Contains("CMS3") || filename.Contains("miniAOD") || prefix.Contains("CMS3")) m_miniAOD = true;
       else m_miniAOD = false;
+
+      if (prefix.Contains("20bx25")) is25ns = true;
 
       //-------------------------------------
       // skip events with bad els_conv_dist
@@ -448,20 +498,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       // reco electron selection
       //---------------------------------------------
       
-      float pt_lead_el = -1.;
-      int idx_lead_el = -1;
-      float pt_subl_el = -1.;
-      int idx_subl_el = -1;
-      
-      float pt_lead_denom_el = -1.;
-      int idx_lead_denom_el = -1;
-      float pt_subl_denom_el = -1.;
-      int idx_subl_denom_el = -1;
-      
-      float pt_lead_mediso_el = -1.;
-      int idx_lead_mediso_el = -1;
-      float pt_subl_mediso_el = -1.;
-      int idx_subl_mediso_el = -1;
+
 
       dilepStudyLooper::electron eleDencuts; // should correspond to a dilepton trigger (not WP80, which is too tight)
       eleDencuts.sieie = 0.011;
@@ -517,6 +554,33 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       eleWP80cutsEE.valid_pixelHits = 3;
       eleWP80cutsEE.pfiso_em = 0.1;
       eleWP80cutsEE.chi2n = 1.5;
+  
+      dilepStudyLooper::electron eleVcuts; //VETO
+      eleVcuts.sieie = 0.01;
+      eleVcuts.dEtaIn =0.007;
+      eleVcuts.dPhiIn = 0.8; //wow
+      eleVcuts.hOverE = 0.15;
+      eleVcuts.d0corr = 0.04;
+      eleVcuts.z0corr = 0.2;
+      eleVcuts.ooemoop = 999; //wow
+      eleVcuts.iso_cor = 0.15;
+      eleVcuts.pfiso_ch = 999;
+      eleVcuts.pfiso_em = 999;
+      eleVcuts.pfiso_nh = 999;
+      eleVcuts.detiso_ch = 999;
+      eleVcuts.detiso_em = 999;
+      eleVcuts.detiso_nh = 999;
+      eleVcuts.valid_pixelHits = 0;
+      eleVcuts.lost_pixelhits = 3;
+      eleVcuts.vtxFitConversion = false; // false means don't check
+      eleVcuts.chi2n = 999;
+
+      dilepStudyLooper::electron eleVcutsEE = eleVcuts; //VETO
+      eleVcutsEE.sieie = 0.03;
+      eleVcutsEE.dEtaIn = 0.01;
+      eleVcutsEE.dPhiIn = 0.7; //wow
+      eleVcutsEE.hOverE = 999; //wow
+      eleVcutsEE.iso_cor = 0.15;//0.15; // should be 0.10 for <20 GeV    
       
       dilepStudyLooper::electron eleLcuts;
       eleLcuts.sieie = 0.01;
@@ -574,7 +638,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 
       dilepStudyLooper::electron eleTcuts;
       eleTcuts.sieie = 0.01;
-      eleTcuts.dEtaIn = 0.004;
+      eleTcuts.dEtaIn =0.004;
       eleTcuts.dPhiIn = 0.03;
       eleTcuts.hOverE = 0.12;
       eleTcuts.d0corr = 0.02;
@@ -598,6 +662,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       eleTcutsEE.dPhiIn = 0.02;
       eleTcutsEE.hOverE = 0.10;
       eleTcutsEE.iso_cor = 0.1; // should be 0.10 for <20 GeV
+
       
       if (!isData) {
 	for(unsigned int idx = 0; idx < genps_id().size(); idx++) {
@@ -615,8 +680,14 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
         LorentzVector& el_p4 = els_p4().at(iel);
         float pt = el_p4.pt();
         float eta = els_etaSC().at(iel);
-        if (!isData && (pt < 10 || pt > 50)) continue;
+        if (!isData && (pt < 20 || pt > 50)) continue;
         if (isData && (pt < 10 || pt > 35)) continue;
+	//if (pt < 20) continue;
+	//	if (pt < 10 || pt > 20) continue;
+	if (fabs(eta) > 2.5) continue;
+	//dilepStudyLooper::electron eleStructTemp; 
+	//fillElectronStructure(iel, eleStructTemp,  false, false, 0, false, false, false);
+	//if ( !passElectronCuts(eleStructTemp, eleDencuts, eleDencutsEE)) continue;
 	// Quick check for single electron:
 	int neleDen = 1;
 	for (unsigned int jel = 0; jel < els_p4().size(); ++jel) {
@@ -633,9 +704,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	//if (eta < 0 ) continue;
 	//	if (isData && evt_pfmet() > 20) continue;	
 	//	if (isData && Mt( el_p4, evt_pfmet(), evt_pfmetphi() ) > 25) continue; // need to calculate mt	
-	//if (pt < 20) continue;
-	//	if (pt < 10 || pt > 20) continue;
-	if (fabs(eta) > 2.5) continue;
+
         h_el_pt->Fill(pt,1);
         h_el_eta->Fill(eta,1);
 
@@ -701,42 +770,43 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	bool fakematched = false;
 	bool nonpromptmatched = false;
 	if (!isData) {
-	  for(unsigned int idx = 0; idx < genps_id().size(); idx++) {
-	    
-	    int pid = abs(genps_id().at(idx));          
-	    if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23) continue; // this shouldn't happen, since only status 3 are in CMS2          
-	    if(pid != 11) continue;
+	  float bestmatch = 999;
+	  for(unsigned int idx = 0; idx < genps_id().size(); idx++) {	    
+	    int pid = abs(genps_id().at(idx));    
+	    if(pid != 11) continue;      
+	    if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23  && abs(genps_id_mother().at(idx)) != 24) continue; // trying everything
 	    float dr = dRbetweenVectors(genps_p4().at(idx), el_p4);
 	    h_el_truthmatch_DR->Fill(dr, 1);
-	    if ( dr > 0.02 ) continue;
+	    if ( dr > 0.02 ) {
+	      if (dr < bestmatch ) bestmatch = dr;
+	      continue;
+	    }
 	    else truthmatched = true;
 	  }
-	  if (truthmatched) {nPromptEle++; nPromptEleBin[effBin]++;}
-	  else if (abs(els_mc_id().at(iel) == 11)) { nNonPromptEle++; nonpromptmatched = true; }
-	  else { nFakeEle++; nFakeEleBin[effBin]++; fakematched = true; }
+	  if (truthmatched) {nPromptEle++; nPromptEleBin[effBin]++;}	  
+	  else if (abs(els_mc_id().at(iel)) == 11) { nNonPromptEle++; nNPEleBin[effBin]++; nonpromptmatched = true; } 
+	  else if (bestmatch > 0.2) { nFakeEle++; nFakeEleBin[effBin]++; fakematched = true; }
+	  // Classify NONPROMPT as FAKE
+	  if (nonpromptmatched == true) fakematched = true;
 	}
 	if (isData) fakematched = true;
-	//	cout<<" els_mc_id "<<els_mc_id().at(iel)<<", els_mc3_id "<<els_mc3_id().at(iel)<<", els_mc_motherid "<<els_mc_motherid().at(iel)<<", els_mc_motherid "<<els_mc3_motherid().at(iel)<<endl;
-        if (fabs(eta) <= 1.479)   truthmatched ? fillElectronQuantities(hSet2, eleStruct) : ( fakematched ? fillElectronQuantities(hSet2f, eleStruct) : fillElectronQuantities(hSet2np, eleStruct) );
-        else   truthmatched ? fillElectronQuantities(hSet2E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet2Ef, eleStruct) : fillElectronQuantities(hSet2Enp, eleStruct) );
-        
 
-	//	if (fabs(eta) <= 1.479 && truthmatched ) cout<< "sieie "<<eleStruct.sieie<<endl;
+	fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet2, hSet2f, hSet2np, hSet2E, hSet2Ef, hSet2Enp, eleStruct);
+	if (pt > 10 && pt < 20) fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet8, hSet8f, hSet8np, hSet8E, hSet8Ef, hSet8Enp, eleStruct);
+	if (pt > 20) 	fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet9, hSet9f, hSet9np, hSet9E, hSet9Ef, hSet9Enp, eleStruct);
 
+ 
         // Now start with the selections
         // First plot the N-1 distributions for the WP80 selections. 
         // Plot all variables for electrons passing all cuts 2->N
 
 	// After denominator cuts
 	if (passElectronCuts(eleStruct, eleDencuts, eleDencutsEE)) {
-	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet7, eleStruct) : fillElectronQuantities(hSet7f, eleStruct);
-	  else truthmatched ? fillElectronQuantities(hSet7E, eleStruct) : fillElectronQuantities(hSet7Ef, eleStruct);
+	  fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet7, hSet7f, hSet7np, hSet7E, hSet7Ef, hSet7Enp, eleStruct);
 	}
 	
 	// N-1
-        if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet3, eleStruct, eleWP80cuts) : fillElectronQuantitiesN1(hSet3f, eleStruct, eleWP80cuts); 
-        else truthmatched ? fillElectronQuantitiesN1(hSet3E, eleStruct, eleWP80cutsEE) : fillElectronQuantitiesN1(hSet3Ef, eleStruct, eleWP80cutsEE); 
-        
+	fillTrueFakeHistosN1( eta, truthmatched, fakematched, nonpromptmatched, hSet3, hSet3f, hSet3np, hSet3E, hSet3Ef, hSet3Enp, eleStruct, eleWP80cuts, eleWP80cutsEE);
 
 	// Run Without Isolation Cut
       //eleLcuts.iso_cor = 999;
@@ -749,48 +819,97 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
       eleDencutsEE.iso_cor = 999;
 
       // Fill N-1 plots
-      // LOOSE
-      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet4, eleStruct, eleLcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet4f, eleStruct, eleLcuts) : fillElectronQuantitiesN1(hSet4np, eleStruct, eleLcuts) );
-      else truthmatched ? fillElectronQuantitiesN1(hSet4E, eleStruct, eleLcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet4Ef, eleStruct, eleLcutsEE) : fillElectronQuantitiesN1(hSet4Enp, eleStruct, eleLcutsEE) );
-      // MEDIUM
-      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet5, eleStruct, eleMcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet5f, eleStruct, eleMcuts) : fillElectronQuantitiesN1(hSet5np, eleStruct, eleMcuts) );
-      else truthmatched ? fillElectronQuantitiesN1(hSet5E, eleStruct, eleMcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet5Ef, eleStruct, eleMcutsEE) : fillElectronQuantitiesN1(hSet5Enp, eleStruct, eleMcutsEE) );
-      // TIGHT
-      if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantitiesN1(hSet6, eleStruct, eleTcuts) :  ( fakematched ? fillElectronQuantitiesN1(hSet6f, eleStruct, eleTcuts) : fillElectronQuantitiesN1(hSet6np, eleStruct, eleTcuts) );
-      else truthmatched ? fillElectronQuantitiesN1(hSet6E, eleStruct, eleTcutsEE) :  ( fakematched ? fillElectronQuantitiesN1(hSet6Ef, eleStruct, eleTcutsEE) : fillElectronQuantitiesN1(hSet6Enp, eleStruct, eleTcutsEE) );
-        
-      // Instead of MEDIUM, fill only if ncluster == 1
-//      if ( seedCode == 3 ) {
-//	if (fabs(eta) <= 1.479)   truthmatched ? fillElectronQuantities(hSet5, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5f, eleStruct) : fillElectronQuantities(hSet5np, eleStruct) );
-//	else   truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
-//      }
 
-
+      fillTrueFakeHistosN1( eta, truthmatched, fakematched, nonpromptmatched, hSet4, hSet4f, hSet4np, hSet4E, hSet4Ef, hSet4Enp,   eleStruct, eleLcuts, eleLcutsEE);
+      fillTrueFakeHistosN1( eta, truthmatched, fakematched, nonpromptmatched, hSet5, hSet5f, hSet5np, hSet5E, hSet5Ef, hSet5Enp,   eleStruct, eleLcuts, eleLcutsEE);
+      fillTrueFakeHistosN1( eta, truthmatched, fakematched, nonpromptmatched, hSet6, hSet6f, hSet6np, hSet6E, hSet6Ef, hSet6Enp,   eleStruct, eleLcuts, eleLcutsEE);
 
       // Fill Plots After Cuts (not N-1), and counters
-	if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) {
-	  if (truthmatched) {nPromptEleL++; nPromptEleLBin[effBin]++;}
-	  else if (nonpromptmatched)  nNonPromptEleL++;
-	  else {nFakeEleL++; nFakeEleLBin[effBin]++;}
-//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet4, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4f, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
-//	  else truthmatched ? fillElectronQuantities(hSet4E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet4Ef, eleStruct) : fillElectronQuantities(hSet4np, eleStruct) );
-	}
 
-	if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) {
-	  if (truthmatched) {nPromptEleM++; nPromptEleMBin[effBin]++;}
-	  else if (nonpromptmatched)  nNonPromptEleM++;
-	  else {nFakeEleM++; nFakeEleMBin[effBin]++;}
-//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet5, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5f, eleStruct) : fillElectronQuantities(hSet5np, eleStruct) );
-//	  else truthmatched ? fillElectronQuantities(hSet5E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet5Ef, eleStruct) : fillElectronQuantities(hSet5Enp, eleStruct) );
-	}
 
-	if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) {
-	  if (truthmatched) {nPromptEleT++; nPromptEleTBin[effBin]++;}
-	  else if (nonpromptmatched)  nNonPromptEleT++;
-	  else {nFakeEleT++; nFakeEleTBin[effBin]++;}
-//	  if (fabs(eta) <= 1.479) truthmatched ? fillElectronQuantities(hSet6, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6f, eleStruct) : fillElectronQuantities(hSet6np, eleStruct) );
-//	  else truthmatched ? fillElectronQuantities(hSet6E, eleStruct) : ( fakematched ? fillElectronQuantities(hSet6Ef, eleStruct) : fillElectronQuantities(hSet6Enp, eleStruct) );
-	}
+      // Plots after ID and ISO cuts //stdIDstdISO
+      // Full Standard
+      if (passElectronCuts(eleStruct, eleVcuts, eleVcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountVstdIDstdISO);
+      if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountLstdIDstdISO);
+      if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountMstdIDstdISO);
+      if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountTstdIDstdISO);
+
+      // New ID and std ISO //newIDstdISO
+      eleVcuts.dEtaIn =   0.012;                 // These are the preliminary CSA14 ID cuts   //eleVcuts.dEtaIn =   0.007; // These are the standard ID cuts     
+      eleVcutsEE.dEtaIn = (is25ns ? 0.015 : 0.022); 					      //eleVcutsEE.dEtaIn = 0.01;					       
+      eleLcuts.dEtaIn =   0.012; 				                  	      //eleLcuts.dEtaIn =   0.007;				       
+      eleLcutsEE.dEtaIn = (is25ns ? 0.014 : 0.021);					      //eleLcutsEE.dEtaIn = 0.009;				       
+      eleMcuts.dEtaIn =   0.009;					                      //eleMcuts.dEtaIn =   0.004;				       
+      eleMcutsEE.dEtaIn = (is25ns ? 0.012 : 0.019);					      //eleMcutsEE.dEtaIn = 0.007;				       
+      eleTcuts.dEtaIn =   0.009;		                 			      //eleTcuts.dEtaIn =   0.004;				       
+      eleTcutsEE.dEtaIn = (is25ns ? 0.010 : 0.017);					      //eleTcutsEE.dEtaIn = 0.005;       
+      eleLcutsEE.hOverE = 0.12;
+      eleMcutsEE.hOverE = 0.12;
+      eleTcutsEE.hOverE = 0.12;
+      eleVcuts.sieie = 0.013;
+      eleLcuts.sieie = 0.013;
+      eleVcutsEE.sieie = 0.033;
+      eleLcutsEE.sieie = 0.033;
+      eleMcutsEE.sieie = 0.031;
+      eleTcutsEE.sieie = 0.031;
+                                
+      if (passElectronCuts(eleStruct, eleVcuts, eleVcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountVnewIDstdISO);
+      if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountLnewIDstdISO);
+      if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountMnewIDstdISO);
+      if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountTnewIDstdISO);
+
+      // New ID and new ISO //newIDnewISO
+      eleVcuts.iso_cor =   (is25ns ? 0.23 : 0.20); // These are the preliminary CSA14 ISO cuts   //eleVcuts.iso_cor =   0.15; // These are the standard ISO cuts   
+      eleVcutsEE.iso_cor = (is25ns ? 0.25 : 0.20);						 //eleVcutsEE.iso_cor = 0.15; // should be 0.10 for <20 GeV        
+      eleLcuts.iso_cor =   (is25ns ? 0.23 : 0.20);						 //eleLcuts.iso_cor =   0.15;				      
+      eleLcutsEE.iso_cor = (is25ns ? 0.25 : 0.20);						 //eleLcutsEE.iso_cor = 0.15; // should be 0.10 for <20 GeV	      
+      eleMcuts.iso_cor =   (is25ns ? 0.23 : 0.20);						 //eleMcuts.iso_cor =   0.15;				      
+      eleMcutsEE.iso_cor = (is25ns ? 0.21 : 0.18);						 //eleMcutsEE.iso_cor = 0.15; // should be 0.10 for <20 GeV	      
+      eleTcuts.iso_cor =   (is25ns ? 0.18 : 0.15);						 //eleTcuts.iso_cor =   0.1;					      
+      eleTcutsEE.iso_cor = (is25ns ? 0.16 : 0.13);						 //eleTcutsEE.iso_cor = 0.1; // should be 0.10 for <20 GeV         
+      if (passElectronCuts(eleStruct, eleVcuts, eleVcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountVnewIDnewISO);
+      if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountLnewIDnewISO);
+      if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountMnewIDnewISO);
+      if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountTnewIDnewISO);
+
+      // Turn ISO off: New ID only //newIDnoISO  
+      eleVcuts.iso_cor   = 999;
+      eleVcutsEE.iso_cor = 999;
+      eleLcuts.iso_cor   = 999;
+      eleLcutsEE.iso_cor = 999;
+      eleMcuts.iso_cor   = 999;
+      eleMcutsEE.iso_cor = 999;
+      eleTcuts.iso_cor   = 999;
+      eleTcutsEE.iso_cor = 999;
+      if (passElectronCuts(eleStruct, eleVcuts, eleVcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountVnewIDnoISO);
+      if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountLnewIDnoISO);
+      if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountMnewIDnoISO);
+      if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountTnewIDnoISO);               
+
+
+
+      // Turn ISO off: Standard ID only //stdIDnoISO  
+      eleVcuts.dEtaIn =   0.007; // These are the standard ID cuts   
+      eleVcutsEE.dEtaIn = 0.01;				       
+      eleLcuts.dEtaIn =   0.007;				       
+      eleLcutsEE.dEtaIn = 0.009;				       
+      eleMcuts.dEtaIn =   0.004;				       
+      eleMcutsEE.dEtaIn = 0.007;				       
+      eleTcuts.dEtaIn =   0.004;				       
+      eleTcutsEE.dEtaIn = 0.005;   
+      eleLcutsEE.hOverE = 0.10;
+      eleMcutsEE.hOverE = 0.10;
+      eleTcutsEE.hOverE = 0.10;
+      eleVcuts.sieie = 0.01;
+      eleLcuts.sieie = 0.01;
+      eleVcutsEE.sieie = 0.03;
+      eleLcutsEE.sieie = 0.03;
+      eleMcutsEE.sieie = 0.03;
+      eleTcutsEE.sieie = 0.03;               
+      if (passElectronCuts(eleStruct, eleVcuts, eleVcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountVstdIDnoISO);
+      if (passElectronCuts(eleStruct, eleLcuts, eleLcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountLstdIDnoISO);
+      if (passElectronCuts(eleStruct, eleMcuts, eleMcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountMstdIDnoISO);
+      if (passElectronCuts(eleStruct, eleTcuts, eleTcutsEE)) fillCounters(effBin, truthmatched, fakematched, nonpromptmatched, CountTstdIDnoISO);
 
 	//Debug: plot after each cut, one cut at the time
 //	float isoCut = eleLcuts.iso_cor;
@@ -910,32 +1029,199 @@ cout << "Events before reco cuts: " << nEventsPreReco << endl;
 cout << "Passed events: " << nEventsPass << endl;
 cout << "Gen Electrons: " << nTrueEle << endl;
 cout << "FO Electrons: " << nFOEle << endl;
- cout << "All:  \tTruthMatch: " << nPromptEle << "\t NonPrompt: " << nNonPromptEle<< "\t Fake: " << nFakeEle <<"\t Eff: " << 1.*nPromptEle/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEle+nNonPromptEle)/(nFakeEle+nNonPromptEle) << endl;
-cout << "Loose: \tTruthMatch: " << nPromptEleL << "\t NonPrompt: " << nNonPromptEleL<< "\t Fake: " << nFakeEleL <<"\t Eff: " << 1.*nPromptEleL/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleL+nNonPromptEleL)/(nFakeEle+nNonPromptEle) << endl;
-cout << "Medium:\tTruthMatch: " << nPromptEleM << "\t NonPrompt: " << nNonPromptEleM<< "\t Fake: " << nFakeEleM <<"\t Eff: " << 1.*nPromptEleM/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleM+nNonPromptEleM)/(nFakeEle+nNonPromptEle) << endl;
-cout << "Tight: \tTruthMatch: " << nPromptEleT << "\t NonPrompt: " << nNonPromptEleT<< "\t Fake: " << nFakeEleT <<"\t Eff: " << 1.*nPromptEleT/nTrueEle <<"\t FakeEff: " << 1.*(nFakeEleT+nNonPromptEleT)/(nFakeEle+nNonPromptEle) << endl;
- cout << "EffVReco: "<< 1.*nPromptEle/nPromptEle <<", "<< 1.*nPromptEleL/nPromptEle <<", "<< 1.*nPromptEleM/nPromptEle <<", "<< 1.*nPromptEleT/nPromptEle <<endl;
- cout << "FR_Fake: "<<1.*(nFakeEle)/(nFakeEle) <<", "<< 1.*(nFakeEleL)/(nFakeEle) <<", "<< 1.*(nFakeEleM)/(nFakeEle) <<", "<< 1.*(nFakeEleT)/(nFakeEle) <<endl;
- cout << "FR_NonPrompt: "<<1.*(nNonPromptEle)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleL)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleM)/(nNonPromptEle) <<", "<< 1.*(nNonPromptEleT)/(nNonPromptEle) <<endl;
- cout << "FR_Tot: "<<1.*(nFakeEle+nNonPromptEle)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleL+nNonPromptEleL)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleM+nNonPromptEleM)/(nFakeEle+nNonPromptEle) <<", "<< 1.*(nFakeEleT+nNonPromptEleT)/(nFakeEle+nNonPromptEle) <<endl;
-
- cout << " float EffVReco1015[3] = {"<<   1.*nPromptEleLBin[0]/nPromptEleBin[0] <<", "<< 1.*nPromptEleMBin[0]/nPromptEleBin[0] <<", "<< 1.*nPromptEleTBin[0]/nPromptEleBin[0] <<"}"<<endl;
- cout << " float FR_Fake1015[3] = {"<<     1.*(nFakeEleLBin[0])/(nFakeEleBin[0]) <<", "<< 1.*(nFakeEleMBin[0])/(nFakeEleBin[0]) <<", "<< 1.*(nFakeEleTBin[0])/(nFakeEleBin[0]) <<"}"<<endl;
- cout << " float EffVReco1015EE[3] = {"<< 1.*nPromptEleLBin[1]/nPromptEleBin[1] <<", "<< 1.*nPromptEleMBin[1]/nPromptEleBin[1] <<", "<< 1.*nPromptEleTBin[1]/nPromptEleBin[1] <<"}"<<endl;
- cout << " float FR_Fake1015EE[3] = {"<<   1.*(nFakeEleLBin[1])/(nFakeEleBin[1]) <<", "<< 1.*(nFakeEleMBin[1])/(nFakeEleBin[1]) <<", "<< 1.*(nFakeEleTBin[1])/(nFakeEleBin[1]) <<"}"<<endl;
- cout << " float EffVReco1520[3] = {"<<   1.*nPromptEleLBin[2]/nPromptEleBin[2] <<", "<< 1.*nPromptEleMBin[2]/nPromptEleBin[2] <<", "<< 1.*nPromptEleTBin[2]/nPromptEleBin[2] <<"}"<<endl;
- cout << " float FR_Fake1520[3] = {"<<     1.*(nFakeEleLBin[2])/(nFakeEleBin[2]) <<", "<< 1.*(nFakeEleMBin[2])/(nFakeEleBin[2]) <<", "<< 1.*(nFakeEleTBin[2])/(nFakeEleBin[2]) <<"}"<<endl;
- cout << " float EffVReco1520EE[3] = {"<< 1.*nPromptEleLBin[3]/nPromptEleBin[3] <<", "<< 1.*nPromptEleMBin[3]/nPromptEleBin[3] <<", "<< 1.*nPromptEleTBin[3]/nPromptEleBin[3] <<"}"<<endl;
- cout << " float FR_Fake1520EE[3] = {"<<   1.*(nFakeEleLBin[3])/(nFakeEleBin[3]) <<", "<< 1.*(nFakeEleMBin[3])/(nFakeEleBin[3]) <<", "<< 1.*(nFakeEleTBin[3])/(nFakeEleBin[3]) <<"}"<<endl;
- cout << " float EffVReco20[3] = {"<<     1.*nPromptEleLBin[4]/nPromptEleBin[4] <<", "<< 1.*nPromptEleMBin[4]/nPromptEleBin[4] <<", "<< 1.*nPromptEleTBin[4]/nPromptEleBin[4] <<"}"<<endl;
- cout << " float FR_Fake20[3] = {"<<       1.*(nFakeEleLBin[4])/(nFakeEleBin[4]) <<", "<< 1.*(nFakeEleMBin[4])/(nFakeEleBin[4]) <<", "<< 1.*(nFakeEleTBin[4])/(nFakeEleBin[4]) <<"}"<<endl;
- cout << " float EffVReco20EE[3] = {"<<   1.*nPromptEleLBin[5]/nPromptEleBin[5] <<", "<< 1.*nPromptEleMBin[5]/nPromptEleBin[5] <<", "<< 1.*nPromptEleTBin[5]/nPromptEleBin[5] <<"}"<<endl;
- cout << " float FR_Fake20EE[3] = {"<<     1.*(nFakeEleLBin[5])/(nFakeEleBin[5]) <<", "<< 1.*(nFakeEleMBin[5])/(nFakeEleBin[5]) <<", "<< 1.*(nFakeEleTBin[5])/(nFakeEleBin[5]) <<"}"<<endl;
-cout << endl;
-
-
 
  outFile->cd(); // Make sure histograms get written out
+
+ // std::map<std::string, TGraph*> hGraph;
+
+//stdIDstdISO
+//newIDstdISO
+//newIDnewISO
+//stdIDnoISO	
+//newIDnoISO  
+
+  for (unsigned int b = 0; b < 6; b++) {
+    int tot = nPromptEleBin[b];
+    int Vet = CountVstdIDstdISO[b][0];
+    int Los = CountLstdIDstdISO[b][0];
+    int Med = CountMstdIDstdISO[b][0];
+    int Tig = CountTstdIDstdISO[b][0];
+    //cout<<"eff "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double eff[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    tot = nFakeEleBin[b] + nNPEleBin[b];
+    Vet = CountVstdIDstdISO[b][1] + CountVstdIDstdISO[b][2];
+    Los = CountLstdIDstdISO[b][1] + CountLstdIDstdISO[b][2];
+    Med = CountMstdIDstdISO[b][1] + CountMstdIDstdISO[b][2];
+    Tig = CountTstdIDstdISO[b][1] + CountTstdIDstdISO[b][2];
+    //cout<<"fake "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double fake[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    TGraph * g_0  = new TGraph(4, fake, eff);
+    TString gname = "stdIDstdISO_" + TString::Itoa(b, 10) + "_ROC";
+    g_0->SetNameTitle(gname, gname);
+    g_0->Write();
+  }
+  for (unsigned int b = 0; b < 6; b++) {
+    int tot = nPromptEleBin[b];
+    int Vet = CountVnewIDstdISO[b][0];
+    int Los = CountLnewIDstdISO[b][0];
+    int Med = CountMnewIDstdISO[b][0];
+    int Tig = CountTnewIDstdISO[b][0];
+    //cout<<"eff "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double eff[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    tot = nFakeEleBin[b] + nNPEleBin[b];
+    Vet = CountVnewIDstdISO[b][1] + CountVnewIDstdISO[b][2];
+    Los = CountLnewIDstdISO[b][1] + CountLnewIDstdISO[b][2];
+    Med = CountMnewIDstdISO[b][1] + CountMnewIDstdISO[b][2];
+    Tig = CountTnewIDstdISO[b][1] + CountTnewIDstdISO[b][2];
+    //cout<<"fake "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double fake[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    TGraph * g_0  = new TGraph(4, fake, eff);
+    TString gname = "newIDstdISO_" + TString::Itoa(b, 10) + "_ROC";
+    g_0->SetNameTitle(gname, gname);
+    g_0->Write();
+  }  for (unsigned int b = 0; b < 6; b++) {
+    int tot = nPromptEleBin[b];
+    int Vet = CountVnewIDnewISO[b][0];
+    int Los = CountLnewIDnewISO[b][0];
+    int Med = CountMnewIDnewISO[b][0];
+    int Tig = CountTnewIDnewISO[b][0];
+    //cout<<"eff "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double eff[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    tot = nFakeEleBin[b] + nNPEleBin[b];
+    Vet = CountVnewIDnewISO[b][1] + CountVnewIDnewISO[b][2];
+    Los = CountLnewIDnewISO[b][1] + CountLnewIDnewISO[b][2];
+    Med = CountMnewIDnewISO[b][1] + CountMnewIDnewISO[b][2];
+    Tig = CountTnewIDnewISO[b][1] + CountTnewIDnewISO[b][2];
+    //cout<<"fake "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double fake[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    TGraph * g_0  = new TGraph(4, fake, eff);
+    TString gname = "newIDnewISO_" + TString::Itoa(b, 10) + "_ROC";
+    g_0->SetNameTitle(gname, gname);
+    g_0->Write();
+  }  for (unsigned int b = 0; b < 6; b++) {
+    int tot = nPromptEleBin[b];
+    int Vet = CountVstdIDnoISO[b][0];
+    int Los = CountLstdIDnoISO[b][0];
+    int Med = CountMstdIDnoISO[b][0];
+    int Tig = CountTstdIDnoISO[b][0];
+    //cout<<"eff "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double eff[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    tot = nFakeEleBin[b] + nNPEleBin[b];
+    Vet = CountVstdIDnoISO[b][1] + CountVstdIDnoISO[b][2];
+    Los = CountLstdIDnoISO[b][1] + CountLstdIDnoISO[b][2];
+    Med = CountMstdIDnoISO[b][1] + CountMstdIDnoISO[b][2];
+    Tig = CountTstdIDnoISO[b][1] + CountTstdIDnoISO[b][2];
+    //cout<<"fake "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double fake[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    TGraph * g_0  = new TGraph(4, fake, eff);
+    TString gname = "stdIDnoISO_" + TString::Itoa(b, 10) + "_ROC";
+    g_0->SetNameTitle(gname, gname);
+    g_0->Write();
+  }  for (unsigned int b = 0; b < 6; b++) {
+    int tot = nPromptEleBin[b];
+    int Vet = CountVnewIDnoISO[b][0];
+    int Los = CountLnewIDnoISO[b][0];
+    int Med = CountMnewIDnoISO[b][0];
+    int Tig = CountTnewIDnoISO[b][0];
+    //cout<<"eff "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double eff[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    tot = nFakeEleBin[b] + nNPEleBin[b];
+    Vet = CountVnewIDnoISO[b][1] + CountVnewIDnoISO[b][2];
+    Los = CountLnewIDnoISO[b][1] + CountLnewIDnoISO[b][2];
+    Med = CountMnewIDnoISO[b][1] + CountMnewIDnoISO[b][2];
+    Tig = CountTnewIDnoISO[b][1] + CountTnewIDnoISO[b][2];
+    //cout<<"fake "<<b<<" "<<tot<<" "<<Vet<<" "<<Los<<" "<<Med<<" "<<Tig<<endl;
+    double fake[4] = { 1.0* Vet/tot,  1.0* Los/tot,  1.0* Med/tot,  1.0* Tig/tot};
+    TGraph * g_0  = new TGraph(4, fake, eff);
+    TString gname = "newIDnoISO_" + TString::Itoa(b, 10) + "_ROC";
+    g_0->SetNameTitle(gname, gname);
+    g_0->Write();
+  }
+
+
+//double EffVReco[3]         = {  1.*nPromptEleL/nPromptEle , 1.*nPromptEleM/nPromptEle , 1.*nPromptEleT/nPromptEle };
+//double FR_Fake[3]          = {  1.*(nFakeEleL)/(nFakeEle) , 1.*(nFakeEleM)/(nFakeEle) , 1.*(nFakeEleT)/(nFakeEle) };
+//double EffVReco1015[3]     = {  1.*nPromptEleLBin[0]/nPromptEleBin[0]   , 1.*nPromptEleMBin[0]/nPromptEleBin[0] , 1.*nPromptEleTBin[0]/nPromptEleBin[0] };
+//double FR_Fake1015[3]      = {    1.*(nFakeEleLBin[0])/(nFakeEleBin[0]) , 1.*(nFakeEleMBin[0])/(nFakeEleBin[0]) , 1.*(nFakeEleTBin[0])/(nFakeEleBin[0]) };
+//double EffVReco1015EE[3]   = {1.*nPromptEleLBin[1]/nPromptEleBin[1]     , 1.*nPromptEleMBin[1]/nPromptEleBin[1] , 1.*nPromptEleTBin[1]/nPromptEleBin[1] };
+//double FR_Fake1015EE[3]    = {  1.*(nFakeEleLBin[1])/(nFakeEleBin[1])   , 1.*(nFakeEleMBin[1])/(nFakeEleBin[1]) , 1.*(nFakeEleTBin[1])/(nFakeEleBin[1]) };
+//double EffVReco1520[3]     = {  1.*nPromptEleLBin[2]/nPromptEleBin[2]   , 1.*nPromptEleMBin[2]/nPromptEleBin[2] , 1.*nPromptEleTBin[2]/nPromptEleBin[2] };
+//double FR_Fake1520[3]      = {    1.*(nFakeEleLBin[2])/(nFakeEleBin[2]) , 1.*(nFakeEleMBin[2])/(nFakeEleBin[2]) , 1.*(nFakeEleTBin[2])/(nFakeEleBin[2]) };
+//double EffVReco1520EE[3]   = {1.*nPromptEleLBin[3]/nPromptEleBin[3]     , 1.*nPromptEleMBin[3]/nPromptEleBin[3] , 1.*nPromptEleTBin[3]/nPromptEleBin[3] };
+//double FR_Fake1520EE[3]    = {  1.*(nFakeEleLBin[3])/(nFakeEleBin[3])   , 1.*(nFakeEleMBin[3])/(nFakeEleBin[3]) , 1.*(nFakeEleTBin[3])/(nFakeEleBin[3]) };
+//
+//double EffVReco20[3]       = {    1.*nPromptEleLBin[4]/nPromptEleBin[4] , 1.*nPromptEleMBin[4]/nPromptEleBin[4] , 1.*nPromptEleTBin[4]/nPromptEleBin[4] };
+//double FR_Fake20[3]        = {     1.*(nFakeEleLBin[4])/(nFakeEleBin[4]), 1.*(nFakeEleMBin[4])/(nFakeEleBin[4]) , 1.*(nFakeEleTBin[4])/(nFakeEleBin[4]) };
+//double EffVReco20EE[3]     = {  1.*nPromptEleLBin[5]/nPromptEleBin[5]   , 1.*nPromptEleMBin[5]/nPromptEleBin[5] , 1.*nPromptEleTBin[5]/nPromptEleBin[5] };
+//double FR_Fake20EE[3]      = {    1.*(nFakeEleLBin[5])/(nFakeEleBin[5]) , 1.*(nFakeEleMBin[5])/(nFakeEleBin[5]) , 1.*(nFakeEleTBin[5])/(nFakeEleBin[5]) };
+//float den = (nFakeEleBin[4]+nNPEleBin[4]);
+//double FR_FakeNP20[3]        = {     1.*(nFakeEleLBin[4]+nNPEleLBin[4])/den,  1.*(nFakeEleMBin[4]+nNPEleMBin[4])/den ,  1.*(nFakeEleTBin[4]+nNPEleTBin[4])/den };
+//den = (nFakeEleBin[5]+nNPEleBin[5]);
+//double FR_FakeNP20EE[3]      = {     1.*(nFakeEleLBin[5]+nNPEleLBin[5])/den,  1.*(nFakeEleMBin[5]+nNPEleMBin[5])/den ,  1.*(nFakeEleTBin[5]+nNPEleTBin[5])/den };
+////NoIso
+//double EffVReco20NoIso[3]       = {    1.*nPromptEleLBinNoIso[4]/nPromptEleBin[4] , 1.*nPromptEleMBinNoIso[4]/nPromptEleBin[4] , 1.*nPromptEleTBinNoIso[4]/nPromptEleBin[4] };
+//double FR_Fake20NoIso[3]        = {     1.*(nFakeEleLBinNoIso[4])/(nFakeEleBin[4]), 1.*(nFakeEleMBinNoIso[4])/(nFakeEleBin[4]) , 1.*(nFakeEleTBinNoIso[4])/(nFakeEleBin[4]) };
+//double EffVReco20EENoIso[3]     = {  1.*nPromptEleLBinNoIso[5]/nPromptEleBin[5]   , 1.*nPromptEleMBinNoIso[5]/nPromptEleBin[5] , 1.*nPromptEleTBinNoIso[5]/nPromptEleBin[5] };
+//double FR_Fake20EENoIso[3]      = {    1.*(nFakeEleLBinNoIso[5])/(nFakeEleBin[5]) , 1.*(nFakeEleMBinNoIso[5])/(nFakeEleBin[5]) , 1.*(nFakeEleTBinNoIso[5])/(nFakeEleBin[5]) };
+// den = (nFakeEleBin[4]+nNPEleBin[4]);
+//double FR_FakeNP20NoIso[3]        = {     1.*(nFakeEleLBinNoIso[4]+nNPEleLBinNoIso[4])/den,  1.*(nFakeEleMBinNoIso[4]+nNPEleMBinNoIso[4])/den ,  1.*(nFakeEleTBinNoIso[4]+nNPEleTBinNoIso[4])/den };
+//den = (nFakeEleBin[5]+nNPEleBin[5]);
+//double FR_FakeNP20EENoIso[3]      = {     1.*(nFakeEleLBinNoIso[5]+nNPEleLBinNoIso[5])/den,  1.*(nFakeEleMBinNoIso[5]+nNPEleMBinNoIso[5])/den ,  1.*(nFakeEleTBinNoIso[5]+nNPEleTBinNoIso[5])/den };
+////end of NoIso
+//
+//den = (nPromptEleBin[0]+nPromptEleBin[2]);
+//double EffVReco1020[3]       = {   1.*(nPromptEleLBin[0]+nPromptEleLBin[2])/den   ,  1.*(nPromptEleMBin[0]+nPromptEleMBin[2])/den   ,  1.*(nPromptEleTBin[0]+nPromptEleTBin[2])/den   };
+//den = (nFakeEleBin[0]+nFakeEleBin[2]);
+//double FR_Fake1020[3]        = {   1.*(nFakeEleLBin[0]+nFakeEleLBin[2])/den   ,  1.*(nFakeEleMBin[0]+nFakeEleMBin[2])/den   ,  1.*(nFakeEleTBin[0]+nFakeEleTBin[2])/den   };
+//den = (nFakeEleBin[0]+nFakeEleBin[2]+nNPEleBin[0]+nNPEleBin[2]);
+//double FR_FakeNP1020[3]        = {   1.*(nFakeEleLBin[0]+nFakeEleLBin[2]+nNPEleLBin[0]+nNPEleLBin[2])/den   ,  1.*(nFakeEleMBin[0]+nFakeEleMBin[2]+nNPEleMBin[0]+nNPEleMBin[2])/den   ,  1.*(nFakeEleTBin[0]+nFakeEleTBin[2]+nNPEleTBin[0]+nNPEleTBin[2])/den   };
+//den = (nPromptEleBin[1]+nPromptEleBin[3]);
+//double EffVReco1020EE[3]     = {   1.*(nPromptEleLBin[1]+nPromptEleLBin[3])/den   ,  1.*(nPromptEleMBin[1]+nPromptEleMBin[3])/den   ,  1.*(nPromptEleTBin[1]+nPromptEleTBin[3])/den   };
+//den = (nFakeEleBin[1]+nFakeEleBin[3]);
+//double FR_Fake1020EE[3]      = {   1.*(nFakeEleLBin[1]+nFakeEleLBin[3])/den   ,  1.*(nFakeEleMBin[1]+nFakeEleMBin[3])/den   ,  1.*(nFakeEleTBin[1]+nFakeEleTBin[3])/den   };
+//den = (nFakeEleBin[1]+nFakeEleBin[3]+nNPEleBin[1]+nNPEleBin[3]);
+//double FR_FakeNP1020EE[3]      = {   1.*(nFakeEleLBin[1]+nFakeEleLBin[3]+nNPEleLBin[1]+nNPEleLBin[3])/den   ,  1.*(nFakeEleMBin[1]+nFakeEleMBin[3]+nNPEleMBin[1]+nNPEleMBin[3])/den   ,  1.*(nFakeEleTBin[1]+nFakeEleTBin[3]+nNPEleTBin[1]+nNPEleTBin[3])/den   };
+//
+// outFile->cd(); // Make sure histograms get written out
+//
+//
+// TGraph * hroc1 = new TGraph(3, FR_Fake, EffVReco);
+// TGraph * hroc2 = new TGraph(3, FR_Fake1015, EffVReco1015);
+// TGraph * hroc3 = new TGraph(3, FR_Fake1015EE, EffVReco1015EE);
+// TGraph * hroc4 = new TGraph(3, FR_Fake1520, EffVReco1520);
+// TGraph * hroc5 = new TGraph(3, FR_Fake1520EE, EffVReco1520EE);
+// TGraph * hroc6 = new TGraph(3, FR_FakeNP20, EffVReco20);
+// TGraph * hroc7 = new TGraph(3, FR_FakeNP20EE, EffVReco20EE);
+// TGraph * hroc8 = new TGraph(3, FR_FakeNP1020, EffVReco1020);
+// TGraph * hroc9 = new TGraph(3, FR_FakeNP1020EE, EffVReco1020EE);
+// TGraph * hroc10= new TGraph(3, FR_FakeNP20NoIso, EffVReco20NoIso);
+// TGraph * hroc11= new TGraph(3, FR_FakeNP20EENoIso, EffVReco20EENoIso);
+//
+//
+// hroc1->SetNameTitle("ROC_", "ROC_");
+// hroc2->SetNameTitle("ROC_1015", "ROC_1015");
+// hroc3->SetNameTitle("ROC_1015EE", "ROC_1015EE");
+// hroc4->SetNameTitle("ROC_1520", "ROC_1520");
+// hroc5->SetNameTitle("ROC_1520EE", "ROC_1520EE");
+// hroc6->SetNameTitle("ROC_20", "ROC_20");
+// hroc7->SetNameTitle("ROC_20EE", "ROC_20EE");
+// hroc8->SetNameTitle("ROC_1020", "ROC_1020");
+// hroc9->SetNameTitle("ROC_1020EE", "ROC_1020EE");
+// hroc10->SetNameTitle("ROC_20NoIso", "ROC_20NoIso");
+// hroc11->SetNameTitle("ROC_20EENoIso", "ROC_20EENoIso");
+//
+// hroc1->Write();
+// hroc2->Write();
+// hroc3->Write();
+// hroc4->Write();
+// hroc5->Write();
+// hroc6->Write();
+// hroc7->Write();
+// hroc8->Write();
+// hroc9->Write();
+// hroc10->Write();
+// hroc11->Write();
+
  hSetEff["h_nvtx_eff"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_nvtx_num_true"] , hSetEff["h_nvtx_den_true"] , "h_nvtx_eff", "Eff ;# vtxs");
  hSetEff["h_nvtx_fr"]  = (TH1F*) MakeEfficiencyPlot(hSetEff["h_nvtx_num_fake"] , hSetEff["h_nvtx_den_fake"] , "h_nvtx_fr", "Eff ;# vtxs");
  hSetEff["h_eta_eff"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_eta_num_true"] , hSetEff["h_eta_den_true"] , "h_eta_eff", "Eff ;eta");
@@ -1052,6 +1338,12 @@ void dilepStudyLooper::BookHistos(const TString& prefix)
   bookElectronHistos(hSet6f, "h_T_fake");  bookElectronHistos(hSet6Ef, "h_T_fakeEE");  bookElectronHistos(hSet6np, "h_T_np");  bookElectronHistos(hSet6Enp, "h_T_npEE");
   bookElectronHistos(hSet7, "h_Den_true");  bookElectronHistos(hSet7E, "h_Den_trueEE");
   bookElectronHistos(hSet7f, "h_Den_fake");  bookElectronHistos(hSet7Ef, "h_Den_fakeEE");  bookElectronHistos(hSet7np, "h_Den_np");  bookElectronHistos(hSet7Enp, "h_Den_npEE");
+
+  bookElectronHistos(hSet8, "h_true1020");bookElectronHistos(hSet8E, "h_true1020EE");
+  bookElectronHistos(hSet8f, "h_fake1020");  bookElectronHistos(hSet8Ef, "h_fake1020EE");   bookElectronHistos(hSet8np, "h_np1020");  bookElectronHistos(hSet8Enp, "h_np1020EE"); 
+  bookElectronHistos(hSet9, "h_true20");bookElectronHistos(hSet9E, "h_true20EE");
+  bookElectronHistos(hSet9f, "h_fake20");  bookElectronHistos(hSet9Ef, "h_fake20EE");   bookElectronHistos(hSet9np, "h_np20");  bookElectronHistos(hSet9Enp, "h_np20EE"); 
+
 
   //bookElectronHistos(hSetCut1, "h_cut1"); 
   //bookElectronHistos(hSetCut2, "h_cut2"); 
@@ -1393,7 +1685,7 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
 
   TH1F * h_el_pt = new TH1F(Form("%s_el_pt",prefix.Data()),";electron pt",40,0.,100);
   TH1F * h_el_sieie = new TH1F(Form("%s_el_sieie",prefix.Data()),";electron sieie",100,0.,0.05);
-  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",100,-0.02,0.02);
+  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",60,-0.03,0.03);
   TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,-0.2,0.2);
   TH1F * h_el_hOverE = new TH1F(Form("%s_el_hOverE",prefix.Data()),";electron hOverE",100,0.,0.5);
   TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,-0.2,0.2);
@@ -1729,7 +2021,7 @@ void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron &
 	eleStruct.pt = els_p4().at(iel).pt() ;
         eleStruct.eta = els_etaSC().at(iel);
         eleStruct.sieie = m_miniAOD ? els_sigmaIEtaIEta_full5x5().at(iel) : els_sigmaIEtaIEta().at(iel);
-        eleStruct.dEtaIn = els_dEtaIn().at(iel);
+        eleStruct.dEtaIn = els_etaSC().at(iel) > 0 ? els_dEtaIn().at(iel) : -1.*els_dEtaIn().at(iel);
         eleStruct.dPhiIn = els_dPhiIn().at(iel);
         eleStruct.hOverE = els_hOverE().at(iel);
         eleStruct.d0corr = els_d0corr().at(iel); // for miniAOD move to els_dxyPV
@@ -1737,9 +2029,22 @@ void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron &
         eleStruct.ooemoop = (1.0/els_ecalEnergy().at(iel)) - (els_eOverPIn().at(iel)/els_ecalEnergy().at(iel)) ;
 	eleStruct.iso_uncor = (fillPFiso && !doPFCandLoop) ? electronPFiso(iel, false) : 0;
 	if (fillPFiso) {
-	  if ( doPFCandLoop ) electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights); 	
 	  if (!doPFCandLoop) eleStruct.iso_cor = electronPFiso(iel, areaCorrection);// false = NO PILEUP AREA CORRECTION
 	  else {
+	    
+	    if (m_miniAOD && useDeltaBetaWeights==0 && useMap==false && is25ns ) { // if everything is standard, just take the standard values
+	      ch = els_pfChargedHadronIso().at(iel);
+	      nh = els_pfNeutralHadronIso().at(iel);
+	      em = els_pfPhotonIso().at(iel);
+	      chPU = els_pfPUIso().at(iel);
+	    } 
+	    else  electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights); 	
+	    //cout<<"ch "<<ch<<" "<<els_pfChargedHadronIso().at(iel)<<endl;
+	    //cout<<"nh "<<nh<<" "<<els_pfNeutralHadronIso().at(iel)<<endl;
+	    //cout<<"em "<<em<<" "<<els_pfPhotonIso().at(iel)<<endl;
+	    //cout<<"PU "<<chPU<<" "<<els_pfPUIso().at(iel)<<endl;
+	    //cout<<endl;
+
 	    if (DeltaBetaSimple) eleStruct.iso_cor = ( ch + std::max(0.0, nh + em - 0.5 * chPU) ) / pt;
 	    else eleStruct.iso_cor = (ch + em + nh) / pt; 
 	    //	cout<<"eleStruct.iso_cor "<<eleStruct.iso_cor<<" and pt "<<pt<<endl;
@@ -1772,4 +2077,38 @@ void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron &
 
 }
 
+void dilepStudyLooper::fillTrueFakeHistos( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct){
 
+  if (fabs(eta) <= 1.479)   {
+    if (truth) fillElectronQuantities(hSet, eleStruct);
+    else if (fake) fillElectronQuantities(hSetf, eleStruct);
+    else if (nonprompt) fillElectronQuantities(hSetnp, eleStruct);
+  }
+  else {
+    if (truth) fillElectronQuantities(hSetE, eleStruct);
+    else if (fake) fillElectronQuantities(hSetEf, eleStruct);
+    else if (nonprompt) fillElectronQuantities(hSetEnp, eleStruct);		 
+  }
+}
+
+void dilepStudyLooper::fillTrueFakeHistosN1( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct,  electron cut, electron cutEE){
+
+  if (fabs(eta) <= 1.479)   {
+    if (truth) fillElectronQuantitiesN1(hSet, eleStruct, cut);
+    else if (fake) fillElectronQuantitiesN1(hSetf, eleStruct, cut);
+    else if (nonprompt) fillElectronQuantitiesN1(hSetnp, eleStruct, cut);
+  }
+  else {
+    if (truth) fillElectronQuantitiesN1(hSetE, eleStruct, cutEE);
+    else if (fake) fillElectronQuantitiesN1(hSetEf, eleStruct, cutEE);
+    else if (nonprompt) fillElectronQuantitiesN1(hSetEnp, eleStruct, cutEE);		 
+  }
+
+}
+void dilepStudyLooper::fillCounters( int effBin,  bool truth, bool fake, bool nonprompt, int CountV[][3]) { 
+
+  if (truth) CountV[effBin][0]++;
+  else if (nonprompt)  CountV[effBin][1]++;
+  else if (fake) CountV[effBin][2]++;
+  
+}

@@ -446,6 +446,7 @@ namespace tas {
 	vector<float> &els_etaSCwidth() { return cms2.els_etaSCwidth(); }
 	vector<float> &els_fbrem() { return cms2.els_fbrem(); }
 	vector<float> &els_hOverE() { return cms2.els_hOverE(); }
+	vector<float> &els_hOverEBC() { return cms2.els_hOverEBC(); }
 	vector<float> &els_hcalDepth1OverEcal() { return cms2.els_hcalDepth1OverEcal(); }
 	vector<float> &els_hcalDepth1TowerSumEt() { return cms2.els_hcalDepth1TowerSumEt(); }
 	vector<float> &els_hcalDepth1TowerSumEt04() { return cms2.els_hcalDepth1TowerSumEt04(); }
@@ -483,6 +484,7 @@ namespace tas {
 	vector<float> &els_pfChargedHadronIso() { return cms2.els_pfChargedHadronIso(); }
 	vector<float> &els_pfNeutralHadronIso() { return cms2.els_pfNeutralHadronIso(); }
 	vector<float> &els_pfPhotonIso() { return cms2.els_pfPhotonIso(); }
+	vector<float> &els_pfPUIso() { return cms2.els_pfPUIso(); }
 	vector<float> &els_phiErr() { return cms2.els_phiErr(); }
 	vector<float> &els_phiSC() { return cms2.els_phiSC(); }
 	vector<float> &els_phiSCwidth() { return cms2.els_phiSCwidth(); }

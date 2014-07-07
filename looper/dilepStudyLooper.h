@@ -18,6 +18,7 @@
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > VofP4;
+typedef std::map<std::string, TH1F*> hMAP;
 
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
@@ -113,6 +114,13 @@ public:
     int   seed;
     int   ncluster;
   };
+
+  struct effRejCounter {
+    int t; //truth
+    int np; //non-prompt
+    int f; //fake
+  };
+
   void fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso);
   void fillElectronQuantities(std::map<std::string, TH1F*> & hSet, electron e );
   void bookElectronHistos(std::map<std::string, TH1F*> & hSet, TString prefix );
@@ -121,6 +129,13 @@ public:
   void fillUnderOverFlow(TH1F *h1, float value, float weight);
   bool passElectronCuts(electron eleStruct, electron cut, electron cutEE);
   TH1F* MakeEfficiencyPlot(TH1F* num_hist, TH1F* den_hist, const std::string& name, const std::string& title);
+
+  void fillTrueFakeHistos( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct);
+  void fillTrueFakeHistosN1( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct,  electron cut, electron cutEE);
+  //  void fillCounters( int effBin,  bool truth, bool fake, bool nonprompt, effRejCounter * CountV);
+  void fillCounters( int effBin,  bool truth, bool fake, bool nonprompt, int CountV[][3]); 
+
+
 
 private:
 
@@ -207,6 +222,18 @@ private:
     std::map<std::string, TH1F*> hSet7E;
     std::map<std::string, TH1F*> hSet7Ef;
     std::map<std::string, TH1F*> hSet7Enp;
+    std::map<std::string, TH1F*> hSet8;
+    std::map<std::string, TH1F*> hSet8f;
+    std::map<std::string, TH1F*> hSet8np;
+    std::map<std::string, TH1F*> hSet8E;
+    std::map<std::string, TH1F*> hSet8Ef;
+    std::map<std::string, TH1F*> hSet8Enp;
+    std::map<std::string, TH1F*> hSet9;
+    std::map<std::string, TH1F*> hSet9f;
+    std::map<std::string, TH1F*> hSet9np;
+    std::map<std::string, TH1F*> hSet9E;
+    std::map<std::string, TH1F*> hSet9Ef;
+    std::map<std::string, TH1F*> hSet9Enp;
 
 
 std::map<std::string, TH1F*> hSetCut1;  
