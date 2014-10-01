@@ -14,6 +14,8 @@ cd ../../looper
 cp CMS2.cc CMS2.h ../CORE
 make
 
+To start a new study, take "looperSkeleton.h/cc", and rename them dileptonStudyLooper.h/cc
+
 ## All taken from https://github.com/olivito/DilepTrigStudy
 
 And for more info on the snt github setup, see our twiki:
