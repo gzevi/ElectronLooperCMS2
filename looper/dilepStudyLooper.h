@@ -23,12 +23,6 @@ typedef std::map<std::string, TH1F*> hMAP;
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
 
-struct isovals {
-  float chiso00;
-  float chiso04;
-  float chiso07;
-  float chiso10;
-};
 
 
 class dilepStudyLooper
@@ -40,25 +34,13 @@ public:
   int  ScanChain(TChain *chain, const TString& prefix = "", int sign = 0, int isocortype = 0 );
   void BookHistos (const TString& prefix);
   void InitBaby();
-  float electronPFiso(const unsigned int index, const bool cor = false);
-  void  electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh,  float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights);
 
-  float muonPFiso(const unsigned int imu, const bool cor = false);
   float dRbetweenVectors(LorentzVector vec1, LorentzVector vec2 );
   float dRbetweenVectors2(LorentzVector vec1, LorentzVector vec2 );
   float Mt( LorentzVector p4, float met, float met_phi );
   void labelAxis(TH2F* h, int axis, int lep);
   
-  //
-  // WW Electron Id
-  //
-  bool   ww_elBase(unsigned int i);
-  bool   ww_eld0PV(unsigned int i);
-  bool   ww_eldZPV(unsigned int i);
-  bool ElectronFOV4(unsigned int i);
-  bool ElectronFOIdV4(unsigned int i);
-  double dzPV(const LorentzVector& vtx, const LorentzVector& p4, const LorentzVector& pv);
-  int primaryVertex();
+
 
   // Set globals
   void set_createTree   (bool  b)    { g_createTree   = b; }
@@ -76,7 +58,8 @@ public:
 
   // utils
   float getdphi( float phi1 , float phi2 );
-  isovals muonChIsoValuePF2012 (const unsigned int imu, const float R = 0.3, const int ivtx = 0);
+  bool idIsBeauty(int id);
+
 
   struct electron {
     float pt;
@@ -115,26 +98,7 @@ public:
     int   ncluster;
   };
 
-  struct effRejCounter {
-    int t; //truth
-    int np; //non-prompt
-    int f; //fake
-  };
-
-  void fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso);
-  void fillElectronQuantities(std::map<std::string, TH1F*> & hSet, electron e );
-  void bookElectronHistos(std::map<std::string, TH1F*> & hSet, TString prefix );
-  void fillElectronQuantitiesN1(std::map<std::string, TH1F*> & hSet, electron e, electron cut);
-  void fillElectronCutsResult(electron e, electron cut, ULong64_t & pass);
-  void fillUnderOverFlow(TH1F *h1, float value, float weight);
-  bool passElectronCuts(electron eleStruct, electron cut, electron cutEE);
   TH1F* MakeEfficiencyPlot(TH1F* num_hist, TH1F* den_hist, const std::string& name, const std::string& title);
-
-  void fillTrueFakeHistos( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct);
-  void fillTrueFakeHistosN1( float eta, bool truth, bool fake, bool nonprompt, hMAP & hSet, hMAP & hSetf, hMAP & hSetnp, hMAP & hSetE, hMAP & hSetEf, hMAP & hSetEnp, electron & eleStruct,  electron cut, electron cutEE);
-  //  void fillCounters( int effBin,  bool truth, bool fake, bool nonprompt, effRejCounter * CountV);
-  void fillCounters( int effBin,  bool truth, bool fake, bool nonprompt, int CountV[][3]); 
-
 
 
 private:

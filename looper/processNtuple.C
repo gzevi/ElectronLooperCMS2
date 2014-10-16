@@ -53,7 +53,8 @@ void processNtuple( TString outfileid = "me_test", TString infile = "/tas/gzevi/
   gSystem->Load("libEG.so");
   gSystem->Load("libMathCore.so");
 
-  gSystem->Load("../Tools/MiniFWLite/libMiniFWLite.so");
+  //  gSystem->Load("../Tools/MiniFWLite/libMiniFWLite.so");
+  gSystem->Load("libMiniFWLite.so");
   gSystem->Load("libdilepStudyCORE.so");
   gSystem->Load("libdilepStudyLooper.so");
 
