@@ -1,0 +1,15 @@
+#./mergeHadoopFiles.sh V00-00-05_DYJetsToLL_M-50_HT-100to200
+#./mergeHadoopFiles.sh V00-00-05_DYJetsToLL_M-50_HT-200to400
+#./mergeHadoopFiles.sh V00-00-05_DYJetsToLL_M-50_HT-400to600
+#./mergeHadoopFiles.sh V00-00-05_DYJetsToLL_M-50_HT-600toInf
+#./mergeHadoopFiles.sh V00-00-05_GJet_Pt15to3000
+./mergeHadoopFiles.sh V00-00-05NewGammaID2_GJet_HT100to200
+./mergeHadoopFiles.sh V00-00-05NewGammaID2_GJet_HT200to400
+./mergeHadoopFiles.sh V00-00-05NewGammaID2_GJet_HT400to600
+./mergeHadoopFiles.sh V00-00-05NewGammaID2_GJet_HT600toInf
+#./mergeHadoopFiles.sh V00-00-02_WJets_HT100to200
+#./mergeHadoopFiles.sh V00-00-02_TTJetsMG
+#./mergeHadoopFiles.sh V00-00-02_ZInv_HT200to400
+#./mergeHadoopFiles.sh V00-00-02_WJets_HT400to600
+#./mergeHadoopFiles.sh V00-00-02_WJets_HT600toInf
+#./mergeHadoopFiles.sh V00-00-02_WJets_HT200to400
