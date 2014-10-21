@@ -1259,6 +1259,12 @@ protected:
 	vector<float> els_d0_;
 	TBranch *els_d0_branch;
 	bool els_d0_isLoaded;
+	vector<float> els_dxyPV_;
+	TBranch *els_dxyPV_branch;
+	bool els_dxyPV_isLoaded;
+	vector<float> els_dzPV_;
+	TBranch *els_dzPV_branch;
+	bool els_dzPV_isLoaded;
 	vector<float> els_d0Err_;
 	TBranch *els_d0Err_branch;
 	bool els_d0Err_isLoaded;
@@ -6136,6 +6142,16 @@ void Init(TTree *tree) {
 	if (tree->GetAlias("els_d0") != 0) {
 		els_d0_branch = tree->GetBranch(tree->GetAlias("els_d0"));
 		if (els_d0_branch) {els_d0_branch->SetAddress(&els_d0_);}
+	}
+	els_dxyPV_branch = 0;
+	if (tree->GetAlias("els_dxyPV") != 0) {
+		els_dxyPV_branch = tree->GetBranch(tree->GetAlias("els_dxyPV"));
+		if (els_dxyPV_branch) {els_dxyPV_branch->SetAddress(&els_dxyPV_);}
+	}
+	els_dzPV_branch = 0;
+	if (tree->GetAlias("els_dzPV") != 0) {
+		els_dzPV_branch = tree->GetBranch(tree->GetAlias("els_dzPV"));
+		if (els_dzPV_branch) {els_dzPV_branch->SetAddress(&els_dzPV_);}
 	}
 	els_d0Err_branch = 0;
 	if (tree->GetAlias("els_d0Err") != 0) {
@@ -11232,6 +11248,8 @@ void GetEntry(unsigned int idx)
 		els_conv_old_radius_isLoaded = false;
 		els_conv_radius_isLoaded = false;
 		els_d0_isLoaded = false;
+		els_dxyPV_isLoaded = false;
+		els_dzPV_isLoaded = false;
 		els_d0Err_isLoaded = false;
 		els_d0corr_isLoaded = false;
 		els_dEtaIn_isLoaded = false;
@@ -12586,6 +12604,8 @@ void LoadAllBranches()
 	if (els_conv_old_radius_branch != 0) els_conv_old_radius();
 	if (els_conv_radius_branch != 0) els_conv_radius();
 	if (els_d0_branch != 0) els_d0();
+	if (els_dxyPV_branch != 0) els_dxyPV();
+	if (els_dzPV_branch != 0) els_dzPV();
 	if (els_d0Err_branch != 0) els_d0Err();
 	if (els_d0corr_branch != 0) els_d0corr();
 	if (els_dEtaIn_branch != 0) els_dEtaIn();
@@ -18904,6 +18924,32 @@ void LoadAllBranches()
 			els_d0_isLoaded = true;
 		}
 		return els_d0_;
+	}
+	vector<float> &els_dxyPV()
+	{
+		if (not els_dxyPV_isLoaded) {
+			if (els_dxyPV_branch != 0) {
+				els_dxyPV_branch->GetEntry(index);
+			} else { 
+				printf("branch els_dxyPV_branch does not exist!\n");
+				exit(1);
+			}
+			els_dxyPV_isLoaded = true;
+		}
+		return els_dxyPV_;
+	}
+	vector<float> &els_dzPV()
+	{
+		if (not els_dzPV_isLoaded) {
+			if (els_dzPV_branch != 0) {
+				els_dzPV_branch->GetEntry(index);
+			} else { 
+				printf("branch els_dzPV_branch does not exist!\n");
+				exit(1);
+			}
+			els_dzPV_isLoaded = true;
+		}
+		return els_dzPV_;
 	}
 	vector<float> &els_d0Err()
 	{
@@ -31550,6 +31596,8 @@ namespace tas {
 	vector<float> &els_conv_old_radius();
 	vector<float> &els_conv_radius();
 	vector<float> &els_d0();
+	vector<float> &els_dxyPV();
+	vector<float> &els_dzPV();
 	vector<float> &els_d0Err();
 	vector<float> &els_d0corr();
 	vector<float> &els_dEtaIn();

@@ -415,6 +415,8 @@ namespace tas {
 	vector<float> &els_conv_old_radius() { return cms2.els_conv_old_radius(); }
 	vector<float> &els_conv_radius() { return cms2.els_conv_radius(); }
 	vector<float> &els_d0() { return cms2.els_d0(); }
+	vector<float> &els_dxyPV() { return cms2.els_dxyPV(); }
+	vector<float> &els_dzPV() { return cms2.els_dzPV(); }
 	vector<float> &els_d0Err() { return cms2.els_d0Err(); }
 	vector<float> &els_d0corr() { return cms2.els_d0corr(); }
 	vector<float> &els_dEtaIn() { return cms2.els_dEtaIn(); }

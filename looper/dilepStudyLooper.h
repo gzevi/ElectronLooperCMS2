@@ -41,7 +41,7 @@ public:
   void BookHistos (const TString& prefix);
   void InitBaby();
   float electronPFiso(const unsigned int index, const bool cor = false);
-  void  electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh,  float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights);
+  void  electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh,  float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights, bool fillPlots, hMAP & hSet);
 
   float muonPFiso(const unsigned int imu, const bool cor = false);
   float dRbetweenVectors(LorentzVector vec1, LorentzVector vec2 );
@@ -85,6 +85,7 @@ public:
     float dEtaIn;
     float dPhiIn;
     float hOverE;
+    float hOverEBC;
     float d0corr;
     float z0corr;
     float ooemoop;
@@ -113,6 +114,9 @@ public:
     float psOverRaw;
     int   seed;
     int   ncluster;
+    float eRawOverTrue;
+    float eRawMinusTrue;
+    float eRawMtrueOtrue;
   };
 
   struct effRejCounter {
@@ -121,7 +125,7 @@ public:
     int f; //fake
   };
 
-  void fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso);
+  void fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso, bool truth, float truthpt = 0);
   void fillElectronQuantities(std::map<std::string, TH1F*> & hSet, electron e );
   void bookElectronHistos(std::map<std::string, TH1F*> & hSet, TString prefix );
   void fillElectronQuantitiesN1(std::map<std::string, TH1F*> & hSet, electron e, electron cut);

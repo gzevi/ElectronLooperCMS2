@@ -695,7 +695,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	  if (iel==jel) continue;
 	  if (els_p4().at(iel).pt() < 10 ) continue;
 	  dilepStudyLooper::electron eleStruct2; 
-	  fillElectronStructure(jel, eleStruct2,  false, false, 0, false, false, false);
+	  fillElectronStructure(jel, eleStruct2,  false, false, 0, false, false, false, false);
 	  if (passElectronCuts(eleStruct2, eleDencuts, eleDencutsEE)) neleDen++;
 	  //cout<<"neleDen = "<<neleDen<<endl;
 	}
@@ -757,39 +757,60 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	if (isocortype==16) { useMap = true; doPFCandLoop = true; useDeltaBetaWeights = 2; DeltaBetaSimple = false; areaCorrection = false; }// DeltaBetaWeight log pT DR
 
 
-        // Fill the electron structure
-        dilepStudyLooper::electron eleStruct; 
-	fillElectronStructure(iel, eleStruct,  useMap, doPFCandLoop, useDeltaBetaWeights, DeltaBetaSimple, areaCorrection, true);
-        
-        // Fill "hall"              
-        fillElectronQuantities(hSet1, eleStruct);
-        
         // Truth matching: t=true (status 3), f=fake (including non-prompt)
         // Can't separate non-prompt because we only have status 3 particles in CMS2 ntuple
         bool truthmatched = false;
 	bool fakematched = false;
 	bool nonpromptmatched = false;
+	float status1E = 0;
+	float status3E = 0;
+	float truthE = 0;
 	if (!isData) {
 	  float bestmatch = 999;
+	  int bestmatchMother = 999;
+	  //cout<<"Look for truth for electron with pt "<<pt<<endl;
 	  for(unsigned int idx = 0; idx < genps_id().size(); idx++) {	    
 	    int pid = abs(genps_id().at(idx));    
 	    if(pid != 11) continue;      
-	    if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23  && abs(genps_id_mother().at(idx)) != 24) continue; // trying everything
 	    float dr = dRbetweenVectors(genps_p4().at(idx), el_p4);
+	    //if ( dr < 0.3 ) cout<<"Found electron in record with mother "<<genps_id_mother().at(idx)<<" and dr "<<dr<<endl;
+	    if(genps_status().at(idx) != 3 && genps_status().at(idx) != 22 && genps_status().at(idx) != 23  && abs(genps_id_mother().at(idx)) != 24) continue; // trying everything
+	    
 	    h_el_truthmatch_DR->Fill(dr, 1);
 	    if ( dr > 0.02 ) {
-	      if (dr < bestmatch ) bestmatch = dr;
+	      if (dr < bestmatch ) {bestmatch = dr; bestmatchMother=genps_id_mother().at(idx);}
 	      continue;
 	    }
-	    else truthmatched = true;
+	    else {
+	      truthmatched = true;
+//	if (abs(els_mc_id().at(iel)) != 11) {
+//	  cout<<"pt " << el_p4.pt()<<". TRUTHMATCHED with a PDG "<<genps_id().at(idx)<<" status "<<genps_status().at(idx)<<" with mother "<<genps_id_mother().at(idx)<<" with pt "<<genps_p4().at(idx).pt();
+//	  cout<<". The lepton has mc_id "<< els_mc_id().at(iel)<<" mc_mother_id "<<els_mc_motherid().at(iel)<<" mcdr "<< els_mcdr().at(iel)<< " mc pt "<< els_mc_p4().at(iel).pt()<<" mc3_id "<<els_mc3_id().at(iel)<<" mc3_mother_id "<<els_mc3_motherid().at(iel) <<endl; 
+//	}
+	      if (genps_status().at(idx) == 1) status1E = genps_p4().at(idx).E();
+	      else status3E = genps_p4().at(idx).E();
+	      //cout<<"Matched raw "<< els_eSCRaw().at(iel)<<" with status1 "<<status1pt<<" and status3 "<<status3pt<<endl;
+	    }
 	  }
-	  if (truthmatched) {nPromptEle++; nPromptEleBin[effBin]++;}	  
-	  else if (abs(els_mc_id().at(iel)) == 11) { nNonPromptEle++; nNPEleBin[effBin]++; nonpromptmatched = true; } 
+	  if (truthmatched) {nPromptEle++; nPromptEleBin[effBin]++; truthE = (status3E > 1.) ? status3E : status1E;}	  
+	  else if (abs(els_mc_id().at(iel)) == 11) { nNonPromptEle++; nNPEleBin[effBin]++; nonpromptmatched = true; 
+	    //cout<<"NONPROMPT: mc_id "<< els_mc_id().at(iel)<<" mc_mother_id "<<els_mc_motherid().at(iel)<<" mcdr "<< els_mcdr().at(iel)<< " mc3_id "<<els_mc3_id().at(iel)<<" mc3_mother_id "<<els_mc3_motherid().at(iel)<<". bestmatch is "<<bestmatch<<" with mother "<<bestmatchMother <<endl;     
+    } 
 	  else if (bestmatch > 0.2) { nFakeEle++; nFakeEleBin[effBin]++; fakematched = true; }
 	  // Classify NONPROMPT as FAKE
 	  if (nonpromptmatched == true) fakematched = true;
 	}
 	if (isData) fakematched = true;
+
+
+
+        // Fill the electron structure
+        dilepStudyLooper::electron eleStruct; 
+	fillElectronStructure(iel, eleStruct,  useMap, doPFCandLoop, useDeltaBetaWeights, DeltaBetaSimple, areaCorrection, true, truthmatched, truthE);
+	//if ( fabs(eleStruct.z0corr) < 1 ) continue;        // STUDY DZ TAILS
+        // Fill "hall"              
+        fillElectronQuantities(hSet1, eleStruct);        
+
 
 	fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet2, hSet2f, hSet2np, hSet2E, hSet2Ef, hSet2Enp, eleStruct);
 	if (pt > 10 && pt < 20) fillTrueFakeHistos( eta, truthmatched, fakematched, nonpromptmatched, hSet8, hSet8f, hSet8np, hSet8E, hSet8Ef, hSet8Enp, eleStruct);
@@ -1029,6 +1050,9 @@ cout << "Events before reco cuts: " << nEventsPreReco << endl;
 cout << "Passed events: " << nEventsPass << endl;
 cout << "Gen Electrons: " << nTrueEle << endl;
 cout << "FO Electrons: " << nFOEle << endl;
+cout << "Reco truthmatch: " << nPromptEle << endl;
+cout << "Reco non-prompt: " << nNonPromptEle << endl;
+cout << "Reco fake: " << nFakeEle << endl;
 
  outFile->cd(); // Make sure histograms get written out
 
@@ -1138,89 +1162,6 @@ cout << "FO Electrons: " << nFOEle << endl;
     g_0->Write();
   }
 
-
-//double EffVReco[3]         = {  1.*nPromptEleL/nPromptEle , 1.*nPromptEleM/nPromptEle , 1.*nPromptEleT/nPromptEle };
-//double FR_Fake[3]          = {  1.*(nFakeEleL)/(nFakeEle) , 1.*(nFakeEleM)/(nFakeEle) , 1.*(nFakeEleT)/(nFakeEle) };
-//double EffVReco1015[3]     = {  1.*nPromptEleLBin[0]/nPromptEleBin[0]   , 1.*nPromptEleMBin[0]/nPromptEleBin[0] , 1.*nPromptEleTBin[0]/nPromptEleBin[0] };
-//double FR_Fake1015[3]      = {    1.*(nFakeEleLBin[0])/(nFakeEleBin[0]) , 1.*(nFakeEleMBin[0])/(nFakeEleBin[0]) , 1.*(nFakeEleTBin[0])/(nFakeEleBin[0]) };
-//double EffVReco1015EE[3]   = {1.*nPromptEleLBin[1]/nPromptEleBin[1]     , 1.*nPromptEleMBin[1]/nPromptEleBin[1] , 1.*nPromptEleTBin[1]/nPromptEleBin[1] };
-//double FR_Fake1015EE[3]    = {  1.*(nFakeEleLBin[1])/(nFakeEleBin[1])   , 1.*(nFakeEleMBin[1])/(nFakeEleBin[1]) , 1.*(nFakeEleTBin[1])/(nFakeEleBin[1]) };
-//double EffVReco1520[3]     = {  1.*nPromptEleLBin[2]/nPromptEleBin[2]   , 1.*nPromptEleMBin[2]/nPromptEleBin[2] , 1.*nPromptEleTBin[2]/nPromptEleBin[2] };
-//double FR_Fake1520[3]      = {    1.*(nFakeEleLBin[2])/(nFakeEleBin[2]) , 1.*(nFakeEleMBin[2])/(nFakeEleBin[2]) , 1.*(nFakeEleTBin[2])/(nFakeEleBin[2]) };
-//double EffVReco1520EE[3]   = {1.*nPromptEleLBin[3]/nPromptEleBin[3]     , 1.*nPromptEleMBin[3]/nPromptEleBin[3] , 1.*nPromptEleTBin[3]/nPromptEleBin[3] };
-//double FR_Fake1520EE[3]    = {  1.*(nFakeEleLBin[3])/(nFakeEleBin[3])   , 1.*(nFakeEleMBin[3])/(nFakeEleBin[3]) , 1.*(nFakeEleTBin[3])/(nFakeEleBin[3]) };
-//
-//double EffVReco20[3]       = {    1.*nPromptEleLBin[4]/nPromptEleBin[4] , 1.*nPromptEleMBin[4]/nPromptEleBin[4] , 1.*nPromptEleTBin[4]/nPromptEleBin[4] };
-//double FR_Fake20[3]        = {     1.*(nFakeEleLBin[4])/(nFakeEleBin[4]), 1.*(nFakeEleMBin[4])/(nFakeEleBin[4]) , 1.*(nFakeEleTBin[4])/(nFakeEleBin[4]) };
-//double EffVReco20EE[3]     = {  1.*nPromptEleLBin[5]/nPromptEleBin[5]   , 1.*nPromptEleMBin[5]/nPromptEleBin[5] , 1.*nPromptEleTBin[5]/nPromptEleBin[5] };
-//double FR_Fake20EE[3]      = {    1.*(nFakeEleLBin[5])/(nFakeEleBin[5]) , 1.*(nFakeEleMBin[5])/(nFakeEleBin[5]) , 1.*(nFakeEleTBin[5])/(nFakeEleBin[5]) };
-//float den = (nFakeEleBin[4]+nNPEleBin[4]);
-//double FR_FakeNP20[3]        = {     1.*(nFakeEleLBin[4]+nNPEleLBin[4])/den,  1.*(nFakeEleMBin[4]+nNPEleMBin[4])/den ,  1.*(nFakeEleTBin[4]+nNPEleTBin[4])/den };
-//den = (nFakeEleBin[5]+nNPEleBin[5]);
-//double FR_FakeNP20EE[3]      = {     1.*(nFakeEleLBin[5]+nNPEleLBin[5])/den,  1.*(nFakeEleMBin[5]+nNPEleMBin[5])/den ,  1.*(nFakeEleTBin[5]+nNPEleTBin[5])/den };
-////NoIso
-//double EffVReco20NoIso[3]       = {    1.*nPromptEleLBinNoIso[4]/nPromptEleBin[4] , 1.*nPromptEleMBinNoIso[4]/nPromptEleBin[4] , 1.*nPromptEleTBinNoIso[4]/nPromptEleBin[4] };
-//double FR_Fake20NoIso[3]        = {     1.*(nFakeEleLBinNoIso[4])/(nFakeEleBin[4]), 1.*(nFakeEleMBinNoIso[4])/(nFakeEleBin[4]) , 1.*(nFakeEleTBinNoIso[4])/(nFakeEleBin[4]) };
-//double EffVReco20EENoIso[3]     = {  1.*nPromptEleLBinNoIso[5]/nPromptEleBin[5]   , 1.*nPromptEleMBinNoIso[5]/nPromptEleBin[5] , 1.*nPromptEleTBinNoIso[5]/nPromptEleBin[5] };
-//double FR_Fake20EENoIso[3]      = {    1.*(nFakeEleLBinNoIso[5])/(nFakeEleBin[5]) , 1.*(nFakeEleMBinNoIso[5])/(nFakeEleBin[5]) , 1.*(nFakeEleTBinNoIso[5])/(nFakeEleBin[5]) };
-// den = (nFakeEleBin[4]+nNPEleBin[4]);
-//double FR_FakeNP20NoIso[3]        = {     1.*(nFakeEleLBinNoIso[4]+nNPEleLBinNoIso[4])/den,  1.*(nFakeEleMBinNoIso[4]+nNPEleMBinNoIso[4])/den ,  1.*(nFakeEleTBinNoIso[4]+nNPEleTBinNoIso[4])/den };
-//den = (nFakeEleBin[5]+nNPEleBin[5]);
-//double FR_FakeNP20EENoIso[3]      = {     1.*(nFakeEleLBinNoIso[5]+nNPEleLBinNoIso[5])/den,  1.*(nFakeEleMBinNoIso[5]+nNPEleMBinNoIso[5])/den ,  1.*(nFakeEleTBinNoIso[5]+nNPEleTBinNoIso[5])/den };
-////end of NoIso
-//
-//den = (nPromptEleBin[0]+nPromptEleBin[2]);
-//double EffVReco1020[3]       = {   1.*(nPromptEleLBin[0]+nPromptEleLBin[2])/den   ,  1.*(nPromptEleMBin[0]+nPromptEleMBin[2])/den   ,  1.*(nPromptEleTBin[0]+nPromptEleTBin[2])/den   };
-//den = (nFakeEleBin[0]+nFakeEleBin[2]);
-//double FR_Fake1020[3]        = {   1.*(nFakeEleLBin[0]+nFakeEleLBin[2])/den   ,  1.*(nFakeEleMBin[0]+nFakeEleMBin[2])/den   ,  1.*(nFakeEleTBin[0]+nFakeEleTBin[2])/den   };
-//den = (nFakeEleBin[0]+nFakeEleBin[2]+nNPEleBin[0]+nNPEleBin[2]);
-//double FR_FakeNP1020[3]        = {   1.*(nFakeEleLBin[0]+nFakeEleLBin[2]+nNPEleLBin[0]+nNPEleLBin[2])/den   ,  1.*(nFakeEleMBin[0]+nFakeEleMBin[2]+nNPEleMBin[0]+nNPEleMBin[2])/den   ,  1.*(nFakeEleTBin[0]+nFakeEleTBin[2]+nNPEleTBin[0]+nNPEleTBin[2])/den   };
-//den = (nPromptEleBin[1]+nPromptEleBin[3]);
-//double EffVReco1020EE[3]     = {   1.*(nPromptEleLBin[1]+nPromptEleLBin[3])/den   ,  1.*(nPromptEleMBin[1]+nPromptEleMBin[3])/den   ,  1.*(nPromptEleTBin[1]+nPromptEleTBin[3])/den   };
-//den = (nFakeEleBin[1]+nFakeEleBin[3]);
-//double FR_Fake1020EE[3]      = {   1.*(nFakeEleLBin[1]+nFakeEleLBin[3])/den   ,  1.*(nFakeEleMBin[1]+nFakeEleMBin[3])/den   ,  1.*(nFakeEleTBin[1]+nFakeEleTBin[3])/den   };
-//den = (nFakeEleBin[1]+nFakeEleBin[3]+nNPEleBin[1]+nNPEleBin[3]);
-//double FR_FakeNP1020EE[3]      = {   1.*(nFakeEleLBin[1]+nFakeEleLBin[3]+nNPEleLBin[1]+nNPEleLBin[3])/den   ,  1.*(nFakeEleMBin[1]+nFakeEleMBin[3]+nNPEleMBin[1]+nNPEleMBin[3])/den   ,  1.*(nFakeEleTBin[1]+nFakeEleTBin[3]+nNPEleTBin[1]+nNPEleTBin[3])/den   };
-//
-// outFile->cd(); // Make sure histograms get written out
-//
-//
-// TGraph * hroc1 = new TGraph(3, FR_Fake, EffVReco);
-// TGraph * hroc2 = new TGraph(3, FR_Fake1015, EffVReco1015);
-// TGraph * hroc3 = new TGraph(3, FR_Fake1015EE, EffVReco1015EE);
-// TGraph * hroc4 = new TGraph(3, FR_Fake1520, EffVReco1520);
-// TGraph * hroc5 = new TGraph(3, FR_Fake1520EE, EffVReco1520EE);
-// TGraph * hroc6 = new TGraph(3, FR_FakeNP20, EffVReco20);
-// TGraph * hroc7 = new TGraph(3, FR_FakeNP20EE, EffVReco20EE);
-// TGraph * hroc8 = new TGraph(3, FR_FakeNP1020, EffVReco1020);
-// TGraph * hroc9 = new TGraph(3, FR_FakeNP1020EE, EffVReco1020EE);
-// TGraph * hroc10= new TGraph(3, FR_FakeNP20NoIso, EffVReco20NoIso);
-// TGraph * hroc11= new TGraph(3, FR_FakeNP20EENoIso, EffVReco20EENoIso);
-//
-//
-// hroc1->SetNameTitle("ROC_", "ROC_");
-// hroc2->SetNameTitle("ROC_1015", "ROC_1015");
-// hroc3->SetNameTitle("ROC_1015EE", "ROC_1015EE");
-// hroc4->SetNameTitle("ROC_1520", "ROC_1520");
-// hroc5->SetNameTitle("ROC_1520EE", "ROC_1520EE");
-// hroc6->SetNameTitle("ROC_20", "ROC_20");
-// hroc7->SetNameTitle("ROC_20EE", "ROC_20EE");
-// hroc8->SetNameTitle("ROC_1020", "ROC_1020");
-// hroc9->SetNameTitle("ROC_1020EE", "ROC_1020EE");
-// hroc10->SetNameTitle("ROC_20NoIso", "ROC_20NoIso");
-// hroc11->SetNameTitle("ROC_20EENoIso", "ROC_20EENoIso");
-//
-// hroc1->Write();
-// hroc2->Write();
-// hroc3->Write();
-// hroc4->Write();
-// hroc5->Write();
-// hroc6->Write();
-// hroc7->Write();
-// hroc8->Write();
-// hroc9->Write();
-// hroc10->Write();
-// hroc11->Write();
 
  hSetEff["h_nvtx_eff"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_nvtx_num_true"] , hSetEff["h_nvtx_den_true"] , "h_nvtx_eff", "Eff ;# vtxs");
  hSetEff["h_nvtx_fr"]  = (TH1F*) MakeEfficiencyPlot(hSetEff["h_nvtx_num_fake"] , hSetEff["h_nvtx_den_fake"] , "h_nvtx_fr", "Eff ;# vtxs");
@@ -1685,21 +1626,22 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
 
   TH1F * h_el_pt = new TH1F(Form("%s_el_pt",prefix.Data()),";electron pt",40,0.,100);
   TH1F * h_el_sieie = new TH1F(Form("%s_el_sieie",prefix.Data()),";electron sieie",100,0.,0.05);
-  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",60,-0.03,0.03);
+  TH1F * h_el_dEtaIn = new TH1F(Form("%s_el_dEtaIn",prefix.Data()),";electron dEtaIn",80,-0.04,0.04);
   TH1F * h_el_dPhiIn = new TH1F(Form("%s_el_dPhiIn",prefix.Data()),";electron dPhiIn",100,-0.2,0.2);
   TH1F * h_el_hOverE = new TH1F(Form("%s_el_hOverE",prefix.Data()),";electron hOverE",100,0.,0.5);
+  TH1F * h_el_hOverEBC = new TH1F(Form("%s_el_hOverEBC",prefix.Data()),";electron hOverEBC",100,0.,0.5);
   TH1F * h_el_d0corr = new TH1F(Form("%s_el_d0corr",prefix.Data()),";electron d0corr",100,-0.2,0.2);
   TH1F * h_el_z0corr = new TH1F(Form("%s_el_z0corr",prefix.Data()),";electron z0corr",100,-1.,1.);
   TH1F * h_el_ooemoop = new TH1F(Form("%s_el_ooemoop",prefix.Data()),";electron ooemoop",100,-0.5,0.5);
-  TH1F * h_el_iso_cor = new TH1F(Form("%s_el_iso_cor",prefix.Data()),";electron iso_cor",100,0.,2.);
-  TH1F * h_el_iso_corsize = new TH1F(Form("%s_el_iso_corzise",prefix.Data()),";electron iso_corsize",100,-1.,1.);
-  TH1F * h_el_pfiso_chPU = new TH1F(Form("%s_el_pfiso_chPU",prefix.Data()),";electron pfiso_chPU",100,0.,2.);
-  TH1F * h_el_pfiso_ch = new TH1F(Form("%s_el_pfiso_ch",prefix.Data()),";electron pfiso_ch",100,0.,2.);
-  TH1F * h_el_pfiso_em = new TH1F(Form("%s_el_pfiso_em",prefix.Data()),";electron pfiso_em",100,0.,2.);
-  TH1F * h_el_pfiso_nh = new TH1F(Form("%s_el_pfiso_nh",prefix.Data()),";electron pfiso_nh",100,0.,2.);
-  TH1F * h_el_detiso_ch = new TH1F(Form("%s_el_detiso_ch",prefix.Data()),";electron detiso_ch",100,0.,2.);
-  TH1F * h_el_detiso_em = new TH1F(Form("%s_el_detiso_em",prefix.Data()),";electron detiso_em",100,0.,2.);
-  TH1F * h_el_detiso_nh = new TH1F(Form("%s_el_detiso_nh",prefix.Data()),";electron detiso_nh",100,0.,2.);
+  TH1F * h_el_iso_cor = new TH1F(Form("%s_el_iso_cor",prefix.Data()),";electron iso_cor",55,0.,1.1);
+  TH1F * h_el_iso_corsize = new TH1F(Form("%s_el_iso_corzise",prefix.Data()),";electron iso_corsize",55,0.,1.1);
+  TH1F * h_el_pfiso_chPU = new TH1F(Form("%s_el_pfiso_chPU",prefix.Data()),";electron pfiso_chPU",55,0.,1.1);
+  TH1F * h_el_pfiso_ch = new TH1F(Form("%s_el_pfiso_ch",prefix.Data()),";electron pfiso_ch",55,0.,1.1);
+  TH1F * h_el_pfiso_em = new TH1F(Form("%s_el_pfiso_em",prefix.Data()),";electron pfiso_em",55,0.,1.1);
+  TH1F * h_el_pfiso_nh = new TH1F(Form("%s_el_pfiso_nh",prefix.Data()),";electron pfiso_nh",55,0.,1.1);
+  TH1F * h_el_detiso_ch = new TH1F(Form("%s_el_detiso_ch",prefix.Data()),";electron detiso_ch",55,0.,1.1);
+  TH1F * h_el_detiso_em = new TH1F(Form("%s_el_detiso_em",prefix.Data()),";electron detiso_em",55,0.,1.1);
+  TH1F * h_el_detiso_nh = new TH1F(Form("%s_el_detiso_nh",prefix.Data()),";electron detiso_nh",55,0.,1.1);
   TH1F * h_el_valid_pixelHits = new TH1F(Form("%s_el_valid_pixelHits",prefix.Data()),";electron valid_pixelHits",6,0,6);
   TH1F * h_el_lost_pixelhits = new TH1F(Form("%s_el_lost_pixelhits",prefix.Data()),";electron lost_pixelhits",4,0,4);
   TH1F * h_el_vtxFitConversion = new TH1F(Form("%s_el_vtxFitConversion",prefix.Data()),";electron vtxFitConversion",3,0,3);
@@ -1716,11 +1658,27 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
   TH1F * h_el_psOverRaw = new TH1F(Form("%s_el_psOverRaw", prefix.Data()), ";electron psOverRaw", 100, 0, 0.5);
   TH1F * h_el_seed      = new TH1F(Form("%s_el_seed"     , prefix.Data()), ";electron seed     ", 5, 0, 5);
   TH1F * h_el_ncluster  = new TH1F(Form("%s_el_ncluster" , prefix.Data()), ";electron ncluster ", 15, 0, 15);
+  TH1F * h_el_eRawOverTrue  = new TH1F(Form("%s_el_eRawOverTrue" , prefix.Data()), ";electron eRawOverTrue ", 100, 0, 2);
+  TH1F * h_el_eRawMinusTrue  = new TH1F(Form("%s_el_eRawMinusTrue" , prefix.Data()), ";electron eRawMinusTrue ", 100, -50, 50);
+  TH1F * h_el_eRawMtrueOtrue  = new TH1F(Form("%s_el_eRawMtrueOtrue" , prefix.Data()), ";electron eRawMtrueOtrue ", 100, -1, 1);
+  TH1F * h_el_pfiso_ch_pt = new TH1F(Form("%s_el_pfiso_ch_pt", prefix.Data()), "; electron ch_pt", 100, 0, 10);
+  TH1F * h_el_pfiso_em_pt = new TH1F(Form("%s_el_pfiso_em_pt", prefix.Data()), "; electron em_pt", 100, 0, 10);
+  TH1F * h_el_pfiso_nh_pt = new TH1F(Form("%s_el_pfiso_nh_pt", prefix.Data()), "; electron nh_pt", 100, 0, 10);
+  TH1F * h_el_pfiso_chPU_pt = new TH1F(Form("%s_el_pfiso_ch_ptPU", prefix.Data()), "; electron ch_ptPU", 100, 0, 10);
+  TH1F * h_el_pfiso_el_pt = new TH1F(Form("%s_el_pfiso_el_pt", prefix.Data()), "; electron el_pt", 100, 0, 10);
+  TH1F * h_el_pfiso_mu_pt = new TH1F(Form("%s_el_pfiso_mu_pt", prefix.Data()), "; electron mu_pt", 100, 0, 10);
+  TH1F * h_el_pfiso_ch_N  = new TH1F(Form("%s_el_pfiso_ch_N" , prefix.Data()), "; electron ch_N", 20, 0, 20);
+  TH1F * h_el_pfiso_em_N  = new TH1F(Form("%s_el_pfiso_em_N" , prefix.Data()), "; electron em_N", 20, 0, 20);
+  TH1F * h_el_pfiso_nh_N  = new TH1F(Form("%s_el_pfiso_nh_N" , prefix.Data()), "; electron nh_N", 20, 0, 20);
+  TH1F * h_el_pfiso_chPU_N  = new TH1F(Form("%s_el_pfiso_ch_NPU" , prefix.Data()), "; electron ch_NPU", 20, 0, 20);
+  TH1F * h_el_pfiso_el_N  = new TH1F(Form("%s_el_pfiso_el_N" , prefix.Data()), "; electron el_N", 20, 0, 20);
+  TH1F * h_el_pfiso_mu_N  = new TH1F(Form("%s_el_pfiso_mu_N" , prefix.Data()), "; electron mu_N", 20, 0, 20);
   hSet.insert(std::pair<std::string, TH1F*> ("pt",h_el_pt));
   hSet.insert(std::pair<std::string, TH1F*> ("sieie",h_el_sieie));
   hSet.insert(std::pair<std::string, TH1F*> ("dEtaIn",h_el_dEtaIn));   
   hSet.insert(std::pair<std::string, TH1F*> ("dPhiIn",h_el_dPhiIn));   
   hSet.insert(std::pair<std::string, TH1F*> ("hOverE",h_el_hOverE));
+  hSet.insert(std::pair<std::string, TH1F*> ("hOverEBC",h_el_hOverEBC));
   hSet.insert(std::pair<std::string, TH1F*> ("d0corr",h_el_d0corr));
   hSet.insert(std::pair<std::string, TH1F*> ("z0corr",h_el_z0corr));
   hSet.insert(std::pair<std::string, TH1F*> ("ooemoop",h_el_ooemoop));
@@ -1749,6 +1707,22 @@ void dilepStudyLooper::bookElectronHistos(std::map<std::string, TH1F*> & hSet, T
   hSet.insert(std::pair<std::string, TH1F*> ("psOverRaw" , h_el_psOverRaw  ));
   hSet.insert(std::pair<std::string, TH1F*> ("seed"      , h_el_seed       ));
   hSet.insert(std::pair<std::string, TH1F*> ("ncluster"  , h_el_ncluster   ));
+  hSet.insert(std::pair<std::string, TH1F*> ("eRawOverTrue"  , h_el_eRawOverTrue   ));
+  hSet.insert(std::pair<std::string, TH1F*> ("eRawMinusTrue"  , h_el_eRawMinusTrue   ));
+  hSet.insert(std::pair<std::string, TH1F*> ("eRawMtrueOtrue"  , h_el_eRawMtrueOtrue   ));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_ch_pt",h_el_pfiso_ch_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_em_pt",h_el_pfiso_em_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_nh_pt",h_el_pfiso_nh_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_chPU_pt",h_el_pfiso_chPU_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_el_pt",h_el_pfiso_el_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_mu_pt",h_el_pfiso_mu_pt));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_ch_N",h_el_pfiso_ch_N));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_em_N",h_el_pfiso_em_N));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_nh_N",h_el_pfiso_nh_N));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_chPU_N",h_el_pfiso_chPU_N));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_el_N",h_el_pfiso_el_N));
+  hSet.insert(std::pair<std::string, TH1F*> ("pfiso_mu_N",h_el_pfiso_mu_N));
+
   return;
 }
 
@@ -1760,6 +1734,7 @@ void dilepStudyLooper::fillElectronQuantities(std::map<std::string, TH1F*> & hSe
   fillUnderOverFlow( hSet["dEtaIn"]          , e.dEtaIn, 1);
   fillUnderOverFlow( hSet["dPhiIn"]          , e.dPhiIn, 1);
   fillUnderOverFlow( hSet["hOverE"]          , e.hOverE, 1);
+  fillUnderOverFlow( hSet["hOverEBC"]        , e.hOverEBC, 1);
   fillUnderOverFlow( hSet["d0corr"]          , e.d0corr, 1);
   fillUnderOverFlow( hSet["z0corr"]          , e.z0corr, 1);
   fillUnderOverFlow( hSet["ooemoop"]         , e.ooemoop, 1);
@@ -1788,6 +1763,9 @@ void dilepStudyLooper::fillElectronQuantities(std::map<std::string, TH1F*> & hSe
   fillUnderOverFlow( hSet["psOverRaw"]    , e.psOverRaw , 1);
   fillUnderOverFlow( hSet["seed"]         , e.seed      , 1);
   fillUnderOverFlow( hSet["ncluster"]     , e.ncluster  , 1);	  
+  fillUnderOverFlow( hSet["eRawOverTrue"] , e.eRawOverTrue  , 1);	  
+  fillUnderOverFlow( hSet["eRawMinusTrue"] , e.eRawMinusTrue  , 1);	  
+  fillUnderOverFlow( hSet["eRawMtrueOtrue"] , e.eRawMtrueOtrue  , 1);	  
 
 
 
@@ -1818,7 +1796,7 @@ void dilepStudyLooper::fillElectronQuantitiesN1(std::map<std::string, TH1F*> & h
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["sieie"]->Fill(e.sieie, 1);                         i++;  
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dEtaIn"]->Fill(e.dEtaIn, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["dPhiIn"]->Fill(e.dPhiIn, 1);			   i++;
-  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["hOverE"]->Fill(e.hOverE, 1);			   i++;
+  if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) {hSet["hOverE"]->Fill(e.hOverE, 1);  fillUnderOverFlow( hSet["hOverEBC"]     , e.hOverEBC , 1);}			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["d0corr"]->Fill(e.d0corr, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["z0corr"]->Fill(e.z0corr, 1);			   i++;
   if ( (p & (all & ~(1ll<<i))) == (all & ~(1ll<<i)) ) hSet["ooemoop"]->Fill(e.ooemoop, 1);			   i++;
@@ -1847,7 +1825,11 @@ void dilepStudyLooper::fillElectronQuantitiesN1(std::map<std::string, TH1F*> & h
     fillUnderOverFlow( hSet["psOverRaw"]    , e.psOverRaw , 1);
     fillUnderOverFlow( hSet["seed"]         , e.seed      , 1);
     fillUnderOverFlow( hSet["ncluster"]     , e.ncluster  , 1);	  
-    fillUnderOverFlow( hSet["pfiso_chPU"]     , e.pfiso_chPU , 1);
+    fillUnderOverFlow( hSet["eRawOverTrue"] , e.eRawOverTrue  , 1);	  
+    fillUnderOverFlow( hSet["eRawMinusTrue"] , e.eRawMinusTrue  , 1);	  
+    fillUnderOverFlow( hSet["eRawMtrueOtrue"] , e.eRawMtrueOtrue  , 1);	  
+    fillUnderOverFlow( hSet["pfiso_chPU"]   , e.pfiso_chPU , 1);
+  
   }
 
 
@@ -1875,7 +1857,7 @@ void dilepStudyLooper::fillElectronCutsResult(electron e, electron cut, ULong64_
   if ( e.detiso_nh < cut.detiso_nh ) pass |= 1ll<<i; i++;
   if ( e.valid_pixelHits >= cut.valid_pixelHits ) pass |= 1ll<<i; i++;
   if ( e.lost_pixelhits <= cut.lost_pixelhits ) pass |= 1ll<<i; i++;
-  bool passVtx = cut.vtxFitConversion ? !e.vtxFitConversion : true;
+  bool passVtx = cut.vtxFitConversion ? e.vtxFitConversion : true;
   if (passVtx) pass |= 1ll<<i;  i++;
   if ( e.chi2n <= cut.chi2n ) pass |= 1ll<<i;
   return;
@@ -1905,20 +1887,19 @@ void dilepStudyLooper::fillUnderOverFlow(TH1F *h1, float value, float weight){
   h1->Fill(value, weight);
 }
 
-void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh, float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights) {
+void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &pfiso_nh, float &pfiso_chPU, const float R, const unsigned int iel, const int ivtx, bool useMap, int useDeltaBetaWeights, bool fillPlots, hMAP & hSet) {
   // Mostly taken from electronIsoValuePF2012 in electronSelections.cc
 
   pfiso_ch = 0;
   pfiso_em = 0;
   pfiso_nh = 0;
   pfiso_chPU = 0;
-
+  int n_ch = 0, n_em = 0, n_chPU = 0, n_nh = 0, n_el = 0, n_mu = 0;
   for (unsigned int ipf = 0; ipf < cms2.pfcands_p4().size(); ++ipf) {
     
     // skip electrons and muons
     const int particleId = abs(cms2.pfcands_particleId()[ipf]);
-    if (particleId == 11)    continue;
-    if (particleId == 13)    continue;
+
 //    if ( cms2.pfcands_mva_nothing_gamma()[ipf] > 0.99 && cand.superCluster().isNonnull() 
 //	  && cms2.pfcands_superClusterRef().isNonnull() 
 //	  && cand.superCluster() == it->superClusterRef())   continue; // Remove photons with same supercluster (can't do with CMS2 ntuples)
@@ -1951,6 +1932,18 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
       
     }
 
+    LorentzVector & p4 = cms2.pfcands_p4()[ipf];
+    // Fill some plots
+    if (fillPlots) {
+      if (particleId == 211 && !isPU)  { fillUnderOverFlow( hSet["pfiso_ch_pt"]   , p4.pt(), 1); n_ch++; }
+      if (particleId == 211 &&  isPU)  { fillUnderOverFlow( hSet["pfiso_chPU_pt"] , p4.pt(), 1); n_chPU++; }
+      if (particleId == 22)            { fillUnderOverFlow( hSet["pfiso_em_pt"]   , p4.pt(), 1); n_em++; }
+      if (particleId == 130)           { fillUnderOverFlow( hSet["pfiso_nh_pt"]   , p4.pt(), 1); n_nh++; }
+      if (particleId == 11)            { fillUnderOverFlow( hSet["pfiso_el_pt"]   , p4.pt(), 1); n_el++; }
+      if (particleId == 13)            { fillUnderOverFlow( hSet["pfiso_mu_pt"]   , p4.pt(), 1); n_mu++; }
+    }
+    if (particleId == 11)    continue;
+    if (particleId == 13)    continue;
     // Use Map (only REL 7)
     bool skipcand = false;
     if (useMap) {
@@ -1961,7 +1954,6 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
     }
     if (skipcand) continue;
 
-    LorentzVector & p4 = cms2.pfcands_p4()[ipf];
     float weight = 1.0;
     if (useDeltaBetaWeights>0 && (particleId == 22 || particleId == 130) ) {      
       float sumPU = useDeltaBetaWeights == 2 ? 1. : 0;
@@ -2008,24 +2000,35 @@ void  dilepStudyLooper::electronPFiso2(float &pfiso_ch, float &pfiso_em, float &
 
 
   }// end loop on the candidates
+  if (fillPlots) {
+    fillUnderOverFlow( hSet["pfiso_ch_N"]   ,  n_ch  , 1);
+    fillUnderOverFlow( hSet["pfiso_chPU_N"] ,  n_chPU, 1);
+    fillUnderOverFlow( hSet["pfiso_em_N"]   ,  n_em  , 1);
+    fillUnderOverFlow( hSet["pfiso_nh_N"]   ,  n_nh  , 1);
+    fillUnderOverFlow( hSet["pfiso_el_N"]   ,  n_el  , 1);
+    fillUnderOverFlow( hSet["pfiso_mu_N"]   ,  n_mu  , 1);
+  }
+
 
   return;
 }
 
-void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso) {
+void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron & eleStruct, bool useMap, bool doPFCandLoop, int useDeltaBetaWeights, bool DeltaBetaSimple, bool areaCorrection, bool fillPFiso, bool truth, float truthE) {
 	float ch = 0;
 	float em = 0;
 	float nh = 0;
 	float chPU = 0;
 	float pt = els_p4().at(iel).pt();
+	float eta = els_etaSC().at(iel);
 	eleStruct.pt = els_p4().at(iel).pt() ;
         eleStruct.eta = els_etaSC().at(iel);
         eleStruct.sieie = m_miniAOD ? els_sigmaIEtaIEta_full5x5().at(iel) : els_sigmaIEtaIEta().at(iel);
         eleStruct.dEtaIn = els_etaSC().at(iel) > 0 ? els_dEtaIn().at(iel) : -1.*els_dEtaIn().at(iel);
         eleStruct.dPhiIn = els_dPhiIn().at(iel);
         eleStruct.hOverE = els_hOverE().at(iel);
-        eleStruct.d0corr = els_d0corr().at(iel); // for miniAOD move to els_dxyPV
-        eleStruct.z0corr = dzPV(els_vertex_p4()[iel], els_trk_p4()[iel], vtxs_position()[0]);//els_z0corr().at(iel); // for miniAOD move to els_dzPV
+        eleStruct.hOverEBC = els_hOverEBC().at(iel);
+        eleStruct.d0corr = els_dxyPV().at(iel); //els_d0corr().at(iel); // for miniAOD move to els_dxyPV
+        eleStruct.z0corr = els_dzPV().at(iel); //dzPV(els_vertex_p4()[iel], els_trk_p4()[iel], vtxs_position()[0]);//els_z0corr().at(iel); // for miniAOD move to els_dzPV
         eleStruct.ooemoop = (1.0/els_ecalEnergy().at(iel)) - (els_eOverPIn().at(iel)/els_ecalEnergy().at(iel)) ;
 	eleStruct.iso_uncor = (fillPFiso && !doPFCandLoop) ? electronPFiso(iel, false) : 0;
 	if (fillPFiso) {
@@ -2038,13 +2041,23 @@ void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron &
 	      em = els_pfPhotonIso().at(iel);
 	      chPU = els_pfPUIso().at(iel);
 	    } 
-	    else  electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights); 	
+	    else  {
+	      bool  fillPlots = true;
+	      if ( truth ) {
+		if (fabs(eta) <= 1.479) electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights, fillPlots, hSet2);
+		else electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights, fillPlots, hSet2E);
+	      }
+	      else {
+		if (fabs(eta) <= 1.479) electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights, fillPlots, hSet2f);
+		else electronPFiso2(ch, em, nh, chPU, 0.3, iel, firstGoodVertex(), useMap, useDeltaBetaWeights, fillPlots, hSet2Ef);
+	      }
+
 	    //cout<<"ch "<<ch<<" "<<els_pfChargedHadronIso().at(iel)<<endl;
 	    //cout<<"nh "<<nh<<" "<<els_pfNeutralHadronIso().at(iel)<<endl;
 	    //cout<<"em "<<em<<" "<<els_pfPhotonIso().at(iel)<<endl;
 	    //cout<<"PU "<<chPU<<" "<<els_pfPUIso().at(iel)<<endl;
 	    //cout<<endl;
-
+	    }
 	    if (DeltaBetaSimple) eleStruct.iso_cor = ( ch + std::max(0.0, nh + em - 0.5 * chPU) ) / pt;
 	    else eleStruct.iso_cor = (ch + em + nh) / pt; 
 	    //	cout<<"eleStruct.iso_cor "<<eleStruct.iso_cor<<" and pt "<<pt<<endl;
@@ -2074,6 +2087,9 @@ void dilepStudyLooper::fillElectronStructure( const unsigned int iel, electron &
 	eleStruct.sieieSC = m_miniAOD ? 0 : els_sigmaIEtaIEtaSC().at(iel);
 	eleStruct.eoverpIn = els_eOverPIn().at(iel);
 	eleStruct.eoverpOut = els_eOverPOut().at(iel);
+	eleStruct.eRawOverTrue =  (truthE > 0) ? els_eSCRaw().at(iel) / truthE : -999;
+	eleStruct.eRawMinusTrue =  (truthE > 0) ? els_eSCRaw().at(iel) - truthE : -999;
+	eleStruct.eRawMtrueOtrue =  (truthE > 0) ? (els_eSCRaw().at(iel) - truthE) / truthE : -999;
 
 }
 
