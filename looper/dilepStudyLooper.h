@@ -99,6 +99,8 @@ public:
   };
 
   TH1F* MakeEfficiencyPlot(TH1F* num_hist, TH1F* den_hist, const std::string& name, const std::string& title);
+  TH2*  MakeEfficiencyPlot2D(TH2* num_hist, TH2* den_hist, const std::string& name, const std::string& title);
+
 
 
 private:
@@ -211,6 +213,7 @@ std::map<std::string, TH1F*> hSetCut8;
 std::map<std::string, TH1F*> hSetCut9;
 
 std::map<TString, TH1F*> hSetEff;
+std::map<TString, TH2F*> hSetEff2D;
 
  enum EgammaElectronType {
    ISECALENERGYCORRECTED,  // if false, the electron "ecalEnergy" is just the supercluster energy 

@@ -16,7 +16,7 @@ function roothadd () {
 }
 
 
-TAG=V00-00-03
+TAG=V00-00-04
 
 HADOOPDIR=/hadoop/cms/store/user/${USER}/genFakeHistos/
 OUTPUTDIR=/home/users/gzevi/FakeLepton/genCMS2/ElectronLooperCMS2/looper/batchsubmit/merged/
@@ -25,12 +25,13 @@ mkdir -p $OUTPUTDIR
 chmod -R a+wrx $OUTPUTDIR
 
 
-#roothadd ttpythia
+roothadd ttpythia
 #roothadd ttsemilep1
 #roothadd ttsemilep2
-#roothadd ttsemilep*
+roothadd ttsemilep*
+mv merged/${TAG}/ttsemilep\*.root merged/${TAG}/ttsemilep.root
 roothadd qcdmuenriched
-
+roothadd bjets
 
 
 

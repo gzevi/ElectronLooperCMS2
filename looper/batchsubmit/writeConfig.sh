@@ -83,8 +83,9 @@ x509userproxy=${PROXY}
 
 
 
-#for FILE in `ls ${DATADIR}/*.root`; do
-for FILE in `ls -lrth ${DATADIR}/*.root | grep Sep | awk '{print $9}'`; do
+
+#for FILE in `ls -lrth ${DATADIR}/*.root | grep Sep | awk '{print $9}'`; do
+for FILE in `ls ${DATADIR}/*.root`; do
         echo "
 executable=${EXE}
 transfer_executable=True
