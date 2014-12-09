@@ -5,8 +5,8 @@ do echo "No Proxy found issuing \"voms-proxy-init -voms cms\""
    voms-proxy-init -hours 168 -voms cms
 done
 
-#UNIVERSE="grid"
-UNIVERSE="vanilla"
+UNIVERSE="grid"
+#UNIVERSE="vanilla"
 EXE="wrapper.sh"
 INPUT="wrapper.sh, job_input/input.tar.gz"
 SITE="UCSD"
@@ -58,9 +58,10 @@ fi
 # write configuration
 #
    
-#Grid_Resource=gt2 osg-gw-6.t2.ucsd.edu:2119/jobmanager-condor
+#Grid_Resource=gt2 osg-gw-6.t2.ucsd.edu:2119/jobmanager-condor # only add this for direct submission, along with universe=grid
 echo "
 universe=${UNIVERSE}
+Grid_Resource=gt2 osg-gw-6.t2.ucsd.edu:2119/jobmanager-condor
 when_to_transfer_output = ON_EXIT
 #the actual executable to run is not transfered by its name.
 #In fact, some sites may do weird things like renaming it and such.

@@ -328,11 +328,14 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	int idxMuFromB = -1;
 	float status1rho = 0;
 	float status1rho25 = 0;
+	float status1rho2GeV = 0;
 	for(unsigned int idx = 0; idx < genps_id().size(); idx++) {	 
 	  int pid = abs(genps_id().at(idx));
 	  int status = genps_status().at(idx);
 	  // total pt at status 1
 	  if (status==1 && fabs(genps_p4().at(idx).eta()) < 1.2 && !(pid==12 || pid==14|| pid==16)) status1rho += genps_p4().at(idx).pt();
+	  if (status==1 && fabs(genps_p4().at(idx).eta()) < 1.2 && !(pid==12 || pid==14|| pid==16) && genps_p4().at(idx).pt()>2) 
+	    status1rho2GeV += genps_p4().at(idx).pt();
 	  if (status==1 && fabs(genps_p4().at(idx).eta()) < 2.5 && !(pid==12 || pid==14|| pid==16)) status1rho25 += genps_p4().at(idx).pt();
 
 	  if (genps_p4().at(idx).pt() < 10) continue;
@@ -340,8 +343,8 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	    if (!foundb1) {b1p4 = genps_p4().at(idx); foundb1 = true; idxb1 = idx;}
 	    else if (!foundb2) {b2p4 = genps_p4().at(idx); foundb2 = true; idxb2 = idx;}	    
 	  }
-	  if (pid==13 && status==1 && !foundMuFromB) {
-	    if ( idIsBeauty( genps_id_mother().at(idx)) && genps_p4().at(idx).pt() > 20 && fabs(genps_p4().at(idx).eta()) < 0.9 ) { // ETA RESTRICTED
+	  if (pid==13 && status==1 && !foundMuFromB) { // only required pT > 20 until November 9. Then added pT < 25
+	    if ( idIsBeauty( genps_id_mother().at(idx)) && genps_p4().at(idx).pt() > 20 && genps_p4().at(idx).pt() < 25 && fabs(genps_p4().at(idx).eta()) < 0.9 ) { // ETA RESTRICTED
 	      muFromBp4 = genps_p4().at(idx);
 	      foundMuFromB = true;
 	      idxMuFromB = idx;
@@ -374,10 +377,13 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	for (unsigned int i = 0; i < qgp4.size(); i++) {
 	  if (dRbetweenVectors2(muFromBp4, qgp4.at(i)) < 0.64 ) bIsIso = false;
 	}
-	// Use genJets for DR with muon
+	// Use genJets for DR with muon (excluding the closest genJet)
 	// Can't do this for ttbar_pythia6_8tev sample
 	bool bIsIsoGenJet = true;
 	bool bIsIsoGenJet40 = true;
+	float genJetHT = 0;
+	float genJetHT20 = 0;
+	float genJetHT10 = 0;
 	if (filename.Contains("ttbar_pythia6_8tev")) bIsIsoGenJet = false;
 	else {
 	  for(unsigned int idx = 0; idx < genjets_p4().size(); idx++) {
@@ -386,11 +392,29 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	    float dR = dRbetweenVectors2(genjets_p4().at(idx), muFromBp4 );
 	    if (dR < 0.64) { bIsIsoGenJet = false; }
 	    if (dR < 0.64 && pt > 40) { bIsIsoGenJet40 = false; continue;}
-
+	    if ( pt > 30 && fabs(genjets_p4().at(idx).eta())<2.5 ) genJetHT += pt;
+	    if ( pt > 20 && fabs(genjets_p4().at(idx).eta())<2.5 ) genJetHT20 += pt;
+	    if ( pt > 10 && fabs(genjets_p4().at(idx).eta())<2.5 ) genJetHT10 += pt;
 	  }
 	}
 
-	
+	float recoJetHT = 0;
+	float recoJetHT10 = 0;
+	for (unsigned int idx = 0; idx < pfjets_p4().size(); idx++) {
+	  float pt = pfjets_p4().at(idx).pt();
+	  if (pt > 30 && fabs(pfjets_p4().at(idx).eta())<2.5 ) recoJetHT += pt;
+	  if (pt > 10 && fabs(pfjets_p4().at(idx).eta())<2.5 ) recoJetHT10 += pt;
+	}
+
+	float chPFHT = 0;
+	for (unsigned int idx = 0; idx < pfcands_p4().size(); idx++) {
+	  if (fabs(pfcands_particleId().at(idx)) != 211) continue;
+	  if (pfcands_vtxidx().at(idx) != 0) continue; // should be != firstGoodVertex(), hopefully this is ok 
+	  if (fabs(pfcands_p4().at(idx).eta())>2.5) continue;
+	  float pt = pfcands_p4().at(idx).pt();
+	  chPFHT += pt;
+        }
+
 	// Next calculate muon isolation
 	// Remove all status1 within 0.4 of status3 b/q/g. Remove status3 leptons. Only the UE is left
 	float iso = 0;
@@ -495,6 +519,7 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	hSetEff["h_status1rho"]->Fill(status1rho, evt_weight);
 	hSetEff["h_status1rhoW1"]->Fill(status1rho, 1);
 	hSetEff["h_status1rho25W1"]->Fill(status1rho25, 1);
+	hSetEff["h_status1rho2GeVW1"]->Fill(status1rho2GeV, 1);
 	hSetEff["h_status1rho25WHT"]->Fill(status1rho25, evt_weightHT25);
 	hSetEff["h_status1rhoWHT"]->Fill(status1rho, evt_weightHT);
 	hSetEff["h_status1rho25WHTB"]->Fill(status1rho25, evt_weightHT25_B);
@@ -502,6 +527,10 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	hSetEff["h_rhoFromHard"]->Fill(rhoFromHard, evt_weight);
 	hSetEff["h_rhoUE"]->Fill(rhoUE, evt_weight);
 	hSetEff["h_rhoUEW2"]->Fill(rhoUE, evt_weight2);
+	hSetEff["h_genJetHT"]->Fill(genJetHT, 1);
+	hSetEff["h_recoJetHT"]->Fill(recoJetHT, 1);
+	hSetEff["h_recoJetHT10"]->Fill(recoJetHT10, 1);
+	hSetEff["h_chPFHT"]->Fill(chPFHT, 1);
 
 
 	float muPt = muFromBp4.pt();
@@ -528,17 +557,106 @@ int dilepStudyLooper::ScanChain(TChain* chain, const TString& prefix, int sign, 
 	if (reliso < 0.3) hSetEff["h_ptb_num"]->Fill(bPt, evt_weight);
 	
 	// HT categories to show that QCD FR depends on HT
-	if (status1rho < 150) { 
-	  if (reliso < 1.0) hSetEff["h_ptb_den_ht1"]->Fill(bPt, evt_weight);
-	  if (reliso < 0.3) hSetEff["h_ptb_num_ht1"]->Fill(bPt, evt_weight);
+	if (status1rho < 90) { 
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht1"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht1"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht1"]->Fill(bPt, 1);
+
+	  float pt_weight = 1;
+	  if (bPt > 30 && bPt < 150) {
+	    pt_weight = TMath::Exp(-1.75342e+00 + 3.90398e-02 * bPt);
+	  }
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht1w"]->Fill(bPt, pt_weight);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht1w"]->Fill(bPt, pt_weight);
+	  hSetEff["h_bquark_pt_ht1w"]->Fill(bPt, pt_weight);
 	}
-	else if (status1rho > 150 && status1rho < 220) {
-	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2"]->Fill(bPt, evt_weight);
-	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2"]->Fill(bPt, evt_weight);
+	else if (status1rho > 90 && status1rho < 140) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht2"]->Fill(bPt, 1);
+
+	  float pt_weight = 1;
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2w"]->Fill(bPt, pt_weight);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2w"]->Fill(bPt, pt_weight);
+	  hSetEff["h_bquark_pt_ht2w"]->Fill(bPt, pt_weight);
 	}
-	else if (status1rho > 220) {
-	  if (reliso < 1.0) hSetEff["h_ptb_den_ht3"]->Fill(bPt, evt_weight);
-	  if (reliso < 0.3) hSetEff["h_ptb_num_ht3"]->Fill(bPt, evt_weight);
+	else if (status1rho > 140) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht3"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht3"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht3"]->Fill(bPt, 1);
+
+	  float pt_weight = 1;
+	  if (bPt > 30 && bPt < 80) {
+	    pt_weight = TMath::Exp(4.36149e+00 -6.04740e-02 * bPt);
+	  }
+	  if (bPt > 80 && bPt < 200) {
+	    pt_weight = TMath::Exp(2.49134e+00 - 3.48015e-02 * bPt);
+	  }
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht3w"]->Fill(bPt, pt_weight);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht3w"]->Fill(bPt, pt_weight);
+	  hSetEff["h_bquark_pt_ht3w"]->Fill(bPt, pt_weight);
+	}
+	// more HT categories, but with status1rho2GeV
+	if (status1rho2GeV < 50) { 
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2GeV1"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2GeV1"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht2GeV1"]->Fill(bPt, 1);
+	}
+	else if (status1rho2GeV > 50 && status1rho2GeV < 100) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2GeV2"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2GeV2"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht2GeV2"]->Fill(bPt, 1);
+	}
+	else if (status1rho2GeV > 100) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_ht2GeV3"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_ht2GeV3"]->Fill(bPt, 1);
+	  hSetEff["h_bquark_pt_ht2GeV3"]->Fill(bPt, 1);
+	}
+	// more HT categories, but with genJetHT
+	if (genJetHT < 60) { 
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htGenJet1"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htGenJet1"]->Fill(bPt, 1);
+	}
+	else if (genJetHT > 60 && genJetHT < 120) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htGenJet2"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htGenJet2"]->Fill(bPt, 1);
+	}
+	else if (genJetHT > 120) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htGenJet3"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htGenJet3"]->Fill(bPt, 1);
+	}
+	// more HT categories, but with recoJetHT
+	if (recoJetHT < 60) { 
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htRecoJet1"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htRecoJet1"]->Fill(bPt, 1);
+	}
+	else if (recoJetHT > 60 && recoJetHT < 120) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htRecoJet2"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htRecoJet2"]->Fill(bPt, 1);
+	}
+	else if (recoJetHT > 120) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htRecoJet3"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htRecoJet3"]->Fill(bPt, 1);
+	}
+	if (chPFHT < 40) { 
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htChPF1"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htChPF1"]->Fill(bPt, 1);
+	}
+	else if (chPFHT > 40 && chPFHT < 70) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htChPF2"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htChPF2"]->Fill(bPt, 1);
+	}
+	else if (chPFHT > 70) {
+	  if (reliso < 1.0) hSetEff["h_ptb_den_htChPF3"]->Fill(bPt, 1);
+	  if (reliso < 0.3) hSetEff["h_ptb_num_htChPF3"]->Fill(bPt, 1);
+	}
+	if (reliso < 1.0) {
+	  hSetEff2D["h_status1_vs_genJet"]->Fill(genJetHT, status1rho25, 1);
+	  hSetEff2D["h_status1_vs_genJet20"]->Fill(genJetHT20, status1rho25, 1);
+	  hSetEff2D["h_status1_vs_genJet10"]->Fill(genJetHT10, status1rho25, 1);
+	  hSetEff2D["h_status1_vs_recoJet"]->Fill(recoJetHT, status1rho25, 1);
+	  hSetEff2D["h_status1_vs_recoJet10"]->Fill(recoJetHT10, status1rho25, 1);
+	  hSetEff2D["h_status1_vs_chPFHT"]->Fill(chPFHT, status1rho25, 1);
 	}
 	if (reliso < 1.0) hSetEff2D["h_ptb_htS1_den"]->Fill(bPt, status1rho, 1);
 	if (reliso < 0.3) hSetEff2D["h_ptb_htS1_num"]->Fill(bPt, status1rho, 1);
@@ -595,9 +713,12 @@ cout << "Processed events: " << nEventsTotal << endl;
  outFile->cd(); // Make sure histograms get written out
 
  hSetEff["h_ptb_eff"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num"] , hSetEff["h_ptb_den"] , "h_ptb_eff", "Eff ;pTb");
- hSetEff["h_ptb_eff_ht1"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht1"] , hSetEff["h_ptb_den_ht1"] , "h_ptb_eff", "Eff ;pTb");
- hSetEff["h_ptb_eff_ht2"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht2"] , hSetEff["h_ptb_den_ht2"] , "h_ptb_eff", "Eff ;pTb");
- hSetEff["h_ptb_eff_ht3"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht3"] , hSetEff["h_ptb_den_ht3"] , "h_ptb_eff", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht1"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht1"] , hSetEff["h_ptb_den_ht1"] , "h_ptb_eff_ht1", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht2"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht2"] , hSetEff["h_ptb_den_ht2"] , "h_ptb_eff_ht2", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht3"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht3"] , hSetEff["h_ptb_den_ht3"] , "h_ptb_eff_ht3", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht1w"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht1w"] , hSetEff["h_ptb_den_ht1w"] , "h_ptb_eff_ht1w", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht2w"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht2w"] , hSetEff["h_ptb_den_ht2w"] , "h_ptb_eff_ht2w", "Eff ;pTb");
+ hSetEff["h_ptb_eff_ht3w"] = (TH1F*) MakeEfficiencyPlot(hSetEff["h_ptb_num_ht3w"] , hSetEff["h_ptb_den_ht3w"] , "h_ptb_eff_ht3w", "Eff ;pTb");
  hSetEff2D["h_ptb_htS1_eff"] = (TH2F*) MakeEfficiencyPlot2D(hSetEff2D["h_ptb_htS1_num"] , hSetEff2D["h_ptb_htS1_den"] , "h_ptb_htS1_eff", "Eff ;pTb ;HT S1");
  hSetEff2D["h_ptb_htS3_eff"] = (TH2F*) MakeEfficiencyPlot2D(hSetEff2D["h_ptb_htS3_num"] , hSetEff2D["h_ptb_htS3_den"] , "h_ptb_htS3_eff", "Eff ;pTb ;HT S3");
  // hSetEff2D["h_ptb_x1x2_eff"] = (TH2F*) MakeEfficiencyPlot2D(hSetEff2D["h_ptb_x1x2_num"] , hSetEff2D["h_ptb_x1x2_den"] , "h_ptb_x1x2_eff", "Eff ;pTb ;x1+x2");
@@ -729,10 +850,47 @@ void dilepStudyLooper::BookHistos(const TString& prefix)
   hSetEff["h_ptb_den_ht2"] = new TH1F(Form("%s_ptb_den_ht2",prefix.Data()),";pt", nptbins, ptbins);
   hSetEff["h_ptb_num_ht3"] = new TH1F(Form("%s_ptb_num_ht3",prefix.Data()),";pt", nptbins, ptbins);
   hSetEff["h_ptb_den_ht3"] = new TH1F(Form("%s_ptb_den_ht3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht1w"] = new TH1F(Form("%s_ptb_num_ht1w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht1w"] = new TH1F(Form("%s_ptb_den_ht1w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht2w"] = new TH1F(Form("%s_ptb_num_ht2w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht2w"] = new TH1F(Form("%s_ptb_den_ht2w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht3w"] = new TH1F(Form("%s_ptb_num_ht3w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht3w"] = new TH1F(Form("%s_ptb_den_ht3w",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht2GeV1"] = new TH1F(Form("%s_ptb_num_ht2GeV1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht2GeV1"] = new TH1F(Form("%s_ptb_den_ht2GeV1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht2GeV2"] = new TH1F(Form("%s_ptb_num_ht2GeV2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht2GeV2"] = new TH1F(Form("%s_ptb_den_ht2GeV2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_ht2GeV3"] = new TH1F(Form("%s_ptb_num_ht2GeV3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_ht2GeV3"] = new TH1F(Form("%s_ptb_den_ht2GeV3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htGenJet1"] = new TH1F(Form("%s_ptb_num_htGenJet1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htGenJet1"] = new TH1F(Form("%s_ptb_den_htGenJet1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htGenJet2"] = new TH1F(Form("%s_ptb_num_htGenJet2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htGenJet2"] = new TH1F(Form("%s_ptb_den_htGenJet2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htGenJet3"] = new TH1F(Form("%s_ptb_num_htGenJet3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htGenJet3"] = new TH1F(Form("%s_ptb_den_htGenJet3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htRecoJet1"] = new TH1F(Form("%s_ptb_num_htRecoJet1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htRecoJet1"] = new TH1F(Form("%s_ptb_den_htRecoJet1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htRecoJet2"] = new TH1F(Form("%s_ptb_num_htRecoJet2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htRecoJet2"] = new TH1F(Form("%s_ptb_den_htRecoJet2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htRecoJet3"] = new TH1F(Form("%s_ptb_num_htRecoJet3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htRecoJet3"] = new TH1F(Form("%s_ptb_den_htRecoJet3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htChPF1"] = new TH1F(Form("%s_ptb_num_htChPF1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htChPF1"] = new TH1F(Form("%s_ptb_den_htChPF1",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htChPF2"] = new TH1F(Form("%s_ptb_num_htChPF2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htChPF2"] = new TH1F(Form("%s_ptb_den_htChPF2",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_num_htChPF3"] = new TH1F(Form("%s_ptb_num_htChPF3",prefix.Data()),";pt", nptbins, ptbins);
+  hSetEff["h_ptb_den_htChPF3"] = new TH1F(Form("%s_ptb_den_htChPF3",prefix.Data()),";pt", nptbins, ptbins);
   hSetEff2D["h_ptb_htS1_num"] = new TH2F(Form("%s_ptb_htS1_num",prefix.Data()),";pt ;HT S1", nptbins2, ptbins2, nhtbins2, htbins2);
   hSetEff2D["h_ptb_htS1_den"] = new TH2F(Form("%s_ptb_htS1_den",prefix.Data()),";pt ;HT S1", nptbins2, ptbins2, nhtbins2, htbins2);
   hSetEff2D["h_ptb_htS3_num"] = new TH2F(Form("%s_ptb_htS3_num",prefix.Data()),";pt ;HT S3", nptbins2, ptbins2, nhtbins2, htbins2);
   hSetEff2D["h_ptb_htS3_den"] = new TH2F(Form("%s_ptb_htS3_den",prefix.Data()),";pt ;HT S3", nptbins2, ptbins2, nhtbins2, htbins2);
+  hSetEff2D["h_status1_vs_recoJet"] = new TH2F(Form("%s_status1_vs_recoJet",prefix.Data()),";HT ;HT"  , 100,0,600, 100,0,600);
+  hSetEff2D["h_status1_vs_recoJet10"] = new TH2F(Form("%s_status1_vs_recoJet10",prefix.Data()),";HT ;HT"  , 100,0,600, 100,0,600);
+  hSetEff2D["h_status1_vs_chPFHT"] = new TH2F(Form("%s_status1_vs_chPFHT",prefix.Data()),";HT ;HT"  , 100,0,600, 100,0,600);
+  hSetEff2D["h_status1_vs_genJet"] = new TH2F(Form("%s_status1_vs_genJet",prefix.Data()),";HT ;HT"    , 100,0,600, 100,0,600);
+  hSetEff2D["h_status1_vs_genJet20"] = new TH2F(Form("%s_status1_vs_genJet20",prefix.Data()),";HT ;HT", 100,0,600, 100,0,600);
+  hSetEff2D["h_status1_vs_genJet10"] = new TH2F(Form("%s_status1_vs_genJet10",prefix.Data()),";HT ;HT", 100,0,600, 100,0,600);
+
 //  hSetEff2D["h_ptb_x1x2_num"] = new TH2F(Form("%s_ptb_x1x2_num",prefix.Data()),";pt ;x1+x2", nptbins2, ptbins2, nhtbins2, htbins2);
 //  hSetEff2D["h_ptb_x1x2_den"] = new TH2F(Form("%s_ptb_x1x2_den",prefix.Data()),";pt ;x1+x2", nptbins2, ptbins2, nhtbins2, htbins2);
   hSetEff["h_htS1_num"] = new TH1F(Form("%s_htS1_num",prefix.Data()),";htS1", nhtbins, htbins);
@@ -760,6 +918,15 @@ void dilepStudyLooper::BookHistos(const TString& prefix)
 
 
   hSetEff["h_bquark_pt"] = new TH1F(Form("%s_bquark_pt",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht1"] = new TH1F(Form("%s_bquark_pt_ht1",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht2"] = new TH1F(Form("%s_bquark_pt_ht2",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht3"] = new TH1F(Form("%s_bquark_pt_ht3",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht2GeV1"] = new TH1F(Form("%s_bquark_pt_ht2GeV1",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht2GeV2"] = new TH1F(Form("%s_bquark_pt_ht2GeV2",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht2GeV3"] = new TH1F(Form("%s_bquark_pt_ht2GeV3",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht1w"] = new TH1F(Form("%s_bquark_pt_ht1w",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht2w"] = new TH1F(Form("%s_bquark_pt_ht2w",prefix.Data()),";pt", 60, 0, 300);
+  hSetEff["h_bquark_pt_ht3w"] = new TH1F(Form("%s_bquark_pt_ht3w",prefix.Data()),";pt", 60, 0, 300);
   hSetEff["h_bquark_pt_w1"] = new TH1F(Form("%s_bquark_ptW1",prefix.Data()),";pt", 60, 0, 300);
   hSetEff["h_bquark_eta"] = new TH1F(Form("%s_bquark_eta",prefix.Data()),";eta", 30, -1.5, 1.5);
   hSetEff["h_bquark_eta_w1"] = new TH1F(Form("%s_bquark_etaW1",prefix.Data()),";eta", 30, -1.5, 1.5);
@@ -769,6 +936,7 @@ void dilepStudyLooper::BookHistos(const TString& prefix)
   hSetEff["h_status1rho"] = new TH1F(Form("%s_status1rho",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_status1rhoW1"] = new TH1F(Form("%s_status1rhoW1",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_status1rho25W1"] = new TH1F(Form("%s_status1rho25W1",prefix.Data()),";SumPt", 100, 0, 1000);
+  hSetEff["h_status1rho2GeVW1"] = new TH1F(Form("%s_status1rho2GeVW1",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_status1rho25WHT"] = new TH1F(Form("%s_status1rho25WHT",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_status1rhoWHT"] = new TH1F(Form("%s_status1rhoWHT",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_status1rho25WHTB"] = new TH1F(Form("%s_status1rho25WHTB",prefix.Data()),";SumPt", 100, 0, 1000);
@@ -776,6 +944,11 @@ void dilepStudyLooper::BookHistos(const TString& prefix)
   hSetEff["h_rhoFromHard"] = new TH1F(Form("%s_rhoFromHard",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_rhoUE"] = new TH1F(Form("%s_rhoUE",prefix.Data()),";SumPt", 100, 0, 1000);
   hSetEff["h_rhoUEW2"] = new TH1F(Form("%s_rhoUEW2",prefix.Data()),";SumPt", 100, 0, 1000);
+  hSetEff["h_genJetHT"] = new TH1F(Form("%s_genJetHT",prefix.Data()),";HT(GenJets)", 100, 0, 1000);
+  hSetEff["h_recoJetHT"] = new TH1F(Form("%s_recoJetHT",prefix.Data()),";HT(RecoJets)", 100, 0, 1000);
+  hSetEff["h_chPFHT"] = new TH1F(Form("%s_chPFHT",prefix.Data()),";HT(chPF)", 100, 0, 1000);
+  hSetEff["h_recoJetHT10"] = new TH1F(Form("%s_recoJetHT10",prefix.Data()),";HT(RecoJets10)", 100, 0, 1000);
+  hSetEff["h_chPFHT"] = new TH1F(Form("%s_chPFHT",prefix.Data()),";HT(ChPF)", 100, 0, 1000);
 
 
   cout << "End book histos..." << endl;
